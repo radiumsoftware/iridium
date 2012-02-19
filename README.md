@@ -4,7 +4,7 @@ The title says it all. It is basically some glue code to connect
 different moving parts to provide:
 
 1. Asset Compilation (JS/Coffeescript/CSS/SASS/SCSS and friends)
-2. Asset Contactentation and Minification
+2. Asset Concatenation and Minification
 3. API proxying to avoid CORS in development and production
 4. A Rack app to serve the frontend
 5. Different configuration enviroments (development & production)
