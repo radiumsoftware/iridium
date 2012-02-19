@@ -96,7 +96,13 @@ In your `Gemfile`:
 
 source :rubygems
 
-gem 'frontend_server`
+gem "frontend_server"
+
+# NOTE: For the time being, you have to use git repos. Rake pipeline 0.6
+# has not been released yet and rake-pipeline-web-filters depends on that
+# version.
+gem "rake-pipeline", :git => "git://github.com/livingsocial/rake-pipeline.git"
+gem "rake-pipeline-web-filters", :git => "git://github.com/wycats/rake-pipeline-web-filters.git"
 ```
 
 Your Javascript will be compfiled into minispade modules based on the
@@ -148,12 +154,88 @@ $ bundle exec rackup
 
 ## Example
 
+I've translated the classic backbone todos app into an example. Code
+[here](https://github.com/Adman65/frontend_server_example)
+
 
 ## Using
 
 ```
 bundle exec rackup # start the server
 bundle exec rake assets:precompile # compile all assets in public/
+```
+
+## Configuration
+
+`config/application.yml` contains all configuration values. `server` is
+the only required key. All other keys are translated to method names.
+For example, this config file:
+
+```yml
+development:
+  server: "http://api.example.com"
+  developer_key: "foo"
+  user_api_key: "bar"
+```
+
+Would create:
+
+```ruby
+Todos.config.server
+Todos.config.developer_key
+Todos.config.user_api_key
+```
+
+## Initialization & Enviroment Files
+
+`config/environment.rb` holds any global settings. It is required first
+if it exists.
+
+FrontendServer also allows you customize settings through environment
+files. `config/development.rb` and `config/production.rb` will be
+required if they exist.
+
+## Configuration
+
+You can hook into the Rack builder process at the beginning. Here's an
+exmaple:
+
+```ruby
+Todo.configure do |rack, config|
+  rack.use MyCustomMiddleWare.new config.value
+end
+```
+
+## API Proxy
+
+The server also includes a simple proxy for your API. Configure the `server`
+value in `application.yml` first. All requests `/api` are proxied to the
+API server. For example, if you request `/api/todos` and server is set
+to `api.example.com`, the resulting request would be:
+`http://api.example.com/todos`.
+
+## Extras
+
+I've included a simple middleware you can use to add headers to
+requests. I've included this because our API uses headers to
+authenticate keys. This way I can keep the API key hidden from the
+public and proxy it to the API through this rack app. 
+
+Here's an example:
+
+```yml
+development:
+  server: "http://api.example.com"
+  developer_key: "foo"
+  user_api_key: "bar"
+```
+
+```ruby
+# config/enviroment.rb
+
+Todos.configure do |rack, config|
+  rack.use FrontendServer::AddHeader.new 'X-Application-Auth-Token', config.developer_key
+end
 ```
 
 ## Deploying

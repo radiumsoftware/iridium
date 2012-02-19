@@ -4,9 +4,9 @@ require File.expand_path('../lib/frontend_server/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["adman65"]
   gem.email         = ["me@broadcastingadam.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = %q{Asset Compilation, API Proxying, and Server for Pure JS Frontends}
+  gem.summary       = %q{}
+  gem.homepage      = "https://github.com/adman65/frontend_server"
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files         = `git ls-files`.split("\n")
