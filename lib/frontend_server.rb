@@ -50,10 +50,6 @@ module FrontendServer
       end
     end
 
-    def initialize
-      reset!
-    end
-
     def env
       ENV['RACK_ENV'] || 'development'
     end
