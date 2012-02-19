@@ -141,7 +141,9 @@ require './application'
 namespace :assets do
   task :precompile do
     # Remeber to set the class name correctly
-    Todos.new.project.invoke
+    app = Todos.new.
+    app.reset!
+    app.project.invoke
   end
 end
 ```
