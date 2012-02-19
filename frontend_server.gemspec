@@ -25,5 +25,4 @@ Gem::Specification.new do |gem|
   gem.add_dependency "yui-compressor"
   gem.add_dependency "rake-pipeline"
   gem.add_dependency "rake-pipeline-web-filters"
-  gem.add_dependency "ruby-debug19"
 end
