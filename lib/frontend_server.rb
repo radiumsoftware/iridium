@@ -28,7 +28,7 @@ module FrontendServer
   end
 
   class PipelineReloader
-    IGNORED_REQUESTS = [/^\/api/, /favicon\.ico/]
+    IGNORED_REQUESTS = [/^\/api/, /favicon\.ico/, /^\/images/]
 
     def initialize(app, server)
       @app, @server = app, server
