@@ -216,6 +216,10 @@ API server. For example, if you request `/api/todos` and server is set
 to `api.example.com`, the resulting request would be:
 `http://api.example.com/todos`.
 
+## Development
+
+The pipeline is recompiled before each request in development mode.
+
 ## Extras
 
 I've included a simple middleware you can use to add headers to

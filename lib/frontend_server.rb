@@ -27,6 +27,24 @@ module FrontendServer
     end
   end
 
+  class PipelineReloader
+    IGNORED_REQUESTS = [/^\/api/, /favicon\.ico/]
+
+    def initialize(app, server)
+      @app, @server = app, server
+    end
+
+    def call(env)
+      @server.reset! unless skip? env
+
+      @app.call env
+    end
+
+    def skip?(env)
+      !IGNORED_REQUESTS.select {|r| env['PATH_INFO'] =~ r }.empty?
+    end
+  end
+
   class Application
     attr_accessor :root
     attr_reader :config
@@ -89,6 +107,7 @@ module FrontendServer
       end
 
       if development?
+        builder.use FrontendServer::PipelineReloader, server
         builder.use Rake::Pipeline::Middleware, pipeline
       end
 
@@ -181,4 +200,3 @@ module FrontendServer
     end
   end
 end
-
