@@ -157,7 +157,7 @@ $ bundle exec rackup
 ## Example
 
 I've translated the classic backbone todos app into an example. Code
-[here](https://github.com/Adman65/frontend_server_example)
+[here](https://github.com/threadedlabs/frontend_server_example)
 
 
 ## Using

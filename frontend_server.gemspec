@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["me@broadcastingadam.com"]
   gem.description   = %q{Asset Compilation, API Proxying, and Server for Pure JS Frontends}
   gem.summary       = %q{}
-  gem.homepage      = "https://github.com/adman65/frontend_server"
+  gem.homepage      = "https://github.com/threadedlabs/frontend_server"
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files         = `git ls-files`.split("\n")
