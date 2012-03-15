@@ -21,6 +21,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "rack-reverse-proxy"
   gem.add_dependency "uglifier", "~> 1.2.3"
   gem.add_dependency "sass"
+  gem.add_dependency "less"
   gem.add_dependency "compass"
   gem.add_dependency "yui-compressor"
   gem.add_dependency "rake-pipeline"

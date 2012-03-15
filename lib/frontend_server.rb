@@ -153,6 +153,10 @@ module FrontendServer
           coffee_script
         end
 
+        match "**/*.less" do
+          less
+        end
+
         match "{javascripts,vendor/javascripts}/**/*.js" do
           minispade :module_id_generator => proc { |input|
             if input.path =~ /vendor/
