@@ -10,6 +10,16 @@ different moving parts to provide:
 4. A Rack app to serve the frontend
 5. Different configuration enviroments (development & production)
 
+All requests that are not for the API and are not for assets are 
+rewritten to your main app. For Example,
+
+```
+/contacs => /
+/contacts/:5 => /
+/application.js => /application.js
+/foo/public.html => /foo/public.html
+```
+
 You can easily deploy these applications to Heroku.
 
 ## Directory Structure

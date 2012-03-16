@@ -5,21 +5,22 @@ module FrontendServer
 
       builder = ::Rack::Builder.new
 
-      builder.use ::Rack::Rewrite do
-       rewrite '/', '/index.html'
-      end
-
       self.class.configurations.each do |configuration|
         configuration.call builder, config
+      end
+
+      builder.use ::Rack::ReverseProxy do
+        reverse_proxy /^\/api(\/.*)$/, "#{server.config.server}$1"
+      end
+
+      builder.use ::Rack::Rewrite do
+        rewrite '/', '/index.html'
+        rewrite %r{^\/?[^\.]+\/?(\?.*)?$}, '/index.html$1'
       end
 
       if development?
         builder.use Middleware::PipelineReloader, server
         builder.use Rake::Pipeline::Middleware, pipeline
-      end
-
-      builder.use ::Rack::ReverseProxy do
-        reverse_proxy /^\/api(\/.*)$/, "#{server.config.server}$1"
       end
 
       if production?
