@@ -50,10 +50,10 @@ module FrontendServer
     end
 
     def boot!
-      @config = OpenStruct.new(YAML.load(ERB.new(File.read("#{root}/config/application.yml")).result)[env])
+      @config = OpenStruct.new(YAML.load(ERB.new(File.read("#{root}/config/settings.yml")).result)[env])
 
       begin
-        require "#{root}/config/environment.rb"
+        require "#{root}/config/application.rb"
 
         # Now require the individual enviroment files
         # that can be used to add middleware and all the
