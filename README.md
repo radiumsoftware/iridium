@@ -4,6 +4,7 @@ The title says it all. It is basically some glue code to connect
 different moving parts to provide:
 
 1. Asset Compilation (JS/Coffeescript/CSS/SASS/SCSS and friends)
+1. Assets pass through ERB filters for embedding server config
 2. Asset Concatenation and Minification
 3. API proxying to avoid CORS in development and production
 4. A Rack app to serve the frontend
@@ -136,14 +137,12 @@ run Todos.new
 Now, create a rake file so you can compile assets at deploy time
 
 ```ruby
-require './application'
 
 namespace :assets do
   task :precompile do
-    # Remeber to set the class name correctly
-    app = Todos.new.
-    app.reset!
-    app.project.invoke
+    ENV['RACK_ENV'] = production
+    require './application'
+    Todos.new.compile_assets
   end
 end
 ```
@@ -240,14 +239,14 @@ development:
 # config/enviroment.rb
 
 Todos.configure do |rack, config|
-  rack.use FrontendServer::AddHeader.new 'X-Application-Auth-Token', config.developer_key
+  rack.use FrontendServer::Middleware::AddHeader.new 'X-Application-Auth-Token', config.developer_key
 end
 ```
 
 ## Deploying
 
 Applications built using FrontendServer can be deployed to heroku out of
-the box. Applications will be compiled and **minified** at deploy time. 
+the box. Applications will be **compiled and minified** at deploy time. 
 
 ```
 heroku create --stack cedar
