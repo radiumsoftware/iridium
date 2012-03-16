@@ -37,10 +37,10 @@ structure.
 |------- stylesheets/
 |------- javascripts/
 |- config/
-|---- application.yml
-|---- environment.rb
+|---- settings.yml
+|---- application.rb
 |- Rakefile
-|- application.rb
+|- name_of_your_application.rb
 |- config.ru
 ```
 
@@ -67,13 +67,13 @@ Backbone, Ember, jQuery, jQueryUi etc. Use the minified versions. All
 files will be turned into minispade modules. Example:
 `app/vendor/javascripts/ember.js` will become simply `ember`.
 
-`app/config/application.yml` configuration values.
+`app/config/settings.yml` configuration values.
 
-`app/config/environment.rb` global server configuration
+`app/config/application.rb` global server configuration
 
 `Rakefile` defines rake tasks
 
-`application.rb` defines your application
+`name_of_your_application.rb` defines your application
 
 `config.ru` rack up!
 
@@ -95,7 +95,7 @@ Now setup the other files:
 
 ```
 touch Gemfile
-touch application.rb
+touch name_of_your_application.rb
 touch Rakefile
 touch config.ru
 ```
