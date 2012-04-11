@@ -15,7 +15,6 @@ module FrontendServer
 
     def pipeline
       server = self
-
       sass_options = {}
       sass_options[:images_idr] = '/images'
       sass_options[:http_images_path] = '/images'
@@ -36,15 +35,15 @@ module FrontendServer
           erb :config => server.config
         end
 
-        match "**/*.handlebars" do
+        match "javascripts/**/*.handlebars" do
           handlebars
         end
 
-        match "**/*.coffee" do
+        match "javascripts/**/*.coffee" do
           coffee_script
         end
 
-        match "**/*.less" do
+        match "stylesheets/**/*.less" do
           less
         end
 
@@ -62,7 +61,7 @@ module FrontendServer
           concat "application.js"
         end
 
-        match "**/*.{css,scss}" do
+        match "stylesheets/**/*.{css,scss}" do
           sass sass_options
 
           yui_css if server.production?
