@@ -2,14 +2,8 @@ require 'fileutils'
 
 module FrontendServer
   module Pipeline
-    def reset!
-      project.cleanup_tmpdir
-      project.clean
-      FileUtils.rm_rf "#{root}/site"
-    end
 
     def compile_assets
-      reset!
       project.invoke
     end
 
