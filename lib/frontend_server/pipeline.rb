@@ -29,15 +29,15 @@ module FrontendServer
           erb :config => server.config
         end
 
-        match "javascripts/**/*.handlebars" do
+        match "**/*.handlebars" do
           handlebars
         end
 
-        match "javascripts/**/*.coffee" do
+        match "**/*.coffee" do
           coffee_script
         end
 
-        match "stylesheets/**/*.less" do
+        match "**/*.less" do
           less
         end
 
@@ -55,7 +55,7 @@ module FrontendServer
           concat "application.js"
         end
 
-        match "stylesheets/**/*.{css,scss}" do
+        match "**/*.{scss}" do
           sass sass_options
 
           yui_css if server.production?
