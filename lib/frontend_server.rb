@@ -1,12 +1,13 @@
 require "frontend_server/version"
 
 require 'yaml'
-require 'rack/reverse_proxy'
 require 'rack/rewrite'
 require 'rake-pipeline'
 require 'rake-pipeline/middleware'
 require 'rake-pipeline-web-filters'
 require 'rake-pipeline-web-filters/erb_filter'
+
+require 'frontend_server/reverse_proxy'
 
 require 'frontend_server/middleware/add_header'
 require 'frontend_server/middleware/pipeline_reloader'

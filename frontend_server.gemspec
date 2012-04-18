@@ -18,7 +18,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency "rack"
   gem.add_dependency "thin"
   gem.add_dependency "rack-rewrite"
-  gem.add_dependency "rack-reverse-proxy"
   gem.add_dependency "uglifier", "~> 1.2.3"
   gem.add_dependency "sass"
   gem.add_dependency "less"

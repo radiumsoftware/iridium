@@ -2,7 +2,6 @@ require 'fileutils'
 
 module FrontendServer
   module Pipeline
-
     def compile_assets
       project.invoke
     end
