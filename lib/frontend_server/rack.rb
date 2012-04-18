@@ -21,7 +21,6 @@ module FrontendServer
       end
 
       if development?
-        builder.use Middleware::PipelineReloader, server
         builder.use Rake::Pipeline::Middleware, pipeline
       end
 
