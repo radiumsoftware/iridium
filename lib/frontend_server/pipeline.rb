@@ -2,20 +2,13 @@ require 'fileutils'
 
 module FrontendServer
   module Pipeline
-    def reset!
-      project.cleanup_tmpdir
-      project.clean
-      FileUtils.rm_rf "#{root}/site"
-    end
 
     def compile_assets
-      reset!
       project.invoke
     end
 
     def pipeline
       server = self
-
       sass_options = {}
       sass_options[:images_idr] = '/images'
       sass_options[:http_images_path] = '/images'
@@ -62,7 +55,7 @@ module FrontendServer
           concat "application.js"
         end
 
-        match "**/*.{css,scss}" do
+        match "**/*.{scss}" do
           sass sass_options
 
           yui_css if server.production?

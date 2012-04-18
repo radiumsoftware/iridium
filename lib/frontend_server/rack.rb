@@ -9,6 +9,8 @@ module FrontendServer
         configuration.call builder, config
       end
 
+      builder.use ::Rack::Deflater
+
       builder.use ::Rack::ReverseProxy do
         reverse_proxy /^\/api(\/.*)$/, "#{server.config.server}$1"
       end

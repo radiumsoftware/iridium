@@ -8,8 +8,6 @@ module FrontendServer
       end
 
       def call(env)
-        @server.reset! unless skip? env
-
         @app.call env
       end
 
