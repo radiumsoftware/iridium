@@ -10,6 +10,7 @@ require 'rake-pipeline-web-filters/erb_filter'
 
 require 'frontend_server/middleware/add_header'
 require 'frontend_server/middleware/pipeline_reloader'
+require 'frontend_server/middleware/add_cookie'
 
 require 'frontend_server/pipeline'
 require 'frontend_server/rack'
