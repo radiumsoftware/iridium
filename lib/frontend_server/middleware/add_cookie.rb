@@ -1,5 +1,3 @@
-require 'rack/utils'
-
 module FrontendServer
   module Middleware
     class AddCookie 
@@ -10,7 +8,7 @@ module FrontendServer
       def call(env)
         status, headers, body = @app.call(env)
 
-        Rack::Utils.set_cookie_header!(headers, @name, @value)
+        ::Rack::Utils.set_cookie_header!(headers, @name, @value)
 
         [status, headers, body]
       end
