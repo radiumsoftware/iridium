@@ -22,6 +22,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "sass"
   gem.add_dependency "less"
   gem.add_dependency "compass"
+  gem.add_dependency "coffee-script"
   gem.add_dependency "yui-compressor"
   gem.add_dependency "rake-pipeline"
   gem.add_dependency "rake-pipeline-web-filters"
