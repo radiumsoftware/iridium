@@ -35,8 +35,8 @@ module FrontendServer
       end
 
       Rake::Pipeline.build do
-        output server.app_path
-        input server.site_path
+        input server.app_path
+        output server.site_path
 
         match "**/*.erb" do
           erb :config => server.config
@@ -68,7 +68,7 @@ module FrontendServer
           concat "application.js"
         end
 
-        match "**/*.{scss}" do
+        match "**/*.scss" do
           sass sass_options
 
           yui_css if server.production?
