@@ -1,3 +1,5 @@
+require 'rack/utils'
+
 module FrontendServer
   module Middleware
     class AddCookie 
