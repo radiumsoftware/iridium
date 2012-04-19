@@ -11,13 +11,13 @@ module FrontendServer
     end
 
     def call(env)
-      rackreq = Rack::Request.new(env)
+      rackreq = ::Rack::Request.new(env)
       matcher = get_matcher rackreq.fullpath
       return @app.call(env) if matcher.nil?
 
       uri = matcher.get_uri(rackreq.fullpath,env)
       all_opts = @global_options.dup.merge(matcher.options)
-      headers = Rack::Utils::HeaderHash.new
+      headers = ::Rack::Utils::HeaderHash.new
       env.each { |key, value|
         if key =~ /HTTP_(.*)/
           headers[$1.gsub("_", "-")] = value
@@ -87,7 +87,7 @@ module FrontendServer
     end
 
     def create_response_headers http_response
-      response_headers = Rack::Utils::HeaderHash.new(http_response.to_hash)
+      response_headers = ::Rack::Utils::HeaderHash.new(http_response.to_hash)
       # handled by Rack
       response_headers.delete('status')
       # TODO: figure out how to handle chunked responses

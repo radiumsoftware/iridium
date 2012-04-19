@@ -2,7 +2,21 @@ require 'fileutils'
 
 module FrontendServer
   module Pipeline
+    def app_path
+      "#{root}/app"
+    end
+
+    def site_path
+      "#{root}/site"
+    end
+
+    def tmp_path
+      "#{root}/tmp"
+    end
+
     def compile_assets
+      FileUtils.rm_rf site_path
+      FileUtils.rm_rf tmp_path
       project.invoke
     end
 
@@ -21,8 +35,8 @@ module FrontendServer
       end
 
       Rake::Pipeline.build do
-        output "#{server.root}/site"
-        input "#{server.root}/app"
+        output server.app_path
+        input server.site_path
 
         match "**/*.erb" do
           erb :config => server.config
