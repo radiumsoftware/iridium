@@ -1,4 +1,4 @@
-module FrontendServer
+module Iridium
   module Middleware
     class AddHeader
       def initialize(app, header, value)

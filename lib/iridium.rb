@@ -1,4 +1,4 @@
-require "frontend_server/version"
+require "iridium/version"
 
 require 'yaml'
 require 'rack/rewrite'
@@ -7,15 +7,15 @@ require 'rake-pipeline/middleware'
 require 'rake-pipeline-web-filters'
 require 'rake-pipeline-web-filters/erb_filter'
 
-require 'frontend_server/reverse_proxy'
+require 'iridium/reverse_proxy'
 
-require 'frontend_server/middleware/add_header'
-require 'frontend_server/middleware/add_cookie'
+require 'iridium/middleware/add_header'
+require 'iridium/middleware/add_cookie'
 
-require 'frontend_server/pipeline'
-require 'frontend_server/rack'
+require 'iridium/pipeline'
+require 'iridium/rack'
 
-module FrontendServer
+module Iridium
   class Application
     include Pipeline
     include Rack

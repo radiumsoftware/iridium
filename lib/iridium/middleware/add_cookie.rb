@@ -1,4 +1,4 @@
-module FrontendServer
+module Iridium
   module Middleware
     class AddCookie 
       def initialize(app, name, value)

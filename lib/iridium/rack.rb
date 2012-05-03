@@ -1,4 +1,4 @@
-module FrontendServer
+module Iridium
   module Rack
     def app
       server = self

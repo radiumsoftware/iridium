@@ -1,4 +1,4 @@
-# FrontendServer: A Simple Server for JS Frontend Development
+# Iridium: A Simple Server for JS Frontend Development
 
 The title says it all. It is basically some glue code to connect
 different moving parts to provide:
@@ -107,7 +107,7 @@ In your `Gemfile`:
 
 source :rubygems
 
-gem "frontend_server"
+gem "iridium"
 
 # NOTE: For the time being, you have to use git repos. Rake pipeline 0.6
 # has not been released yet and rake-pipeline-web-filters depends on that
@@ -119,15 +119,15 @@ gem "rake-pipeline-web-filters", :git => "git://github.com/wycats/rake-pipeline-
 Your Javascript will be compfiled into minispade modules based on the
 class name and path. For example, if your appilcation class name is
 `Todos`, then javascripts will be prefixed with as `todos/file_name`.
-Create a subclass of `FrontendServer::Application` with your application
+Create a subclass of `Iridium::Application` with your application
 name.
 
 ```ruby
 # application.rb
 
-require 'frontend_server'
+require 'iridium'
 
-class Todos < FrontendServer::Application
+class Todos < Iridium::Application
 
 # Tell the server where to locate the files
 
@@ -166,7 +166,7 @@ $ bundle exec rackup
 ## Example
 
 I've translated the classic backbone todos app into an example. Code
-[here](https://github.com/threadedlabs/frontend_server_example)
+[here](https://github.com/radiumsoftware/iridium_example)
 
 
 ## Using
@@ -202,7 +202,7 @@ Todos.config.user_api_key
 `config/environment.rb` holds any global settings. It is required first
 if it exists.
 
-FrontendServer also allows you customize settings through environment
+Iridium also allows you customize settings through environment
 files. `config/development.rb` and `config/production.rb` will be
 required if they exist.
 
@@ -249,13 +249,13 @@ development:
 # config/enviroment.rb
 
 Todos.configure do |rack, config|
-  rack.use FrontendServer::Middleware::AddHeader.new 'X-Application-Auth-Token', config.developer_key
+  rack.use Iridium::Middleware::AddHeader.new 'X-Application-Auth-Token', config.developer_key
 end
 ```
 
 ## Deploying
 
-Applications built using FrontendServer can be deployed to heroku out of
+Applications built using Iridium can be deployed to heroku out of
 the box. Applications will be **compiled and minified** at deploy time. 
 
 ```

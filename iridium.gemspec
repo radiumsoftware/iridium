@@ -1,19 +1,19 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path('../lib/frontend_server/version', __FILE__)
+require File.expand_path('../lib/iridium/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["adman65"]
-  gem.email         = ["me@broadcastingadam.com"]
+  gem.authors       = ["Adam Hawkins"]
+  gem.email         = ["adam@radiumcrm.com"]
   gem.description   = %q{Asset Compilation, API Proxying, and Server for Pure JS Frontends}
   gem.summary       = %q{}
-  gem.homepage      = "https://github.com/threadedlabs/frontend_server"
+  gem.homepage      = "https://github.com/radiumsoftware/iridium"
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files         = `git ls-files`.split("\n")
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  gem.name          = "frontend_server"
+  gem.name          = "iridium"
   gem.require_paths = ["lib"]
-  gem.version       = FrontendServer::VERSION
+  gem.version       = Iridium::VERSION
 
   gem.add_dependency "rack"
   gem.add_dependency "thin"

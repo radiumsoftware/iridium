@@ -1,6 +1,6 @@
 require 'fileutils'
 
-module FrontendServer
+module Iridium
   module Pipeline
     def app_path
       "#{root}/app"
@@ -68,9 +68,11 @@ module FrontendServer
           concat "application.js"
         end
 
-        match "**/*.scss" do
+        match "stylesheets/**/*.scss" do
           sass sass_options
-
+        end
+        
+        match "**/*.css" do
           yui_css if server.production?
 
           concat "application.css"

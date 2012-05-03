@@ -1,7 +1,7 @@
 require 'net/http'
 require 'net/https'
 
-module FrontendServer
+module Iridium
   class ReverseProxy
     def initialize(app = nil, &b)
       @app = app || lambda {|env| [404, [], []] }
