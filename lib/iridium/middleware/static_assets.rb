@@ -23,7 +23,6 @@ module Iridium
             end
 
             headers['ETag'] = %Q("#{Digest::MD5.hexdigest(text)}")
-            body.rewind
           end
 
           headers['Cache-Control'] = @cache_control
