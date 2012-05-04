@@ -16,7 +16,13 @@ module Iridium
           headers['Last-Modified'] = File.new(asset_path(env)).mtime.httpdate
 
           if body
-            headers['ETag'] = %Q("#{Digest::MD5.hexdigest(body.read)}")
+            text = ""
+
+            body.each do |part|
+              text << part
+            end
+
+            headers['ETag'] = %Q("#{Digest::MD5.hexdigest(text)}")
             body.rewind
           end
 
