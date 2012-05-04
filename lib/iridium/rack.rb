@@ -14,6 +14,7 @@ module Iridium
       builder = ::Rack::Builder.new
 
       builder.use Middleware::RackLintCompatibility
+      builder.use ::Rack::Deflater
 
       if config.perform_caching
         builder.use ::Rack::Cache, config.cache
