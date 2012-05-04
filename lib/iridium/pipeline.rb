@@ -2,6 +2,18 @@ require 'fileutils'
 
 module Iridium
   module Pipeline
+    extend ActiveSupport::Concern
+
+    module ClassMethods
+      def call(env)
+        new.call(env)
+      end
+
+      def compile_assets
+        new.compile_assets
+      end
+    end
+
     def app_path
       "#{root}/app"
     end
@@ -34,13 +46,9 @@ module Iridium
         sass_options[:output_style] = :compressed
       end
 
-      Rake::Pipeline.build do
+      _pipeline = Rake::Pipeline.build do
         input server.app_path
         output server.site_path
-
-        match "**/*.erb" do
-          erb :config => server.config
-        end
 
         match "**/*.handlebars" do
           handlebars
@@ -71,7 +79,7 @@ module Iridium
         match "stylesheets/**/*.scss" do
           sass sass_options
         end
-        
+
         match "**/*.css" do
           yui_css if server.production?
 
@@ -88,6 +96,10 @@ module Iridium
           copy
         end
       end
+
+      _pipeline.tmpdir = tmp_path
+
+      _pipeline
     end
 
     def project
@@ -95,7 +107,7 @@ module Iridium
     end
 
     def module_name
-      self.class.to_s.split("::").last.downcase
+      self.class.to_s.demodulize.underscore
     end
   end
 end

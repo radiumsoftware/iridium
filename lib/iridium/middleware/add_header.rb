@@ -13,7 +13,7 @@ module Iridium
       private
       def header_name
         rack_header = @header.gsub /^HTTP_/, ''
-        rack_header.gsub('-', '_')
+        rack_header.gsub!('-', '_')
         "HTTP_#{rack_header}".upcase
       end
     end

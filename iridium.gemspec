@@ -16,14 +16,22 @@ Gem::Specification.new do |gem|
   gem.version       = Iridium::VERSION
 
   gem.add_dependency "rack"
+  gem.add_dependency "rack-cache"
   gem.add_dependency "thin"
   gem.add_dependency "rack-rewrite"
   gem.add_dependency "uglifier", "~> 1.2.3"
   gem.add_dependency "sass"
-  gem.add_dependency "less"
   gem.add_dependency "compass"
+  gem.add_dependency "less"
+  gem.add_dependency "therubyracer"
   gem.add_dependency "coffee-script"
   gem.add_dependency "yui-compressor"
   gem.add_dependency "rake-pipeline"
   gem.add_dependency "rake-pipeline-web-filters"
+  gem.add_dependency "activesupport"
+  gem.add_dependency "dalli"
+
+  gem.add_development_dependency "simplecov"
+  gem.add_development_dependency "rack-test"
+  gem.add_development_dependency "webmock"
 end

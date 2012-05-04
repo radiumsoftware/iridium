@@ -87,7 +87,17 @@ module Iridium
     end
 
     def create_response_headers http_response
-      response_headers = ::Rack::Utils::HeaderHash.new(http_response.to_hash)
+      headers = {} 
+
+      http_response.to_hash.each_pair do |key, value|
+        if value.is_a? Array
+          headers[key] = value.join ''
+        else
+          headers[key] = value
+        end
+      end
+
+      response_headers = ::Rack::Utils::HeaderHash.new(headers)
       # handled by Rack
       response_headers.delete('status')
       # TODO: figure out how to handle chunked responses
@@ -95,7 +105,6 @@ module Iridium
       # TODO: Verify Content Length, and required Rack headers
       response_headers
     end
-
 
     def reverse_proxy_options(options)
       @global_options=options
