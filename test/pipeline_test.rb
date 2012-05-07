@@ -133,6 +133,42 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "{{#name}}"
   end
 
+  def test_concats_vendor_css_before_app_css
+    create_file "stylesheets/home.css", "#second-selector"
+    create_file "stylesheets/vendor/bootstrap.css", "#first-selector"
+
+    compile ; assert_file "application.css"
+
+    content = read "application.css"
+
+    assert content.index("#first-selector") < content.index("#second-selector"),
+      "#first-selector should come before #second-selector in compiled css file"
+  end
+
+  def test_concats_vendor_css_ordered_by_name
+    create_file "stylesheets/vendor/z_file.css", "#second-selector"
+    create_file "stylesheets/vendor/a_file.css", "#first-selector"
+
+    compile ; assert_file "application.css"
+
+    content = read "application.css"
+
+    assert content.index("#first-selector") < content.index("#second-selector"),
+      "#first-selector should come before #second-selector in compiled css file"
+  end
+
+  def test_concats_css_ordered_by_name
+    create_file "stylesheets/z_file.css", "#second-selector"
+    create_file "stylesheets/a_file.css", "#first-selector"
+
+    compile ; assert_file "application.css"
+
+    content = read "application.css"
+
+    assert content.index("#first-selector") < content.index("#second-selector"),
+      "#first-selector should come before #second-selector in compiled css file"
+  end
+
   private
   def compile
     TestApp.compile_assets

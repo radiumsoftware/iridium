@@ -4,6 +4,24 @@ module Iridium
   module Pipeline
     extend ActiveSupport::Concern
 
+    class OrderedCssConcatFilter < Rake::Pipeline::ConcatFilter
+      def generate_output(inputs, output)
+        sorted = inputs.sort do |file1, file2| 
+          if (file1.path =~ /vendor/ && file2.path =~ /vendor/) || (file1.path !~ /vendor/ && file2.path !~ /vendor/)
+            File.basename(file1.path, ".css") <=> File.basename(file2.path, ".css")
+          elsif file2.path =~ /vendor/ && file1.path !~ /vendor/
+            1
+          else
+            -1
+          end
+        end
+
+        sorted.each do |input|
+          output.write input.read
+        end
+      end
+    end
+
     module ClassMethods
       def call(env)
         new.call(env)
@@ -80,10 +98,10 @@ module Iridium
           sass sass_options
         end
 
-        match "**/*.css" do
+        match "{vendor/stylesheets,stylesheets}/**/*.css" do
           yui_css if server.production?
 
-          concat "application.css"
+          filter OrderedCssConcatFilter, "application.css"
         end
 
         match "public/**/*" do
