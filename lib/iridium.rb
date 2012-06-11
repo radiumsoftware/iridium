@@ -17,6 +17,7 @@ require 'rake-pipeline-web-filters'
 require 'iridium/reverse_proxy'
 
 require 'iridium/middleware/rack_lint_compatibility'
+require 'iridium/middleware/pipeline_reset'
 require 'iridium/middleware/static_assets'
 require 'iridium/middleware/add_header'
 require 'iridium/middleware/add_cookie'

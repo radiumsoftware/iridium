@@ -38,6 +38,7 @@ module Iridium
       end
 
       if development?
+        builder.use Middleware::PipelineReset, server
         builder.use Rake::Pipeline::Middleware, pipeline
       end
 

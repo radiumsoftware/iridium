@@ -44,9 +44,13 @@ module Iridium
       "#{root}/tmp"
     end
 
-    def compile_assets
+    def reset
       FileUtils.rm_rf site_path
       FileUtils.rm_rf tmp_path
+    end
+
+    def compile_assets
+      reset
       project.invoke
     end
 
