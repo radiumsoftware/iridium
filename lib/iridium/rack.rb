@@ -34,8 +34,8 @@ module Iridium
         builder.use middleware.name, *middleware.args, &middleware.block
       end
 
-      config.proxies.each do |proxy|
-        builder.proxy proxy.url, proxy.to
+      config.proxies.each_pair do |url, to|
+        builder.proxy url, to
       end
 
       builder.use ::Rack::Rewrite do

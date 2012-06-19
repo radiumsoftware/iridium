@@ -1,7 +1,5 @@
 module Iridium
   class Config
-    class Proxy < Struct.new(:url, :to) ; end
-
     attr_accessor :settings
     attr_accessor :cache_control
     attr_accessor :cache
@@ -11,7 +9,7 @@ module Iridium
 
     def initialize
       @middleware_stack = MiddlewareStack.new
-      @proxies = []
+      @proxies = {}
 
       @cache_control = "public"
 
@@ -27,7 +25,7 @@ module Iridium
     end
 
     def proxy(url, to)
-      self.proxies << Proxy.new(url, to)
+      self.proxies[url] = to
     end
 
     def root=(value)
