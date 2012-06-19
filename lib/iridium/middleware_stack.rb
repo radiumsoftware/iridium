@@ -2,9 +2,9 @@ module Iridium
   class MiddlewareStack
     attr_accessor :middleware, :proxies
 
-    class Middleware < Struct.new(:name, :args, :block) ; end
+    class Entry < Struct.new(:name, :args, :block) ; end
 
-    delegate :each, :to => :middleware
+    delegate :each, :size, :to => :middleware
 
     def initialize
       @middleware = []
@@ -12,7 +12,15 @@ module Iridium
     end
 
     def use(klass, *args, &block)
-      middleware.push Middleware.new(klass, args, block)
+      middleware.push Entry.new(klass, args, block)
+    end
+
+    def add_header(*args, &block)
+      middleware.push Entry.new(Middleware::AddHeader, args, block)
+    end
+
+    def add_cookie(*args, &block)
+      middleware.push Entry.new(Middleware::AddCookie, args, block)
     end
   end
 end
