@@ -2,6 +2,14 @@ module Iridium
   module Rack
     extend ActiveSupport::Concern
 
+    class Builder < ::Rack::Builder 
+      def proxy(url, to)
+        use ReverseProxy do
+          reverse_proxy /^#{url}(\/.*)$/, "#{to}$1"
+        end
+      end
+    end
+
     module ClassMethods
       def call(env)
         new.app.call(env)
@@ -11,7 +19,7 @@ module Iridium
     def app
       server = self
 
-      builder = ::Rack::Builder.new
+      builder = Builder.new
 
       builder.use Middleware::RackLintCompatibility
       builder.use ::Rack::Deflater
@@ -27,9 +35,7 @@ module Iridium
       end
 
       if config.settings && config.settings.server
-        builder.use ReverseProxy do
-          reverse_proxy /^\/api(\/.*)$/, "#{server.config.settings.server}$1"
-        end
+        builder.proxy '/api', config.settings.server
       end
 
       builder.use ::Rack::Rewrite do
