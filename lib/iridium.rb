@@ -63,12 +63,17 @@ module Iridium
 
       begin
         require "#{root}/config/application.rb"
+      rescue LoadError ; end
 
-        # Now require the individual enviroment files
-        # that can be used to add middleware and all the
-        # other standard rack stuff
+      begin
         require "#{root}/config/#{env}.rb"
       rescue LoadError
+      end
+
+      # Automatically configure a default proxy if
+      # the config has a server declared
+      if config.settings && config.settings.server
+        config.middleware.proxy '/api', config.settings.server
       end
     end
   end
