@@ -69,12 +69,6 @@ module Iridium
         require "#{root}/config/#{env}.rb"
       rescue LoadError
       end
-
-      # Automatically configure a default proxy if
-      # the config has a server declared
-      if config.settings && config.settings.server
-        config.proxy '/api', config.settings.server
-      end
     end
   end
 end

@@ -8,7 +8,9 @@ class ProxyTest < MiniTest::Unit::TestCase
   end
 
   def setup
-    TestApp.config.settings = OpenStruct.new(:server => 'http://myapi.com')
+    TestApp.configure do 
+      config.proxy '/api', 'http://myapi.com'
+    end
   end
 
   def test_forwards_to_proxy
