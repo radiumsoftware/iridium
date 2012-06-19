@@ -32,4 +32,18 @@ class MiddlewareTest < MiniTest::Unit::TestCase
 
     assert_equal 'bar', env['HTTP_X_FOO']
   end
+
+  def test_add_header_supports_url_matching
+    middleware = Iridium::Middleware::AddHeader.new MockApp.new, 'HTTP_X_FOO', 'bar', :url => /\/api/
+
+    env = { 'PATH_INFO' => '/api/foo/bar' }
+    middleware.call env
+
+    assert_equal 'bar', env['HTTP_X_FOO']
+
+    env = { 'PATH_INFO' => '/facebook/foo/bar' }
+    middleware.call env
+
+    assert_nil env['HTTP_X_FOO']
+  end
 end
