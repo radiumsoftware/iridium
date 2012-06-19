@@ -114,6 +114,12 @@ module Iridium
           end
         end
 
+        match "external/**/*" do
+          copy do |input|
+            input.sub(/external\//, '')
+          end
+        end
+
         match "images/**/*" do
           copy
         end
