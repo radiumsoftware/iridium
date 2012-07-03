@@ -142,7 +142,7 @@ Now, tell Rack to run a new Todo app.
 
 require './todos'
 
-run Todos.new
+run Todos
 ```
 
 Now, create a rake file so you can compile assets at deploy time
@@ -151,7 +151,7 @@ Now, create a rake file so you can compile assets at deploy time
 
 namespace :assets do
   task :precompile do
-    ENV['RACK_ENV'] = production
+    ENV['RACK_ENV'] = 'production'
     require './todos'
     Todos.new.compile_assets
   end
