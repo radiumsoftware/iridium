@@ -14,7 +14,7 @@ All requests that are not for the API and are not for assets are
 rewritten to your main app. For Example,
 
 ```
-/contacs => /
+/contacts => /
 /contacts/:5 => /
 /application.js => /application.js
 /foo/public.html => /foo/public.html
@@ -107,7 +107,7 @@ In your `Gemfile`:
 
 source :rubygems
 
-gem "iridium"
+gem "iridium", :git => "git://github.com/radiumsoftware/iridium.git"
 
 # NOTE: For the time being, you have to use git repos. Rake pipeline 0.6
 # has not been released yet and rake-pipeline-web-filters depends on that
@@ -123,11 +123,12 @@ Create a subclass of `Iridium::Application` with your application
 name.
 
 ```ruby
-# application.rb
+# todos.rb
 
 require 'iridium'
 
 class Todos < Iridium::Application
+end
 
 # Tell the server where to locate the files
 
@@ -139,7 +140,7 @@ Now, tell Rack to run a new Todo app.
 ```ruby
 # config.ru
 
-require './application'
+require './todos'
 
 run Todos.new
 ```
@@ -151,7 +152,7 @@ Now, create a rake file so you can compile assets at deploy time
 namespace :assets do
   task :precompile do
     ENV['RACK_ENV'] = production
-    require './application'
+    require './todos'
     Todos.new.compile_assets
   end
 end
