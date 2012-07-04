@@ -36,6 +36,7 @@ structure.
 |---- vendor/
 |------- stylesheets/
 |------- javascripts/
+|---- external/
 |- config/
 |---- settings.yml
 |---- application.rb
@@ -51,7 +52,7 @@ directory structure to create a module system. For example,
 `app/javascripts/views/my_view.js` would create a minispade module
 named: `#{application_name}/views/my_view`.
 
-`app/stylsheets` contains all the css/scss/sass files. You can create
+`app/stylesheets` contains all the css/scss/sass files. You can create
 your own subdirectory structure if you want. 
 
 `app/images` all the images.
@@ -128,33 +129,20 @@ name.
 require 'iridium'
 
 class Todos < Iridium::Application
-
-# Tell the server where to locate the files
-
-Todos.root = File.dirname __FILE__ 
 ```
 
 Now, tell Rack to run a new Todo app. 
 
 ```ruby
 # config.ru
-
-require './application'
-
-run Todos.new
+require ::File.expand_path('application',  __FILE__)
+run Todos
 ```
 
-Now, create a rake file so you can compile assets at deploy time
+Now, create a `Rakefile` so you can compile assets at deploy time
 
 ```ruby
-
-namespace :assets do
-  task :precompile do
-    ENV['RACK_ENV'] = production
-    require './application'
-    Todos.new.compile_assets
-  end
-end
+require 'iridium/tasks'
 ```
 
 Now you can start the development server like this:
@@ -178,9 +166,11 @@ bundle exec rake assets:precompile # compile all assets in public/
 
 ## Configuration
 
-`config/application.yml` contains all configuration values. `server` is
-the only required key. All other keys are translated to method names.
-For example, this config file:
+`config/application.yml` contains all configuration values.
+All other keys are translated to method names available as
+`ApplicationName.config`
+
+Here is an example config file:
 
 ```yml
 development:
@@ -208,22 +198,30 @@ required if they exist.
 
 ## Configuration
 
-You can hook into the Rack builder process at the beginning. Here's an
+You can hook into the Rack builder process at the beginning. The
+interface is inspired by the Rails middleware interface. Here's an
 exmaple:
 
 ```ruby
-Todo.configure do |rack, config|
-  rack.use MyCustomMiddleWare.new config.value
+Todos.configure do 
+  middleware.use MyCustomMiddleware, 'foo', 'bar', :options => :accepted
 end
 ```
 
 ## API Proxy
 
-The server also includes a simple proxy for your API. Configure the `server`
-value in `application.yml` first. All requests `/api` are proxied to the
-API server. For example, if you request `/api/todos` and server is set
-to `api.example.com`, the resulting request would be:
-`http://api.example.com/todos`.
+You can configure any number of proxies to other API's. You can use the
+proxy to hide access keys and/or avoid CORs problems. Here is an
+example:
+
+```ruby
+# config/application.rb
+
+Todos.configure do 
+  config.proxy '/radium', 'http://api.example.com'
+  config.proxy '/twitter', 'http://api.twitter.com'
+  config.proxy '/fb', 'http://horrible-api.facebook.com'
+end
 
 ## Development
 
@@ -231,25 +229,23 @@ The pipeline is recompiled before each request in development mode.
 
 ## Extras
 
-I've included a simple middleware you can use to add headers to
-requests. I've included this because our API uses headers to
-authenticate keys. This way I can keep the API key hidden from the
-public and proxy it to the API through this rack app. 
-
-Here's an example:
-
-```yml
-development:
-  server: "http://api.example.com"
-  developer_key: "foo"
-  user_api_key: "bar"
-```
+Iridium contains some basic middleware that make it easy to authenticate
+to external APIs
 
 ```ruby
 # config/enviroment.rb
 
-Todos.configure do |rack, config|
-  rack.use Iridium::Middleware::AddHeader.new 'X-Application-Auth-Token', config.developer_key
+Todos.configure do
+  # Add a header: commonly used to authentication/oauth keys
+  # :if option can be specified to only send the header for certain requests
+  middleware.use Iridium::Middleware::AddHeader.new('X-Application-Auth-Token', config.developer_key, :if => /\/api/)
+
+  # Can add a cookies if you need them
+  middleware.use Iridium::Middleware::Addcookie.new('user_api_key', config.api_key')
+
+  # These middleware calls have shortcut methods as well
+  middleware.add_header 'Foo', 'bar', :if => /\/api/
+  middleware.add_cookie 'Foo', 'bar'
 end
 ```
 
@@ -259,7 +255,7 @@ Applications built using Iridium can be deployed to heroku out of
 the box. Applications will be **compiled and minified** at deploy time. 
 
 ```
-heroku create --stack cedar
+heroku create
 git push master heroku
 heroku open
 ```
