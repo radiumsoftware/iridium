@@ -41,7 +41,7 @@ structure.
 |---- settings.yml
 |---- application.rb
 |- Rakefile
-|- name_of_your_application.rb
+|- application.rb
 |- config.ru
 ```
 
@@ -74,7 +74,7 @@ files will be turned into minispade modules. Example:
 
 `Rakefile` defines rake tasks
 
-`name_of_your_application.rb` defines your application
+`application.rb` defines your application
 
 `config.ru` rack up!
 
@@ -96,7 +96,7 @@ Now setup the other files:
 
 ```
 touch Gemfile
-touch name_of_your_application.rb
+touch application.rb
 touch Rakefile
 touch config.ru
 ```
