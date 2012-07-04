@@ -23,10 +23,6 @@ module Iridium
     end
 
     module ClassMethods
-      def call(env)
-        new.call(env)
-      end
-
       def compile_assets
         new.compile_assets
       end
