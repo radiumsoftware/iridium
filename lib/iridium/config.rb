@@ -11,7 +11,7 @@ module Iridium
       @middleware_stack = MiddlewareStack.new
       @proxies = {}
 
-      @cache_control = "public"
+      @cache_control = "max-age=0, private, must-revalidate"
 
       @cache = {
         :metastore => Dalli::Client.new,
