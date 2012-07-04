@@ -17,5 +17,5 @@ WebMock.disable_net_connect!
 
 ENV['RACK_ENV'] = 'test'
 
-class TestApp < Iridium::Application ; end
-TestApp.root = File.expand_path "../test_app", __FILE__
+# Require the test app which lives in a separate directory
+require File.expand_path("../app/application", __FILE__)

@@ -24,7 +24,7 @@ module Iridium
 
     module ClassMethods
       def compile_assets
-        new.compile_assets
+        instance.compile_assets
       end
     end
 
