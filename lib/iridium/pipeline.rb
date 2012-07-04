@@ -23,8 +23,8 @@ module Iridium
     end
 
     module ClassMethods
-      def compile_assets
-        instance.compile_assets
+      def compile
+        instance.compile
       end
     end
 
@@ -45,7 +45,7 @@ module Iridium
       FileUtils.rm_rf tmp_path
     end
 
-    def compile_assets
+    def compile
       reset
       project.invoke
     end
