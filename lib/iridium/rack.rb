@@ -27,7 +27,7 @@ module Iridium
       if config.perform_caching
         builder.use ::Rack::Cache, config.cache
         builder.use ::Rack::ConditionalGet
-        builder.use Middleware::StaticAssets, config.root, config.cache_control
+        builder.use Middleware::Caching, server.site_path, config.cache_control
       end
 
       config.middleware.each do |middleware|
@@ -48,7 +48,7 @@ module Iridium
         builder.use Rake::Pipeline::Middleware, pipeline
       end
 
-      builder.run ::Rack::Directory.new root.join('site')
+      builder.run ::Rack::Directory.new server.site_path
 
       builder.to_app
     end

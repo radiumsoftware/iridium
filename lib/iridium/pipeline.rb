@@ -29,15 +29,15 @@ module Iridium
     end
 
     def app_path
-      "#{root}/app"
+      root.join 'app'
     end
 
     def site_path
-      "#{root}/site"
+      root.join 'site'
     end
 
     def tmp_path
-      "#{root}/tmp"
+      root.join 'tmp'
     end
 
     def reset

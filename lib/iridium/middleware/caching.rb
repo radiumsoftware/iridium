@@ -2,7 +2,7 @@ require 'digest/md5'
 
 module Iridium
   module Middleware
-    class StaticAssets
+    class Caching
       def initialize(app, root, cache_control)
         @app, @root, @cache_control = app, root, cache_control
       end
@@ -12,17 +12,6 @@ module Iridium
 
         if asset? env
           headers['Last-Modified'] = File.new(asset_path(env)).mtime.httpdate
-
-          if body
-            text = ""
-
-            body.each do |part|
-              text << part
-            end
-
-            headers['ETag'] = %Q("#{Digest::MD5.hexdigest(text)}")
-          end
-
           headers['Cache-Control'] = @cache_control
         end
 
@@ -31,7 +20,7 @@ module Iridium
 
       private
       def asset_path(env)
-        @root.join('site', env['PATH_INFO'].gsub(/^\//, '')).to_s
+        @root.join(env['PATH_INFO'].gsub(/^\//, '')).to_s
       end
 
       def asset?(env)
