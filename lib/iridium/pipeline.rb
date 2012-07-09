@@ -23,25 +23,21 @@ module Iridium
     end
 
     module ClassMethods
-      def call(env)
-        new.call(env)
-      end
-
-      def compile_assets
-        new.compile_assets
+      def compile
+        instance.compile
       end
     end
 
     def app_path
-      "#{root}/app"
+      root.join 'app'
     end
 
     def site_path
-      "#{root}/site"
+      root.join 'site'
     end
 
     def tmp_path
-      "#{root}/tmp"
+      root.join 'tmp'
     end
 
     def reset
@@ -49,7 +45,7 @@ module Iridium
       FileUtils.rm_rf tmp_path
     end
 
-    def compile_assets
+    def compile
       reset
       project.invoke
     end

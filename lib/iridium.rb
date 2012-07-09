@@ -18,7 +18,7 @@ require 'iridium/reverse_proxy'
 
 require 'iridium/middleware/rack_lint_compatibility'
 require 'iridium/middleware/pipeline_reset'
-require 'iridium/middleware/static_assets'
+require 'iridium/middleware/caching'
 require 'iridium/middleware/add_header'
 require 'iridium/middleware/add_cookie'
 
@@ -31,10 +31,31 @@ require 'iridium/pipeline'
 require 'iridium/rack'
 
 module Iridium
+  class << self
+    def application
+      @application
+    end
+
+    def application=(app)
+      @application = app
+    end
+  end
+
   class Application
     include Configuration
     include Pipeline
     include Rack
+    include Singleton
+
+    class << self
+      def inherited(base)
+        raise "You cannot have more than one Iridium::Application" if Iridium.application
+        super
+        root_path = File.dirname caller.first.match(/(.+):\d+/)[1]
+        base.root = root_path
+        Iridium.application = base.instance
+      end
+    end
 
     def production?
       env == 'production'

@@ -34,13 +34,6 @@ class CachingTest < MiniTest::Unit::TestCase
     assert_equal mtime, last_response.headers['Last-Modified']
   end
 
-  def test_adds_an_etag
-    get "/foo.html"
-
-    assert last_response.ok?
-    refute_empty last_response.headers['ETag']
-  end
-
   def test_sets_the_cache_control_headers
     app.config.cache_control = "public, max-age=1965"
 
@@ -57,12 +50,11 @@ class CachingTest < MiniTest::Unit::TestCase
 
     assert last_response.ok?
 
-    etag = last_response.headers['ETag']
     timestamp = last_response.headers['Last-Modified']
 
-    assert etag ; assert timestamp
+    assert timestamp
 
-    get "/foo.html", {}, { "HTTP_IF_NONE_MATCH" => etag, "HTTP_IF_MODIFIED_SINCE" => timestamp }
+    get "/foo.html", {}, { "HTTP_IF_MODIFIED_SINCE" => timestamp }
 
     assert 304, last_response.status
   end
@@ -74,21 +66,16 @@ class CachingTest < MiniTest::Unit::TestCase
 
     assert last_response.ok?
 
-    etag = last_response.headers['ETag']
     timestamp = last_response.headers['Last-Modified']
-    assert etag ; assert timestamp
+    assert timestamp
 
-    sleep(1.5)
-
-    File.open root.join("site", "foo.html"), "w" do |f|
-      f.puts Time.now.to_i
-    end
+    sleep 1
 
     FileUtils.touch root.join("site", "foo.html")
 
     refute_equal timestamp, File.new(root.join('site', 'foo.html')).mtime.httpdate
 
-    get "/foo.html", {}, { "HTTP_IF_NONE_MATCH" => etag, "HTTP_IF_MODIFIED_SINCE" => timestamp }
+    get "/foo.html", {}, { "HTTP_IF_MODIFIED_SINCE" => timestamp }
 
     assert last_response.ok?, "Expected a 200, but was a #{last_response.status}"
 

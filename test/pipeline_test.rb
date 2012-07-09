@@ -189,6 +189,6 @@ class PipelineTest < MiniTest::Unit::TestCase
 
   private
   def compile
-    TestApp.compile_assets
+    TestApp.compile
   end
 end

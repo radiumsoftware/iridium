@@ -12,7 +12,7 @@ class ConfigTest < MiniTest::Unit::TestCase
   def test_default_cache_configuration
     config = Iridium::Config.new
 
-    assert_equal 'public', config.cache_control
+    assert_equal 'max-age=0, private, must-revalidate', config.cache_control
 
     assert_kind_of Dalli::Client, config.cache[:metastore]
   end
