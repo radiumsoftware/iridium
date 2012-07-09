@@ -124,7 +124,7 @@ Create a subclass of `Iridium::Application` with your application
 name.
 
 ```ruby
-# todos.rb
+# application.rb
 
 require 'iridium'
 
