@@ -94,7 +94,7 @@ module Iridium
           concat "application.js"
         end
 
-        match "stylesheets/**/*.scss" do
+        match /stylesheets\/(?:.+\/)?[^_].+\.scss/ do
           sass sass_options
         end
 
