@@ -1,0 +1,2 @@
+class <%= classified %> < Iridium::Application
+end

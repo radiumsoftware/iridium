@@ -30,6 +30,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "rake-pipeline-web-filters"
   gem.add_dependency "activesupport"
   gem.add_dependency "dalli"
+  gem.add_dependency "thor"
 
   gem.add_development_dependency "simplecov"
   gem.add_development_dependency "rack-test"
