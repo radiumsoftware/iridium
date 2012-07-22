@@ -50,6 +50,10 @@ class ApplicationCommandTest < MiniTest::Unit::TestCase
     assert File.exists?(destination_root.join('todos', 'app', 'vendor', 'javascripts'))
     assert File.exists?(destination_root.join('todos', 'app', 'vendor', 'stylesheets'))
 
+    assert File.exists?(destination_root.join('todos', 'app', 'dependencies'))
+
+    assert File.exists?(destination_root.join('todos', 'app', 'public', 'index.html.erb'))
+
     assert File.exists?(destination_root.join('todos', 'config', 'development.rb'))
     assert File.exists?(destination_root.join('todos', 'config', 'test.rb'))
     assert File.exists?(destination_root.join('todos', 'config', 'production.rb'))
@@ -73,5 +77,16 @@ class ApplicationCommandTest < MiniTest::Unit::TestCase
     content = read destination_root.join('todos', 'config.ru')
 
     assert_includes content, 'run Todos'
+  end
+
+  def test_generated_index_loads_minispade_module
+    invoke 'todos'
+
+    index_path = destination_root.join('todos', 'app', 'public', 'index.html.erb')
+
+    assert File.exists?(index_path)
+    content = read index_path
+
+    assert_includes content, %Q{minispade.require("todos/app");}
   end
 end
