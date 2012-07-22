@@ -24,10 +24,8 @@ module Iridium
       builder.use Middleware::RackLintCompatibility
       builder.use ::Rack::Deflater
 
-      if config.perform_caching
-        builder.use ::Rack::ConditionalGet
-        builder.use Middleware::Caching, server.site_path, config.cache_control
-      end
+      builder.use ::Rack::ConditionalGet
+      builder.use Middleware::Caching, server.site_path, "max-age=0, private, must-revalidate"
 
       config.middleware.each do |middleware|
         builder.use middleware.name, *middleware.args, &middleware.block

@@ -19,13 +19,11 @@ class RackTest < MiniTest::Unit::TestCase
   end
 
   def setup
-    TestApp.config.perform_caching = true
     FileUtils.mkdir_p site_path
   end
 
   def teardown
     FileUtils.rm_rf site_path
-    TestApp.config.perform_caching = false
   end
 
   def test_serves_index_from_root
@@ -50,17 +48,15 @@ class RackTest < MiniTest::Unit::TestCase
   end
 
   def test_sets_the_cache_control_headers
-    app.config.cache_control = "public, max-age=1965"
     create 'foo.html', 'bar'
 
     get "/foo.html"
 
     assert last_response.ok?
-    assert_equal "public, max-age=1965", last_response.headers['Cache-Control']
+    assert_equal "max-age=0, private, must-revalidate", last_response.headers['Cache-Control']
   end
 
   def tests_returns_304_when_cache_matchs
-    app.config.cache_control = "public"
     create 'foo.html', 'bar'
 
     get "/foo.html"
