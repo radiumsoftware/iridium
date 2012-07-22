@@ -83,10 +83,18 @@ class ApplicationCommandTest < MiniTest::Unit::TestCase
     invoke 'todos'
 
     index_path = destination_root.join('todos', 'app', 'public', 'index.html.erb')
-
-    assert File.exists?(index_path)
     content = read index_path
 
     assert_includes content, %Q{minispade.require("todos/app");}
+  end
+
+  def test_generated_index_contains_the_css_and_js
+    invoke 'todos'
+
+    index_path = destination_root.join('todos', 'app', 'public', 'index.html.erb')
+    content = read index_path
+
+    assert_includes content, %Q{<script src="/application.js"></script>}
+    assert_includes content, %Q{<link href="/application.css" rel="stylesheet">}
   end
 end
