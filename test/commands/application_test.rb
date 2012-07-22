@@ -42,12 +42,18 @@ class ApplicationCommandTest < MiniTest::Unit::TestCase
   def tests_generates_an_app_skeleton
     invoke 'todos'
 
-    assert File.directory?(destination_root.join('todos'))
-    assert File.directory?(destination_root.join('todos', 'app'))
-    assert File.directory?(destination_root.join('todos', 'config'))
+    assert File.exists?(destination_root.join('todos'))
+
+    assert File.exists?(destination_root.join('todos', 'app'))
+    assert File.exists?(destination_root.join('todos', 'app', 'images'))
+    assert File.exists?(destination_root.join('todos', 'app', 'stylesheets'))
+    assert File.exists?(destination_root.join('todos', 'app', 'vendor', 'javascripts'))
+    assert File.exists?(destination_root.join('todos', 'app', 'vendor', 'stylesheets'))
+
     assert File.exists?(destination_root.join('todos', 'config', 'development.rb'))
     assert File.exists?(destination_root.join('todos', 'config', 'test.rb'))
     assert File.exists?(destination_root.join('todos', 'config', 'production.rb'))
+
     assert File.directory?(destination_root.join('todos', 'site'))
   end
 
