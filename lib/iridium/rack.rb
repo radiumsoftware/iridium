@@ -25,7 +25,6 @@ module Iridium
       builder.use ::Rack::Deflater
 
       if config.perform_caching
-        builder.use ::Rack::Cache, config.cache
         builder.use ::Rack::ConditionalGet
         builder.use Middleware::Caching, server.site_path, config.cache_control
       end
@@ -41,11 +40,6 @@ module Iridium
       builder.use ::Rack::Rewrite do
         rewrite '/', '/index.html'
         rewrite %r{^\/?[^\.]+\/?(\?.*)?$}, '/index.html$1'
-      end
-
-      if development?
-        builder.use Middleware::PipelineReset, server
-        builder.use Rake::Pipeline::Middleware, pipeline
       end
 
       builder.run ::Rack::Directory.new server.site_path

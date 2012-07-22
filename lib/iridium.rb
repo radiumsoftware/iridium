@@ -6,12 +6,9 @@ require 'active_support/core_ext/string/inflections'
 
 require 'thor'
 
-require 'dalli'
-
 require 'yaml'
 require 'erb'
 require 'rack/rewrite'
-require 'rack/cache'
 require 'rake-pipeline'
 require 'rake-pipeline/middleware'
 require 'rake-pipeline-web-filters'
