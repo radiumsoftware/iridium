@@ -10,12 +10,13 @@ module Iridium
       end
     end
 
-    attr_accessor :app_path, :site_path, :tmp_path
+    attr_accessor :app_path, :site_path, :tmp_path, :assetfile_path
 
     def initialize
       @app_path = root.join 'app'
       @site_path = root.join 'site'
       @tmp_path = root.join 'tmp'
+      @assetfile_path = root.join 'Assetfile'
     end
 
     def reset
