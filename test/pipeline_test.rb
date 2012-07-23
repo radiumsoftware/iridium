@@ -198,6 +198,14 @@ class PipelineTest < MiniTest::Unit::TestCase
     compile ; assert_file "images/logo.png"
   end
 
+  def tests_provides_the_server_for_erb_templates
+    create_file "public/index.html.erb", <<-str
+    <%= app.config %>
+    str
+
+    compile ; assert_file "index.html"
+  end
+
   private
   def compile
     TestApp.compile

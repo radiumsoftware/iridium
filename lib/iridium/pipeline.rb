@@ -51,7 +51,7 @@ module Iridium
     end
 
     def pipeline
-      server = self
+      app = self
       sass_options = {}
       sass_options[:images_idr] = '/images'
       sass_options[:http_images_path] = '/images'
@@ -65,8 +65,12 @@ module Iridium
       end
 
       _pipeline = Rake::Pipeline.build do
-        input server.app_path
-        output server.site_path
+        input app.app_path
+        output app.site_path
+
+        match "**/*.erb" do
+          erb :binding => binding
+        end
 
         match "**/*.handlebars" do
           handlebars
@@ -85,11 +89,11 @@ module Iridium
             if input.path =~ /vendor/
               File.basename input.path, '.js'
             else
-              input.path.gsub(/javascripts\//, "#{server.module_name}/").gsub(/\.js$/, '')
+              input.path.gsub(/javascripts\//, "#{app.module_name}/").gsub(/\.js$/, '')
             end
           }
 
-          uglify if server.production?
+          uglify if app.production?
 
           concat "application.js"
         end
@@ -99,7 +103,7 @@ module Iridium
         end
 
         match "{vendor/stylesheets,stylesheets}/**/*.css" do
-          yui_css if server.production?
+          yui_css if app.production?
 
           filter OrderedCssConcatFilter, "application.css"
         end
