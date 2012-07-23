@@ -3,16 +3,15 @@ require 'digest/md5'
 module Iridium
   module Middleware
     class Caching
-      def initialize(app, root, cache_control)
-        @app, @root, @cache_control = app, root, cache_control
+      def initialize(app, root)
+        @app, @root = app, root
       end
 
       def call(env)
         status, headers, body = @app.call(env)
 
         if asset? env
-          headers['Last-Modified'] = File.new(asset_path(env)).mtime.httpdate
-          headers['Cache-Control'] = @cache_control
+          headers['Cache-Control'] = "max-age=0, private, must-revalidate"
         end
 
         [status, headers, body]
