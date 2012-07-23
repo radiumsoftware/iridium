@@ -71,6 +71,7 @@ module Iridium
 
     def initialize
       boot!
+      super
     end
 
     def boot!

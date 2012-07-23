@@ -10,16 +10,12 @@ module Iridium
       end
     end
 
-    def app_path
-      root.join 'app'
-    end
+    attr_accessor :app_path, :site_path, :tmp_path
 
-    def site_path
-      root.join 'site'
-    end
-
-    def tmp_path
-      root.join 'tmp'
+    def initialize
+      @app_path = root.join 'app'
+      @site_path = root.join 'site'
+      @tmp_path = root.join 'tmp'
     end
 
     def reset
