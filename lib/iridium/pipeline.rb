@@ -48,7 +48,9 @@ module Iridium
     end
 
     def compile
-      pipeline.invoke_clean
+      Dir.chdir root do
+        pipeline.invoke_clean
+      end
     end
 
     private

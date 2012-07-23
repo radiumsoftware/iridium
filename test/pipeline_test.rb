@@ -224,9 +224,7 @@ class PipelineTest < MiniTest::Unit::TestCase
     create_file "../Assetfile", assetfile
     create_file "foos/index.html", "bar"
 
-    Dir.chdir TestApp.root do
-      compile ; assert_file "index.html"
-    end
+    compile ; assert_file "index.html"
   end
 
   private
