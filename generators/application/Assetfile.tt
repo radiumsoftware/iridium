@@ -1,78 +1,76 @@
-Iridium::AssetPipeline.build do |app|
-  input app.app_path
-  output app.site_path
+input app.app_path
+output app.site_path
 
-  # compile all erb templates. You can access "app" 
-  # inside your templates like this: <% app.config %>
-  match "**/*.erb" do
-    erb
-  end
+# compile all erb templates. You can access "app" 
+# inside your templates like this: <% app.config %>
+match "**/*.erb" do
+  erb
+end
 
-  match "**/*.handlebars" do
-    handlebars
-  end
+match "**/*.handlebars" do
+  handlebars
+end
 
-  match "**/*.coffee" do
-    coffee_script
-  end
+match "**/*.coffee" do
+  coffee_script
+end
 
-  match "**/*.less" do
-    less
-  end
+match "**/*.less" do
+  less
+end
 
-  # Compile all Javascript files into Minispade modules.
-  # Files in app/vendor/javascripts become modules
-  # based on their file name. Files in app/javascripts
-  # becomes modules inside your application namespace.
-  #
-  # Examples:
-  # app/vendor/javascripts/jquery.min.js -> minispade.require('jquery');
-  # app/javascripts/boot.js -> minispade.require('app_name/boot');
-  # app/javascripts/views/main.js -> minispade.require('app_name/views/main');
-  match "{javascripts,vendor/javascripts}/**/*.js" do
-    minispade :module_id_generator => proc { |input|
-      if input.path =~ /vendor/
-        File.basename(input.path, '.js').gsub('.min', '')
-      else
-        input.path.gsub(/javascripts\//, "<%= classified %>/").gsub(/\.js$/, '')
-      end
-    }
-
-    # minifiy Javascript when compiling assets for production
-    uglify if app.production?
-
-    # Finally concatenate all javascript files into a single
-    # application.js
-    concat "application.js"
-  end
-
-  # compile all SCSS files into equivalent css file.
-  # SCSS partials are not included in compiled output.
-  match /stylesheets\/(?:.+\/)?[^_].+\.scss/ do
-    sass
-  end
-
-  # select all stylesheets in the project
-  match "{vendor/stylesheets,stylesheets}/**/*.css" do
-    # minifiy CSS when compiling assets for production
-    yui_css if app.production?
-
-    # finally concatenate all stylesheets into a single
-    # application.css file.
-    concat_css "application.css"
-  end
-
-  # All files in app/public are simpliy copied into the output directory.
-  # Example:
-  # app/public/index.html -> site/index.html
-  match "public/**/*" do
-    copy do |input|
-      input.sub(/public\//, '')
+# Compile all Javascript files into Minispade modules.
+# Files in app/vendor/javascripts become modules
+# based on their file name. Files in app/javascripts
+# becomes modules inside your application namespace.
+#
+# Examples:
+# app/vendor/javascripts/jquery.min.js -> minispade.require('jquery');
+# app/javascripts/boot.js -> minispade.require('app_name/boot');
+# app/javascripts/views/main.js -> minispade.require('app_name/views/main');
+match "{javascripts,vendor/javascripts}/**/*.js" do
+  minispade :module_id_generator => proc { |input|
+    if input.path =~ /vendor/
+      File.basename(input.path, '.js').gsub('.min', '')
+    else
+      input.path.gsub(/javascripts\//, "#{app.class.to_s.demodulize.underscore}/").gsub(/\.js$/, '')
     end
-  end
+  }
 
-  # All images are moved int
-  match "images/**/*" do
-    copy
+  # minifiy Javascript when compiling assets for production
+  uglify if app.production?
+
+  # Finally concatenate all javascript files into a single
+  # application.js
+  concat "application.js"
+end
+
+# compile all SCSS files into equivalent css file.
+# SCSS partials are not included in compiled output.
+match /stylesheets\/(?:.+\/)?[^_].+\.scss/ do
+  sass
+end
+
+# select all stylesheets in the project
+match "{vendor/stylesheets,stylesheets}/**/*.css" do
+  # minifiy CSS when compiling assets for production
+  yui_css if app.production?
+
+  # finally concatenate all stylesheets into a single
+  # application.css file.
+  concat_css "application.css"
+end
+
+# All files in app/public are simpliy copied into the output directory.
+# Example:
+# app/public/index.html -> site/index.html
+match "public/**/*" do
+  copy do |input|
+    input.sub(/public\//, '')
   end
+end
+
+# All images are moved int
+match "images/**/*" do
+  copy
 end
