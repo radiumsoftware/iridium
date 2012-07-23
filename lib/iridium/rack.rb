@@ -40,6 +40,7 @@ module Iridium
         rewrite %r{^\/?[^\.]+\/?(\?.*)?$}, '/index.html$1'
       end
 
+      builder.use Middleware::DefaultIndex, server
       builder.run ::Rack::Directory.new server.site_path
 
       builder.to_app

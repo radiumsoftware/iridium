@@ -71,4 +71,18 @@ class RackTest < MiniTest::Unit::TestCase
 
     assert 304, last_response.status
   end
+
+  def test_serves_a_generated_index_file_if_not_present
+    get "/"
+
+    assert last_response.ok?
+  end
+
+  def test_generated_index_contains_basic_assets
+    get "/"
+
+    assert_includes last_response.body, %Q{<link href="/application.css" rel="stylesheet">}
+    assert_includes last_response.body, %Q{<script src="/application.js"></script>}
+    assert_includes last_response.body, %Q{minispade.require("test_app/app");}
+  end
 end
