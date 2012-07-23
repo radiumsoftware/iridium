@@ -1,1 +1,3 @@
-class TestApp < Iridium::Application ; end
+class TestApp < Iridium::Application
+
+end
