@@ -10,7 +10,7 @@ module Iridium
       def call(env)
         status, headers, body = @app.call(env)
 
-        if asset? env
+        if asset?(env) || generated_index?(env)
           headers['Cache-Control'] = "max-age=0, private, must-revalidate"
         end
 
@@ -24,6 +24,10 @@ module Iridium
 
       def asset?(env)
         File.exists?(asset_path(env))
+      end
+
+      def generated_index?(env)
+        env['PATH_INFO'] =~ /^\/index\.html/ && !File.exists?(@root.join("index.html"))
       end
     end
   end

@@ -1,3 +1,5 @@
+require 'digest/md5'
+
 module Iridium
   module Middleware
     class DefaultIndex
@@ -7,7 +9,7 @@ module Iridium
 
       def call(env)
         if serve_index?(env)
-          [200, {}, html]
+          [200, {'ETag' => %Q{"#{etag}"}}, html]
         else
           @app.call env
         end
@@ -19,11 +21,15 @@ module Iridium
       end
 
       def serve_index?(env)
-        env['PATH_INFO'] =~ /^\/index.html/ && !File.exists?(iridium.site_path.join("index.html"))
+        env['PATH_INFO'] =~ /^\/index\.html/ && !File.exists?(iridium.site_path.join("index.html"))
       end
 
       def html
         ERB.new(template).result(binding)
+      end
+
+      def etag
+        Digest::MD5.hexdigest html
       end
 
       def template

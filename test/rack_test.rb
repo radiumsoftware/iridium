@@ -78,6 +78,15 @@ class RackTest < MiniTest::Unit::TestCase
     assert last_response.ok?
   end
 
+  def test_generated_index_can_be_cached
+    get "/"
+
+    assert last_response.ok?
+
+    assert last_response.headers['ETag']
+    assert_equal "max-age=0, private, must-revalidate", last_response.headers['Cache-Control']
+  end
+
   def test_generated_index_contains_basic_assets
     get "/"
 
