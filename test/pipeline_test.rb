@@ -4,6 +4,8 @@ class PipelineTest < MiniTest::Unit::TestCase
   def create_file(path, content)
     full_path = TestApp.root.join "app", path
 
+    @created_files << full_path
+
     FileUtils.mkdir_p File.dirname(full_path)
 
     File.open full_path, "w" do |f|
@@ -11,20 +13,20 @@ class PipelineTest < MiniTest::Unit::TestCase
     end
   end
 
-  def clean_up
-    FileUtils.rm_rf TestApp.root.join("app")
-    FileUtils.rm_rf TestApp.root.join("site")
-    FileUtils.rm_rf TestApp.root.join("tmp")
-  end
-
   def setup
+    @created_files = []
     Iridium.application = TestApp.instance
-    clean_up
   end
 
   def teardown
     Iridium.application = nil
-    clean_up
+    FileUtils.rm_rf TestApp.root.join("app")
+    FileUtils.rm_rf TestApp.root.join("site")
+    FileUtils.rm_rf TestApp.root.join("tmp")
+
+    @created_files.each do |path|
+      FileUtils.rm_rf path
+    end
   end
 
   def assert_file(path)
@@ -204,6 +206,25 @@ class PipelineTest < MiniTest::Unit::TestCase
     create_file "public/index.html.erb", <<-str
     <%= app.config %>
     str
+
+    compile ; assert_file "index.html"
+  end
+
+  def test_server_can_accept_an_asset_file
+    Dir.chdir TestApp.root
+
+    assetfile = <<-str
+      output "site"
+
+      input "app/foos" do
+        match "**/*" do
+          copy
+        end
+      end
+    str
+
+    create_file "../Assetfile", assetfile
+    create_file "foos/index.html", "bar"
 
     compile ; assert_file "index.html"
   end
