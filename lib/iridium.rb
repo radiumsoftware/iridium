@@ -17,8 +17,6 @@ require 'rake-pipeline-web-filters/concat_css_filter'
 
 require 'iridium/reverse_proxy'
 
-require 'iridium/asset_pipeline'
-
 require 'iridium/middleware/rack_lint_compatibility'
 require 'iridium/middleware/caching'
 require 'iridium/middleware/add_header'

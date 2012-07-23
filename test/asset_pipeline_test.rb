@@ -12,7 +12,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   def test_can_access_the_app_inside_the_dsl
     assert Iridium.application
 
-    Iridium::AssetPipeline.build do
+    Rake::Pipeline::Project.build do
       input app.app_path
     end
   end
@@ -22,7 +22,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     refute Iridium.application
 
     assert_raises StandardError do
-      Iridium::AssetPipeline.build do
+      Rake::Pipeline::Project.build do
         input app.app_path
       end
     end

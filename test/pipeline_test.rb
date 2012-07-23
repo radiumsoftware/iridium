@@ -18,10 +18,12 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def setup
+    Iridium.application = TestApp.instance
     clean_up
   end
 
   def teardown
+    Iridium.application = nil
     clean_up
   end
 
