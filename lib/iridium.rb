@@ -14,6 +14,7 @@ require 'rake-pipeline/middleware'
 require 'rake-pipeline-web-filters'
 require 'rake-pipeline-web-filters/erb_filter'
 require 'rake-pipeline-web-filters/concat_css_filter'
+require 'rake-pipeline-web-filters/iridium_dsl_helper'
 
 require 'iridium/reverse_proxy'
 
