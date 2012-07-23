@@ -21,7 +21,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     Iridium.application = nil
     refute Iridium.application
 
-    assert_raises StandardError do
+    assert_raises RuntimeError do
       Rake::Pipeline::Project.build do
         input app.app_path
       end

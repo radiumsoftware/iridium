@@ -182,8 +182,8 @@ class PipelineTest < MiniTest::Unit::TestCase
       "#first-selector should come before #second-selector in compiled css file"
   end
 
-  def tests_copies_external_files_into_public
-    create_file "external/faye.min.js", "window.faye = {}"
+  def tests_copies_dependenencies_into_public
+    create_file "dependencies/faye.min.js", "window.faye = {}"
 
     compile ; assert_file "faye.min.js"
   end

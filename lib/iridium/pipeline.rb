@@ -60,7 +60,7 @@ module Iridium
         # compile all erb templates. You can access "app" 
         # inside your templates like this: <% app.config %>
         match "**/*.erb" do
-          erb
+          erb :binding => binding
         end
 
         match "**/*.handlebars" do
@@ -123,6 +123,15 @@ module Iridium
         match "public/**/*" do
           copy do |input|
             input.sub(/public\//, '')
+          end
+        end
+
+        # All files needed per env copied into public
+        # Example:
+        # app/dependencies/faye.min.js -> side/faye.min.js
+        match "dependencies/**/*" do
+          copy do |input|
+            input.sub(/dependencies\//, '')
           end
         end
 
