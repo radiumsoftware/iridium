@@ -211,8 +211,6 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_server_can_accept_an_asset_file
-    Dir.chdir TestApp.root
-
     assetfile = <<-str
       output "site"
 
@@ -226,7 +224,9 @@ class PipelineTest < MiniTest::Unit::TestCase
     create_file "../Assetfile", assetfile
     create_file "foos/index.html", "bar"
 
-    compile ; assert_file "index.html"
+    Dir.chdir TestApp.root do
+      compile ; assert_file "index.html"
+    end
   end
 
   private
