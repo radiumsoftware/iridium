@@ -16,9 +16,6 @@ module Iridium
       def application
         self.destination_root = File.expand_path app_path, destination_root
 
-        underscored = app_path.underscore
-        classified = underscored.classify
-
         directory "app"
         directory "config"
         directory "site"
