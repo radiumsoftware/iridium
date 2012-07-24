@@ -17,7 +17,6 @@ module Iridium
         self.destination_root = File.expand_path app_path, destination_root
 
         directory "app"
-        directory "config"
         directory "site"
         template "application.rb.tt"
 
@@ -26,6 +25,7 @@ module Iridium
         end
 
         if options[:deployable]
+          directory "config"
           template "config.ru.tt"
         end
 

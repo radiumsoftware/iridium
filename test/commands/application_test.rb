@@ -56,20 +56,12 @@ class ApplicationCommandTest < MiniTest::Unit::TestCase
     assert_file 'todos', 'app', 'stylesheets'
     assert_file 'todos', 'app', 'vendor', 'javascripts'
     assert_file 'todos', 'app', 'vendor', 'stylesheets'
-
     assert_file 'todos', 'app', 'dependencies'
-
     assert_file 'todos', 'app', 'public'
 
-    assert_file 'todos', 'config', 'development.rb'
-    assert_file 'todos', 'config', 'test.rb'
-    assert_file 'todos', 'config', 'production.rb'
-
     assert_file 'todos', 'site'
-  end
 
-  def test_generated_application_contains_file
-    invoke 'todos'
+    assert_file 'todos', 'application.rb'
 
     content = read destination_root.join('todos', 'application.rb')
 
@@ -86,6 +78,9 @@ class ApplicationCommandTest < MiniTest::Unit::TestCase
     invoke 'todos', :deployable => true
 
     assert_file 'todos', 'config.ru'
+    assert_file 'todos', 'config', 'development.rb'
+    assert_file 'todos', 'config', 'test.rb'
+    assert_file 'todos', 'config', 'production.rb'
 
     content = read destination_root.join('todos', 'config.ru')
 
