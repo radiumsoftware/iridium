@@ -68,18 +68,18 @@ class ApplicationCommandTest < MiniTest::Unit::TestCase
     assert_file 'todos', 'site'
   end
 
-  def test_assetfile_is_optional
-    invoke 'todos', :assetfile => true
-
-    assert_file 'todos', 'Assetfile'
-  end
-
   def test_generated_application_contains_file
     invoke 'todos'
 
     content = read destination_root.join('todos', 'application.rb')
 
     assert_includes content, 'Todos'
+  end
+
+  def test_assetfile_is_optional
+    invoke 'todos', :assetfile => true
+
+    assert_file 'todos', 'Assetfile'
   end
 
   def test_generated_applications_can_be_deployed
