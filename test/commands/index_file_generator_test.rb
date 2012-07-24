@@ -7,7 +7,7 @@ class IndexFileGeneratorTest < GeneratorTestCase
   end
 
   def test_generator_creates_an_index
-    invoke :index
+    invoke
 
     assert_file 'app/public/index.html.erb'
     index_path = destination_root.join('app', 'public', 'index.html.erb')

@@ -7,7 +7,7 @@ class AssetFileGeneratorTest < GeneratorTestCase
   end
 
   def test_generator_creates_an_assetfile
-    invoke :asset_file
+    invoke
 
     assert_file 'Assetfile'
   end
