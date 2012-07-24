@@ -8,7 +8,7 @@ class ApplicationCommandTest < GeneratorTestCase
   end
 
   def tests_generates_an_app_skeleton
-    invoke 'todos'
+    invoke 'application', 'todos'
 
     assert_file 'todos'
 
@@ -30,13 +30,13 @@ class ApplicationCommandTest < GeneratorTestCase
   end
 
   def test_assetfile_is_optional
-    invoke 'todos', :assetfile => true
+    invoke 'application', 'todos', :assetfile => true
 
     assert_file 'todos', 'Assetfile'
   end
 
   def test_generated_applications_can_be_deployed
-    invoke 'todos', :deployable => true
+    invoke 'application', 'todos', :deployable => true
 
     assert_file 'todos', 'config.ru'
 
@@ -46,7 +46,7 @@ class ApplicationCommandTest < GeneratorTestCase
   end
 
   def test_generated_applications_support_different_envs
-    invoke 'todos', :envs => true
+    invoke 'application', 'todos', :envs => true
 
     assert_file 'todos', 'config', 'development.rb'
     assert_file 'todos', 'config', 'test.rb'
@@ -56,7 +56,7 @@ class ApplicationCommandTest < GeneratorTestCase
   end
 
   def test_generated_index_loads_assets
-    invoke 'todos', :index => true
+    invoke 'application', 'todos', :index => true
 
     assert_file 'todos', 'app', 'public', 'index.html.erb'
     index_path = destination_root.join('todos', 'app', 'public', 'index.html.erb')

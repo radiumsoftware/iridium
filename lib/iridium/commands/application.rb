@@ -1,6 +1,6 @@
 module Iridium
   module Commands
-    class  Application < Thor
+    class Application < Thor
       include Thor::Actions
 
       argument :app_path, :type => :string

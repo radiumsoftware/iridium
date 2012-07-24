@@ -22,9 +22,10 @@ class GeneratorTestCase < MiniTest::Unit::TestCase
 
   def invoke(*args)
     options = args.extract_options!
+    task_name = args.shift
     runner = command.new args, options
     runner.destination_root = destination_root
-    capture(:stdout) { runner.invoke :application }
+    capture(:stdout) { runner.invoke task_name }
   end
 
   def assert_file(*path)
