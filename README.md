@@ -1,264 +1,118 @@
-# Iridium: A Simple Server for JS Frontend Development
+# Iridium: A Toolchain for JS Development
 
-The title says it all. It is basically some glue code to connect
-different moving parts to provide:
+Iridium is a tool to help you with modern Javascript development. It's
+here to make you a faster developer and solve common problems. It
+focuses primarily on:
 
-1. Asset Compilation (JS/Coffeescript/CSS/SASS/SCSS and friends)
-1. Assets pass through ERB filters for embedding server config
-2. Asset Concatenation and Minification
-3. API proxying to avoid CORS in development and production
-4. A Rack app to serve the frontend
-5. Different configuration enviroments (development & production)
+* CLI driven interactions
+* Expose as little Ruby as possible
+* Focus on JS/CSS/HTML
+* Make JS testable
 
-All requests that are not for the API and are not for assets are 
-rewritten to your main app. For Example,
+## Getting Started
 
-```
-/contacts => /
-/contacts/:5 => /
-/application.js => /application.js
-/foo/public.html => /foo/public.html
-```
-
-You can easily deploy these applications to Heroku.
-
-## Directory Structure
-
-This code assumes a few things. First, let's start with the directory
-structure.
+Iridium support the most common use case right out of the box. You have
+a directory of assets that need to be compiled into a web application.
+Iridium uses `Rake::Pipeline` and sensible defaults to make writing
+structured and testable Javascript possible. The first step is to use
+the built in generator to create the structure:
 
 ```
-|- app/
-|---- javascripts/
-|---- stylesheets/
-|---- images/
-|---- public/
-|---- vendor/
-|------- stylesheets/
-|------- javascripts/
-|---- external/
-|- config/
-|---- settings.yml
-|---- application.rb
-|- Rakefile
-|- application.rb
-|- config.ru
+$ irdium new todos
+    create  app
+    create  app/dependencies
+    create  app/images
+    create  app/javascripts/app.coffee
+    create  app/public
+    create  app/stylesheets/app.scss
+    create  app/vendor/javascripts
+    create  app/vendor/stylesheets
+    create  site
+    create  application.rb
 ```
 
-`app` holds all the code needed to compile the application.
-
-`app/javascripts` contains only js or cofeescript files. Use the
-directory structure to create a module system. For example,
-`app/javascripts/views/my_view.js` would create a minispade module
-named: `#{application_name}/views/my_view`.
-
-`app/stylesheets` contains all the css/scss/sass files. You can create
-your own subdirectory structure if you want. 
-
-`app/images` all the images.
-
-`app/public` the contents of this directory are copied into the output
-directory.
-
-`app/vendor/stylesheets` stylesheets not written by you. Read: twitter
-bootstrap and jquery ui.
-
-`app/vendor/javascripts` JS files written by other people. Examples,
-Backbone, Ember, jQuery, jQueryUi etc. Use the minified versions. All
-files will be turned into minispade modules. Example:
-`app/vendor/javascripts/ember.js` will become simply `ember`.
-
-`app/config/settings.yml` configuration values.
-
-`app/config/application.rb` global server configuration
-
-`Rakefile` defines rake tasks
-
-`application.rb` defines your application
-
-`config.ru` rack up!
-
-## Up and Running
-
-First thing: create the directory structure in `app`. 
+Now your pipeline is ready. You can use the built in development server
+to edit your JS/CSS files and reload the browser. 
 
 ```
-mkdir app
-mkdir app/javascripts
-mkdir app/stylesheets
-mkdir app/vendor/
-mkdir app/vendor/javascripts
-mkdir app/vendor/stylesheets
-mkdir app/public
+$ cd todos
+$ iridium server
+>> Thin web server (v1.4.1 codename Chromeo)
+>> Maximum connections set to 1024
+>> Listening on 0.0.0.0:9292, CTRL+C to stop
 ```
 
-Now setup the other files:
+Navigate to `http://localhost:9292` in your browser and you'll see a
+blank canvas.
+
+## Customizing the Asset pipeline
+
+You may want to change the way assets are compiled. Iridium uses it's
+own pipeline by default. You can override this by creating your
+`Assetfile` inside the root directory. You can start with a blank slate,
+or use a generator. The generator creates an `Assetfile` that does the
+same thing as the internal pipeline. You may also access the `app`
+method.
 
 ```
-touch Gemfile
-touch application.rb
-touch Rakefile
-touch config.ru
+$ cd todos
+$ iridium generate assetfile
+    create Assetfile
 ```
 
-In your `Gemfile`:
+## Customizing index.html
 
-```ruby
-# Gemfile
-
-source :rubygems
-
-gem "iridium", :git => "git://github.com/radiumsoftware/iridium.git"
-
-# NOTE: For the time being, you have to use git repos. Rake pipeline 0.6
-# has not been released yet and rake-pipeline-web-filters depends on that
-# version.
-gem "rake-pipeline", :git => "git://github.com/livingsocial/rake-pipeline.git"
-gem "rake-pipeline-web-filters", :git => "git://github.com/wycats/rake-pipeline-web-filters.git"
-```
-
-Your Javascript will be compfiled into minispade modules based on the
-class name and path. For example, if your appilcation class name is
-`Todos`, then javascripts will be prefixed with as `todos/file_name`.
-Create a subclass of `Iridium::Application` with your application
-name.
-
-```ruby
-# application.rb
-
-require 'iridium'
-
-class Todos < Iridium::Application
-end
-```
-
-Now, tell Rack to run a new Todo app. 
-
-```ruby
-# config.ru
-require ::File.expand_path('application',  __FILE__)
-run Todos
-```
-
-Now, create a `Rakefile` so you can compile assets at deploy time
-
-```ruby
-require 'iridium/tasks'
-```
-
-Now you can start the development server like this:
+`index.html` is an annoying part of web development. You cannot start or
+serve your application without an HTML page to load your JS. Iridium has
+a built in `index.html` which loads your assets and dependencies. This
+will work for most simple applications. You can override this by
+providing your own `index.html` in `public`. You can create the file
+yourself or use a generator. The generator creates a file that does the
+same thing as the bundled `index.html`.
 
 ```
-$ bundle exec rackup
+$ cd todos
+$ iridium generate index
+    create app/public/index.html.erb
 ```
 
-## Example
+## Customization per Environment
 
-I've translated the classic backbone todos app into an example. Code
-[here](https://github.com/radiumsoftware/iridium_example)
-
-
-## Using
+More complicated applications need to support different environment.
+Common envrioments are: development, test, and production. Each
+environment may have their own dependencies or tweaks. Usually this is a
+pain. Customizations happen at the server level. You **code** should not
+be environment specific! Use the generator to create the file structure.
 
 ```
-bundle exec rackup # start the server
-bundle exec rake assets:precompile # compile all assets in public/
-```
-
-## Configuration
-
-`config/application.yml` contains all configuration values.
-All other keys are translated to method names available as
-`ApplicationName.config`
-
-Here is an example config file:
-
-```yml
-development:
-  server: "http://api.example.com"
-  developer_key: "foo"
-  user_api_key: "bar"
-```
-
-Would create:
-
-```ruby
-Todos.config.server
-Todos.config.developer_key
-Todos.config.user_api_key
-```
-
-## Initialization & Enviroment Files
-
-`config/environment.rb` holds any global settings. It is required first
-if it exists.
-
-Iridium also allows you customize settings through environment
-files. `config/development.rb` and `config/production.rb` will be
-required if they exist.
-
-## Configuration
-
-You can hook into the Rack builder process at the beginning. The
-interface is inspired by the Rails middleware interface. Here's an
-exmaple:
-
-```ruby
-Todos.configure do 
-  middleware.use MyCustomMiddleware, 'foo', 'bar', :options => :accepted
-end
-```
-
-## API Proxy
-
-You can configure any number of proxies to other API's. You can use the
-proxy to hide access keys and/or avoid CORs problems. Here is an
-example:
-
-```ruby
-# config/application.rb
-
-Todos.configure do 
-  config.proxy '/radium', 'http://api.example.com'
-  config.proxy '/twitter', 'http://api.twitter.com'
-  config.proxy '/fb', 'http://horrible-api.facebook.com'
-end
-
-## Development
-
-The pipeline is recompiled before each request in development mode.
-
-## Extras
-
-Iridium contains some basic middleware that make it easy to authenticate
-to external APIs
-
-```ruby
-# config/enviroment.rb
-
-Todos.configure do
-  # Add a header: commonly used to authentication/oauth keys
-  # :if option can be specified to only send the header for certain requests
-  middleware.use Iridium::Middleware::AddHeader.new('X-Application-Auth-Token', config.developer_key, :if => /\/api/)
-
-  # Can add a cookies if you need them
-  middleware.use Iridium::Middleware::Addcookie.new('user_api_key', config.api_key')
-
-  # These middleware calls have shortcut methods as well
-  middleware.add_header 'Foo', 'bar', :if => /\/api/
-  middleware.add_cookie 'Foo', 'bar'
-end
+$ cd todos
+$ iridium generate envs
+    create  config/development.rb
+    create  config/test.rb
+    create  config/production.rb
 ```
 
 ## Deploying
 
-Applications built using Iridium can be deployed to heroku out of
-the box. Applications will be **compiled and minified** at deploy time. 
+JS applications are simply a collection of static assets in a diretory.
+This is trival to serve up with Rack. Iridium apps are rack apps for
+serving up the compiled directory. The server also handles caching,
+proxying, and custom middleware. All you need to do is create a
+`config.ru` file and you can deploy your app! You can also deploy your
+app for free on Heroku out of the box.
+
+```ruby
+# config.ru
+require File.expand_path('../application', __FILE__)
+
+run MyApp
+```
+
+Or if you don't care about that, you can run the generator:
 
 ```
-heroku create
-git push master heroku
-heroku open
+$ cd my_app
+$ iridium generate rackup
 ```
 
 ## Contributing
