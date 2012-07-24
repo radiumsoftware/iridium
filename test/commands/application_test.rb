@@ -35,6 +35,13 @@ class ApplicationCommandTest < MiniTest::Unit::TestCase
     capture(:stdout) { runner.invoke :application }
   end
 
+  def assert_file(*path)
+    full_path = destination_root.join *path
+
+    assert File.exists?(full_path), 
+      "#{full_path} should be a file. Current Files: #{Dir[destination_root.join("**", "*").inspect]}"
+  end
+
   def destination_root
     Pathname.new(File.expand_path('../../sandbox', __FILE__))
   end
@@ -42,23 +49,29 @@ class ApplicationCommandTest < MiniTest::Unit::TestCase
   def tests_generates_an_app_skeleton
     invoke 'todos'
 
-    assert File.exists?(destination_root.join('todos'))
+    assert_file 'todos'
 
-    assert File.exists?(destination_root.join('todos', 'app'))
-    assert File.exists?(destination_root.join('todos', 'app', 'images'))
-    assert File.exists?(destination_root.join('todos', 'app', 'stylesheets'))
-    assert File.exists?(destination_root.join('todos', 'app', 'vendor', 'javascripts'))
-    assert File.exists?(destination_root.join('todos', 'app', 'vendor', 'stylesheets'))
+    assert_file 'todos', 'app'
+    assert_file 'todos', 'app', 'images'
+    assert_file 'todos', 'app', 'stylesheets'
+    assert_file 'todos', 'app', 'vendor', 'javascripts'
+    assert_file 'todos', 'app', 'vendor', 'stylesheets'
 
-    assert File.exists?(destination_root.join('todos', 'app', 'dependencies'))
+    assert_file 'todos', 'app', 'dependencies'
 
-    assert File.exists?(destination_root.join('todos', 'app', 'public', 'index.html.erb'))
+    assert_file 'todos', 'app', 'public'
 
-    assert File.exists?(destination_root.join('todos', 'config', 'development.rb'))
-    assert File.exists?(destination_root.join('todos', 'config', 'test.rb'))
-    assert File.exists?(destination_root.join('todos', 'config', 'production.rb'))
+    assert_file 'todos', 'config', 'development.rb'
+    assert_file 'todos', 'config', 'test.rb'
+    assert_file 'todos', 'config', 'production.rb'
 
-    assert File.directory?(destination_root.join('todos', 'site'))
+    assert_file 'todos', 'site'
+  end
+
+  def test_assetfile_is_optional
+    invoke 'todos', :assetfile => true
+
+    assert_file 'todos', 'Assetfile'
   end
 
   def test_generated_application_contains_file
@@ -72,29 +85,22 @@ class ApplicationCommandTest < MiniTest::Unit::TestCase
   def test_generated_applications_can_be_deployed
     invoke 'todos', :deployable => true
 
-    assert File.exists?(destination_root.join('todos', 'config.ru'))
+    assert_file 'todos', 'config.ru'
 
     content = read destination_root.join('todos', 'config.ru')
 
     assert_includes content, 'run Todos'
   end
 
-  def test_generated_index_loads_minispade_module
-    invoke 'todos'
+  def test_generated_index_loads_assets
+    invoke 'todos', :index => true
 
-    index_path = destination_root.join('todos', 'app', 'public', 'index.html.erb')
-    content = read index_path
-
-    assert_includes content, %Q{minispade.require("todos/app");}
-  end
-
-  def test_generated_index_contains_the_css_and_js
-    invoke 'todos'
-
+    assert_file 'todos', 'app', 'public', 'index.html.erb'
     index_path = destination_root.join('todos', 'app', 'public', 'index.html.erb')
     content = read index_path
 
     assert_includes content, %Q{<script src="/application.js"></script>}
     assert_includes content, %Q{<link href="/application.css" rel="stylesheet">}
+    assert_includes content, %Q{minispade.require("todos/app");}
   end
 end
