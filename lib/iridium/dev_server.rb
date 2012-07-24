@@ -24,8 +24,8 @@ module Iridium
           rewrite %r{^\/?[^\.]+\/?(\?.*)?$}, '/index.html$1'
         end
 
-        use Middleware::DefaultIndex, Iridium.application
         use Rake::Pipeline::Middleware, Iridium.application.pipeline
+        use Middleware::DefaultIndex, Iridium.application
         run NotFound.new
       end
     end

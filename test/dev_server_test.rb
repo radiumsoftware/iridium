@@ -44,6 +44,16 @@ class DevServerTest < MiniTest::Unit::TestCase
     assert_includes last_response.body, "bar"
   end
 
+  def test_index_file_in_pipeline_overrides_default
+    create_file "public/index.html", "bar"
+
+    get '/'
+
+    assert last_response.ok?
+
+    assert_equal "bar", last_response.body.chomp
+  end
+
   private
   def create_file(path, content)
     full_path = TestApp.root.join "app", path
