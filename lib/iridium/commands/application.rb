@@ -13,6 +13,7 @@ module Iridium
       method_option :deployable, :type => :boolean
       method_option :assetfile, :type => :boolean
       method_option :index, :type => :boolean
+      method_option :envs, :type => :boolean
       def application
         self.destination_root = File.expand_path app_path, destination_root
 
@@ -25,8 +26,11 @@ module Iridium
         end
 
         if options[:deployable]
-          directory "config"
           template "config.ru.tt"
+        end
+
+        if options[:envs]
+          directory "config"
         end
 
         if options[:index]

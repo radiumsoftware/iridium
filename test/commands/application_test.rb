@@ -78,13 +78,18 @@ class ApplicationCommandTest < MiniTest::Unit::TestCase
     invoke 'todos', :deployable => true
 
     assert_file 'todos', 'config.ru'
-    assert_file 'todos', 'config', 'development.rb'
-    assert_file 'todos', 'config', 'test.rb'
-    assert_file 'todos', 'config', 'production.rb'
 
     content = read destination_root.join('todos', 'config.ru')
 
     assert_includes content, 'run Todos'
+  end
+
+  def test_generated_applications_support_different_envs
+    invoke 'todos', :envs => true
+
+    assert_file 'todos', 'config', 'development.rb'
+    assert_file 'todos', 'config', 'test.rb'
+    assert_file 'todos', 'config', 'production.rb'
   end
 
   def test_generated_index_loads_assets
