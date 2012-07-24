@@ -90,6 +90,8 @@ class ApplicationCommandTest < MiniTest::Unit::TestCase
     assert_file 'todos', 'config', 'development.rb'
     assert_file 'todos', 'config', 'test.rb'
     assert_file 'todos', 'config', 'production.rb'
+
+    assert_file 'todos', 'config', 'settings.yml'
   end
 
   def test_generated_index_loads_assets

@@ -1,0 +1,7 @@
+# Define your env specific configuration variables here.
+# They will be available in config.settings
+development:
+
+test:
+
+production:
