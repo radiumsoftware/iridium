@@ -18,6 +18,8 @@ require 'rake-pipeline-web-filters/iridium_dsl_helper'
 
 require 'iridium/reverse_proxy'
 
+require 'iridium/generator'
+
 require 'iridium/middleware/rack_lint_compatibility'
 require 'iridium/middleware/caching'
 require 'iridium/middleware/add_header'

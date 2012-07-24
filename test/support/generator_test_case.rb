@@ -1,6 +1,7 @@
 class GeneratorTestCase < MiniTest::Unit::TestCase
   def setup
     FileUtils.rm_rf destination_root
+    Iridium.application = TestApp.instance
   end
 
   def capture(stream)

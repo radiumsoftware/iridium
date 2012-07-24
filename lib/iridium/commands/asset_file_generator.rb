@@ -1,6 +1,6 @@
 module Iridium
   module Commands
-    class AssetFileGenerator < Thor
+    class AssetFileGenerator < Generator
       include Thor::Actions
 
       def self.source_root
