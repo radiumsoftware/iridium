@@ -4,19 +4,6 @@ class GeneratorTestCase < MiniTest::Unit::TestCase
     Iridium.application = TestApp.instance
   end
 
-  def capture(stream)
-    begin
-      stream = stream.to_s
-      eval "$#{stream} = StringIO.new"
-      yield
-      result = eval("$#{stream}").string
-    ensure
-      eval("$#{stream} = #{stream.upcase}")
-    end
-
-    result
-  end
-
   def read(path)
     File.read(path)
   end
@@ -26,7 +13,7 @@ class GeneratorTestCase < MiniTest::Unit::TestCase
     task_name = args.shift
     runner = command.new args, options
     runner.destination_root = destination_root
-    capture(:stdout) { runner.invoke task_name }
+    capture_io { runner.invoke task_name }
   end
 
   def assert_file(*path)
