@@ -34,6 +34,7 @@ class RackTest < MiniTest::Unit::TestCase
     assert last_response.ok?
 
     assert_equal 'foo', last_response.body.chomp
+    assert_equal 'text/html', last_response.headers['Content-Type']
   end
 
   def test_adds_the_last_modified_header_to_assets

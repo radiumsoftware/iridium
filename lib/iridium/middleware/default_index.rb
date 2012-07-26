@@ -9,7 +9,11 @@ module Iridium
 
       def call(env)
         if serve_index?(env)
-          [200, {'ETag' => %Q{"#{etag}"}}, html]
+          headers = {}
+          headers['ETag'] = %Q{"#{etag}"}
+          headers['Content-Type'] = 'text/html'
+
+          [200, headers, [html]]
         else
           @app.call env
         end
