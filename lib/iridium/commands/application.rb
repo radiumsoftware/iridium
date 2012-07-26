@@ -3,7 +3,7 @@ module Iridium
     class Application < Thor
       include Thor::Actions
 
-      argument :app_path, :type => :string
+      attr_reader :app_path
 
       def self.source_root
         File.expand_path '../../../../generators/application', __FILE__
@@ -14,7 +14,9 @@ module Iridium
       method_option :assetfile, :type => :boolean
       method_option :index, :type => :boolean
       method_option :envs, :type => :boolean
-      def application
+      def application(app_path)
+        @app_path = app_path
+
         self.destination_root = File.expand_path app_path, destination_root
 
         directory "app"
