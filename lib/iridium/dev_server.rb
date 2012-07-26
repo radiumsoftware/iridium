@@ -11,6 +11,8 @@ module Iridium
 
     def app
       Rack::Builder.new do
+        use Middleware::RackLintCompatibility
+
         Iridium.application.config.middleware.each do |middleware|
           use middleware.name, *middleware.args, &middleware.block
         end
