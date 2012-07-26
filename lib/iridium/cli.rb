@@ -3,6 +3,6 @@ require 'thor/group'
 
 module Iridium
   class CLI < Thor
-    register Commands::Application, :new, "new", "Run the application generator"
+    subcommand Commands::Application, :new
   end
 end
