@@ -3,6 +3,6 @@ require 'thor/group'
 
 module Iridium
   class CLI < Thor
-    subcommand Commands::Application, :new
+    register Commands::Application, :new, "new PATH", "generate a new pipeline in PATH"
   end
 end
