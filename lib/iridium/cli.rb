@@ -17,5 +17,11 @@ module Iridium
 
     desc "app PATH", "generate a new application in PATH"
     subcommand_with_default "app", Commands::Application
+
+    desc "server", "start a development server"
+    def server
+      require './application'
+      Iridium::DevServer.new.start
+    end
   end
 end
