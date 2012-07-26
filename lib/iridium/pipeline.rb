@@ -66,7 +66,7 @@ module Iridium
         # app/javascripts/boot.js -> minispade.require('app_name/boot');
         # app/javascripts/views/main.js -> minispade.require('app_name/views/main');
         match "{javascripts,vendor/javascripts}/**/*.js" do
-          minispade :module_id_generator => proc { |input|
+          minispade :rewrite_requires => true, :module_id_generator => proc { |input|
             if input.path =~ /vendor/
               File.basename(input.path, '.js').gsub('.min', '')
             else

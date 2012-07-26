@@ -64,6 +64,16 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes content, %Q{minispade.register('test_app/main'}
   end
 
+  def test_rewrites_requrires_to_use_minispade
+    create_file "javascripts/main.js", "require('foo');"
+
+    compile ; assert_file "application.js"
+
+    content = read "application.js"
+
+    assert_includes content, %{minispade.require('foo');}
+  end
+
   def tests_compiles_vendored_js_into_top_level_modules
     create_file "vendor/javascripts/jquery.js", "jQuery"
 
