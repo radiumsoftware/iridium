@@ -52,7 +52,7 @@ module Iridium
           </head>
 
           <body>
-            <% iridium.config.dependencies do |script| %>
+            <% iridium.config.dependencies.each do |script| %>
               <script src="<%= script.url %>"></script>
             <% end %>
 
