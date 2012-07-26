@@ -3,6 +3,8 @@ module Iridium
     class Application < Thor
       include Thor::Actions
 
+      default_task :application
+
       attr_reader :app_path
 
       def self.source_root
@@ -49,8 +51,6 @@ module Iridium
           app_path.underscore
         end
       end
-
-      default_task :application
     end
   end
 end

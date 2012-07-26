@@ -8,7 +8,7 @@ class CLITest < GeneratorTestCase
   end
 
   def test_delegates_to_the_application_developer
-    invoke %w[new application todos]
+    invoke %w[app todos]
 
     assert_file destination_root.join("todos")
   end
