@@ -9,7 +9,7 @@ module Iridium
         File.expand_path '../../../../generators/application', __FILE__
       end
 
-      desc "application", "generates a new application"
+      desc "application PATH", "generates a new application"
       method_option :deployable, :type => :boolean
       method_option :assetfile, :type => :boolean
       method_option :index, :type => :boolean
