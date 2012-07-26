@@ -26,8 +26,6 @@ class DevServerTest < MiniTest::Unit::TestCase
     get '/'
 
     assert last_response.ok?
-
-    assert_equal 'text/html', last_response.headers['Content-Type']
   end
 
   def test_returns_not_found
