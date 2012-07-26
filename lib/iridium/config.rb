@@ -4,6 +4,8 @@ module Iridium
       def url
         if name.to_s =~ /https?:\/\//
           name
+        elsif name.is_a? Symbol
+          "/#{name}.js"
         else
           "/#{name}"
         end
