@@ -11,10 +11,12 @@ module Iridium
         index.puts ERB.new(template_erb).result(binding)
       end
 
-      js_test_runner = File.expand_path('../phantomjs/run-qunit.coffee', __FILE__)
+      js_test_runner = File.expand_path('../phantomjs/run-qunit.js', __FILE__)
       js_command = %Q{phantomjs "#{js_test_runner}" "#{loader_path}"}
 
       return if options[:dry_run]
+
+      puts `#{js_command}`
     end
 
     def test_root
@@ -54,9 +56,11 @@ module Iridium
           <![endif]-->
 
           <link href="/application.css" rel="stylesheet">
+          <link href="http://code.jquery.com/qunit/qunit-1.9.0.css", rel="stylesheet">
         </head>
 
         <body>
+          <div id="qunit"></div>
           <% app.config.dependencies.each do |script| %>
             <script src="<%= script.url %>"></script>
           <% end %>

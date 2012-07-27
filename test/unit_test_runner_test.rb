@@ -56,4 +56,24 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
 
     assert_includes content, %Q{<script src="test/support/example.js"></script>}, "Support files should be included!"
   end
+
+  def test_reports_passes
+    create_file "truth_test.js", <<-test
+      test('Truth', function() {
+        ok(true, "Passed!")
+      });
+    test
+
+    invoke "truth_test.js"
+  end
+
+  def test_reports_failures
+    create_file "failing_test.js", <<-test
+      test('Truth', function() {
+        ok(false, "failed");
+      });
+    test
+
+    invoke "failing_test.js"
+  end
 end
