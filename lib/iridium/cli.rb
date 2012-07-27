@@ -23,5 +23,13 @@ module Iridium
       require './application'
       Iridium::DevServer.new.start
     end
+
+    desc "compile", "compile assets for deployment"
+    method_option :environment, :aliases => '-e', :default => 'production'
+    def compile
+      require './application'
+      ENV['IRIDIUM_ENV'] = options[:environment]
+      Iridium.application.compile
+    end
   end
 end
