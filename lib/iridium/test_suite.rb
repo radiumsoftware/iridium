@@ -54,11 +54,9 @@ module Iridium
     def setup
       app.compile
       build_unit_test_directory if unit_tests?
-      start_server if integration_tests?
     end
 
     def teardown
-      kill_server if integration_tests?
     end
 
     def build_unit_test_directory
@@ -91,17 +89,6 @@ module Iridium
 
       _pipeline.tmpdir = test_root.join('tmp')
       _pipeline.invoke_clean
-    end
-
-    def start_server
-      @server_thread = Thread.new do
-        puts "Starting test server..."
-        Rack::Server.new(:app => Iridium.application).start
-      end
-    end
-
-    def kill_server
-      Thread.kill server_thread
     end
   end
 end
