@@ -63,7 +63,7 @@ class TestSuiteTest < MiniTest::Unit::TestCase
 
   private
   def destination_root
-    Iridium.application.root.join('tmp', 'unit_tests')
+    Iridium.application.root.join('tmp', 'test_root')
   end
 
   def assert_file(*path)

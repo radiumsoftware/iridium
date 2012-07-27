@@ -34,6 +34,10 @@ module Iridium
       teardown
     end
 
+    def test_root
+      app.root.join('tmp', 'test_root')
+    end
+
     private
     def server_thread
       @server_thread
@@ -58,9 +62,11 @@ module Iridium
     end
 
     def build_unit_test_directory
+      suite = self
+
       _pipeline = Rake::Pipeline.build do
         input app.root
-        output app.root.join('tmp', 'unit_tests')
+        output suite.test_root
 
         match 'test/**/*.coffee' do
           coffee_script
@@ -83,7 +89,7 @@ module Iridium
         end
       end
 
-      _pipeline.tmpdir = app.root.join('tmp', 'unit_test_pipeline')
+      _pipeline.tmpdir = test_root.join('tmp')
       _pipeline.invoke_clean
     end
 
