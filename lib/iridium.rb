@@ -74,7 +74,7 @@ module Iridium
     end
 
     def env
-      ENV['RACK_ENV'] || 'development'
+      ENV['IRIDIUM_ENV'] || ENV['RACK_ENV'] || 'development'
     end
 
     def initialize

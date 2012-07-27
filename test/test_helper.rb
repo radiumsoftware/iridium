@@ -15,7 +15,7 @@ require 'webmock/minitest'
 
 WebMock.disable_net_connect!
 
-ENV['RACK_ENV'] = 'test'
+ENV['IRIDIUM_ENV'] = 'test'
 
 Dir[File.expand_path('../support/**/*.rb', __FILE__)].each do |file|
   require file
