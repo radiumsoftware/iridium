@@ -61,14 +61,14 @@ class TestSuiteTest < MiniTest::Unit::TestCase
     assert_file "test/support/foo.js"
   end
 
-  def test_runs_a_unit_test
-    create_file "test/unit/truth_test.coffee", <<-str
-      test 'Truth', -> 
-        ok true, "Passed!"
-    str
+  # def test_runs_a_unit_test
+  #   create_file "test/unit/truth_test.coffee", <<-str
+  #     test 'Truth', -> 
+  #       ok true, "Passed!"
+  #   str
 
-    start root.join("unit/truth_test.coffee")
-  end
+  #   start root.join("unit/truth_test.coffee")
+  # end
 
   private
   def destination_root

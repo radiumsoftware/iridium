@@ -5,9 +5,9 @@ module Iridium
         if name.to_s =~ /https?:\/\//
           name
         elsif name.is_a? Symbol
-          "/#{name}.js"
+          "#{name}.js"
         else
-          "/#{name}"
+          "#{name}"
         end
       end
     end

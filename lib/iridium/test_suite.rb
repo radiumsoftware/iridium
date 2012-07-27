@@ -53,7 +53,7 @@ module Iridium
     attr_reader :app, :files, :results
 
     def initialize(app, files, options = {})
-      @app, @files, @options = app, files, options = {}
+      @app, @files, @options = app, files, options
       @files = @files.collect do |file|
         file.to_s.gsub app.root.to_s, ''
       end
@@ -71,17 +71,17 @@ module Iridium
     def runners
       _runners = []
       _runners = unit_tests.each_with_object(_runners) do |file, memo|
-        memo << UnitTestRunner.new(app, file)
+        memo << UnitTestRunner.new(app, [file])
       end
       _runners = integration_tests.each_with_object(_runners) do |file, memo|
-        memo << IntegrationTestRunner.new(app, file)
+        memo << IntegrationTestRunner.new(app, [file])
       end
       _runners
     end
 
     def run
       setup
-      run!
+      run! unless options[:dry_run]
       teardown
     end
 
