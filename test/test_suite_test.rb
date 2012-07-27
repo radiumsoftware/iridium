@@ -43,6 +43,24 @@ class TestSuiteTest < MiniTest::Unit::TestCase
     assert_file "test/unit/truth_test.js"
   end
 
+  def test_copies_support_files
+    create_file "test/support/foo.js", "foo"
+    create_file "test/unit/foo_test.js", "bar"
+
+    start root.join("unit/foo_test.js")
+
+    assert_file "test/support/foo.js"
+  end
+
+  def test_support_coffee_script_files_are_compiled_to_js
+    create_file "test/support/foo.coffee", "foo"
+    create_file "test/unit/foo_test.js", "bar"
+
+    start root.join("unit/foo_test.js")
+
+    assert_file "test/support/foo.js"
+  end
+
   private
   def destination_root
     Iridium.application.root.join('tmp', 'unit_tests')

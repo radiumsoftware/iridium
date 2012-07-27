@@ -62,18 +62,16 @@ module Iridium
         input app.root
         output app.root.join('tmp', 'unit_tests')
 
-        Dir[app.root.join('test', '*')].each do |directory|
-          directory_name = File.basename directory
+        match 'test/**/*.coffee' do
+          coffee_script
+        end
 
-          if directory_name != 'integration'
-            match "test/#{directory_name}**/*_test.coffee" do
-              coffee_script
-              copy
-            end
-            match "test/#{directory_name}**/*_test.js" do
-              copy
-            end
-          end
+        match 'test/**/*_test.js' do
+          copy
+        end
+
+        match "test/support/**/*.js" do
+          copy
         end
 
         site_directory = File.basename(app.site_path)
