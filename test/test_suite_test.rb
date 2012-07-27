@@ -17,7 +17,7 @@ class TestSuiteTest < MiniTest::Unit::TestCase
     create_file "app/javascripts/foo.js", "foo"
     create_file "test/unit/basic_test.js", "foo"
 
-    start root.join("test/unit/basic_test.js")
+    start root.join("test/unit/basic_test.js"), :dry_run => true
 
     assert_file "application.js"
   end
@@ -26,7 +26,7 @@ class TestSuiteTest < MiniTest::Unit::TestCase
     create_file "test/unit/basic_test.js", "foo"
     create_file "test/models/advanced_test.js", "foo"
 
-    start root.join("test/unit/basic_test.js"), root.join("test/models/advanced_test.js")
+    start root.join("test/unit/basic_test.js"), root.join("test/models/advanced_test.js"), :dry_run => true
 
     assert_file "test/unit/basic_test.js"
     assert_file "test/models/advanced_test.js"
@@ -38,7 +38,7 @@ class TestSuiteTest < MiniTest::Unit::TestCase
         ok true, "Passed!"
     str
 
-    start root.join("unit/truth_test.coffee")
+    start root.join("unit/truth_test.coffee"), :dry_run => true
 
     assert_file "test/unit/truth_test.js"
   end
@@ -47,7 +47,7 @@ class TestSuiteTest < MiniTest::Unit::TestCase
     create_file "test/support/foo.js", "foo"
     create_file "test/unit/foo_test.js", "bar"
 
-    start root.join("unit/foo_test.js")
+    start root.join("unit/foo_test.js"), :dry_run => true
 
     assert_file "test/support/foo.js"
   end
@@ -56,9 +56,18 @@ class TestSuiteTest < MiniTest::Unit::TestCase
     create_file "test/support/foo.coffee", "foo"
     create_file "test/unit/foo_test.js", "bar"
 
-    start root.join("unit/foo_test.js")
+    start root.join("unit/foo_test.js"), :dry_run => true
 
     assert_file "test/support/foo.js"
+  end
+
+  def test_runs_a_unit_test
+    create_file "test/unit/truth_test.coffee", <<-str
+      test 'Truth', -> 
+        ok true, "Passed!"
+    str
+
+    start root.join("unit/truth_test.coffee")
   end
 
   private
@@ -78,7 +87,8 @@ class TestSuiteTest < MiniTest::Unit::TestCase
   end
 
   def start(*test_files)
-    Iridium::TestSuite.new(Iridium.application, test_files).run
+    options = test_files.extract_options!
+    Iridium::TestSuite.new(Iridium.application, test_files, options).run
   end
 
   def create_file(path, content)
