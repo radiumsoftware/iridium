@@ -24,6 +24,8 @@ require 'iridium/dev_server'
 
 require 'iridium/cli'
 
+require 'iridium/test_suite'
+
 require 'iridium/middleware/rack_lint_compatibility'
 require 'iridium/middleware/caching'
 require 'iridium/middleware/add_header'
