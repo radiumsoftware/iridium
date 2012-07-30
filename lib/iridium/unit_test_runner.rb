@@ -3,10 +3,12 @@ module Iridium
     attr_reader :app, :files
 
     def initialize(app, files)
-      @app, @files = app, files.collect { |f| f.gsub /\.coffe$/, '.js'  }
+      @app, @files = app, files
     end
 
     def run(options = {})
+      assert_files
+
       File.open loader_path, "w+" do |index|
         index.puts ERB.new(template_erb).result(binding)
       end
@@ -42,6 +44,13 @@ module Iridium
         File.read template_path
       else
         default_template
+      end
+    end
+
+    def assert_files
+      files.each do |file|
+        full_path = test_root.join file
+        raise "#{full_path} does not exist!" unless File.exists?(full_path)
       end
     end
 

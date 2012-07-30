@@ -39,8 +39,18 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     Iridium::UnitTestRunner.new(Iridium.application, files).run(options)
   end
 
+  def test_raises_an_error_when_file_is_missing
+    create_file "example_test.js", "foo"
+
+    assert_raises RuntimeError do
+      invoke "foo.js", :dry_run => true
+    end
+  end
+
   def test_runner_generates_the_loader_correctly
     create_file "test/support/example.js", "foo"
+    create_file "truth.js", "foo"
+    create_file "foo/bar.js", "bar"
 
     invoke "truth.js", "foo/bar.js", :dry_run => true
 
