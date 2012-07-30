@@ -112,4 +112,22 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert_match test_result.message, /1/
     assert test_result.backtrace
   end
+
+  def tests_reports_multiple_tests
+    create_file "failed_expectation.js", <<-test
+      test('Unmet expectation', function() {
+        expect(1);
+      });
+    test
+
+    create_file "truth_test.js", <<-test
+      test('Truth', function() {
+        ok(false, "Passed!")
+      });
+    test
+
+    results = invoke "failed_expectation.js", "truth_test.js"
+
+    assert_equal 2, results.size
+  end
 end
