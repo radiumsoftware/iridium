@@ -27,11 +27,11 @@ module Iridium
 
       output = `casperjs "#{js_test_runner}" #{file_arg}`
 
-      puts output
+      json = output.match(%r{<iridium>(.+)</iridium>})[1]
 
       server_thread.kill
 
-      JSON.parse(output.match(%r{<iridium>(.+)</iridium>})[1]).map { |hash| TestResult.new(hash) }
+      JSON.parse(json).map { |hash| TestResult.new(hash) }
     end
   end
 end

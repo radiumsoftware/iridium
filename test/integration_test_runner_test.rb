@@ -12,10 +12,15 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def invoke(*files)
+    results = nil
     options = files.extract_options!
     Dir.chdir working_directory do
-      Iridium::IntegrationTestRunner.new(files).run(options)
+      capture_io do
+        results = Iridium::IntegrationTestRunner.new(files).run(options)
+      end
     end
+
+    return results
   end
 
   def working_directory
