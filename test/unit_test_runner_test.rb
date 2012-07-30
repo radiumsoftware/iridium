@@ -49,6 +49,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
 
     content = read File.basename(test_loader)
 
+    assert_includes content, %Q{<script src="application.js"></script>}
     assert_includes content, %Q{<script src="truth.js"></script>}
     assert_includes content, %Q{<script src="foo/bar.js"></script>}
 
