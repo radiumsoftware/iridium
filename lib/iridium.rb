@@ -25,6 +25,7 @@ require 'iridium/dev_server'
 require 'iridium/cli'
 
 require 'iridium/test_suite'
+require 'iridium/test_result'
 require 'iridium/unit_test_runner'
 
 require 'iridium/middleware/rack_lint_compatibility'

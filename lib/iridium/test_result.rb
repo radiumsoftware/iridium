@@ -1,7 +1,7 @@
 module Iridium
   class TestResult
     attr_accessor :failed, :error, :passed
-    attr_accessor :file
+    attr_accessor :name, :file
     attr_accessor :backtrace, :message
     attr_accessor :time
 
@@ -20,7 +20,7 @@ module Iridium
     end
 
     def passed?
-      passed
+      !failed? && !error?
     end
   end
 end
