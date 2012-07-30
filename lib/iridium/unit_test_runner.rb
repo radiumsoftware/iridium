@@ -16,7 +16,9 @@ module Iridium
 
       return if options[:dry_run]
 
-      JSON.parse(`#{js_command}`).map { |hash| TestResult.new(hash) }
+      output = `#{js_command}`
+
+      JSON.parse(output).map { |hash| TestResult.new(hash) }
     end
 
     def test_root

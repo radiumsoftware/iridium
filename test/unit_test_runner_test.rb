@@ -81,6 +81,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     test_result = results.first
     assert test_result.failed?
     assert_equal "failed", test_result.message
+    assert test_result.backtrace
   end
 
   def test_reports_expectation_errors
@@ -96,5 +97,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert_match test_result.message, /expect/i
     assert_match test_result.message, /0/
     assert_match test_result.message, /1/
+    assert test_result.backtrace
   end
 end
