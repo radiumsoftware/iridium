@@ -16,7 +16,7 @@ module Iridium
       js_test_runner = File.expand_path('../phantomjs/run-qunit.js', __FILE__)
       js_command = %Q{phantomjs "#{js_test_runner}" "#{loader_path}"}
 
-      return if options[:dry_run]
+      return [] if options[:dry_run]
 
       output = `#{js_command}`
 

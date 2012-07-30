@@ -140,4 +140,12 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
 
     assert_equal 2, results.size
   end
+
+  def test_dry_run_returns_no_results
+    create_file "foo.js", "bar"
+
+    results = invoke "foo.js", :dry_run => true
+
+    assert_equal [], results
+  end
 end
