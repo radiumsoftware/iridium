@@ -65,8 +65,6 @@ module Iridium
           <!--[if lt IE 9]>
             <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
           <![endif]-->
-
-          <link href="http://code.jquery.com/qunit/qunit-1.9.0.css", rel="stylesheet">
         </head>
 
         <body>
