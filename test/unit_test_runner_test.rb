@@ -64,16 +64,32 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    invoke "truth_test.js"
+    results = invoke "truth_test.js"
+    test_result = results.first
+    assert test_result.passed?
   end
 
-  def test_reports_failures
-    create_file "failing_test.js", <<-test
-      test('Truth', function() {
-        ok(false, "failed");
-      });
-    test
+  # def test_reports_assertion_errors
+  #   create_file "failed_assertion.js", <<-test
+  #     test('Failed Assertions', function() {
+  #       ok(false, "failed");
+  #     });
+  #   test
 
-    invoke "failing_test.js"
-  end
+  #   results = invoke "failed_assertion.js"
+  #   test_result = result.first
+  #   asset test_result.failed?
+  # end
+
+  # def test_reports_expectation_errors
+  #   create_file "failed_expectation.js", <<-test
+  #     test('Unmet expectation', function() {
+  #       expect(1);
+  #     });
+  #   test
+
+  #   results = invoke "failed_expectation.js"
+  #   test_reuslt = results.first
+  #   asset test_result.failed?
+  # end
 end
