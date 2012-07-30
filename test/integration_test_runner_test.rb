@@ -34,47 +34,52 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
 
   def test_reports_successful_test_correctly
     create_file "success.js", <<-test
-      casper = require("casper").create({
-      });
-
       casper.start('http://localhost:7777/', function() {
         this.test.assertHttpStatus(200, 'Server is up');
       });
 
-      casper.run();
+      casper.run(function() {
+        this.test.done();
+      });
     test
 
-    invoke "success.js"
+    results = invoke "success.js"
+    test_result = results.first
+    assert test_result.passed?
   end
 
   def test_reports_a_failure
     create_file "failure.js", <<-test
-      casper = require("casper").create({
-      });
-
       casper.start('http://localhost:7777/', function() {
         this.test.assertHttpStatus(500, 'Server should be down!');
       });
 
-      casper.run();
+      casper.run(function() {
+        this.test.done();
+      });
     test
 
-    invoke "failure.js"
+    results = invoke "failure.js"
+    test_result = results.first
+    assert test_result.failed?
+    assert_includes test_result.message, "Server should be down!"
   end
 
   def test_reports_an_error
     create_file "error.js", <<-test
-      casper = require("casper").create({
-      });
-
       casper.start('http://localhost:7777/', function() {
         foobar;
       });
 
-      casper.run();
+      casper.run(function() {
+        this.test.done();
+      });
     test
 
-    invoke "error.js"
+    results = invoke "error.js"
+    test_result = results.first
+    assert test_result.error?
+    assert_equal "ReferenceError: Can't find variable: foobar", test_result.message
   end
 
   def teardown
