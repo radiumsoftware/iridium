@@ -72,7 +72,7 @@ module Iridium
             <script src="<%= file %>"></script>
           <% end %>
 
-          <script src="/application.js"></script>
+          <script src="application.js"></script>
         </body>
       </html>
       str
