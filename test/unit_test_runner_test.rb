@@ -69,27 +69,31 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert test_result.passed?
   end
 
-  # def test_reports_assertion_errors
-  #   create_file "failed_assertion.js", <<-test
-  #     test('Failed Assertions', function() {
-  #       ok(false, "failed");
-  #     });
-  #   test
+  def test_reports_assertion_errors
+    create_file "failed_assertion.js", <<-test
+      test('Failed Assertions', function() {
+        ok(false, "failed");
+      });
+    test
 
-  #   results = invoke "failed_assertion.js"
-  #   test_result = result.first
-  #   asset test_result.failed?
-  # end
+    results = invoke "failed_assertion.js"
+    test_result = results.first
+    assert test_result.failed?
+    assert_equal "failed", test_result.message
+  end
 
-  # def test_reports_expectation_errors
-  #   create_file "failed_expectation.js", <<-test
-  #     test('Unmet expectation', function() {
-  #       expect(1);
-  #     });
-  #   test
+  def test_reports_expectation_errors
+    create_file "failed_expectation.js", <<-test
+      test('Unmet expectation', function() {
+        expect(1);
+      });
+    test
 
-  #   results = invoke "failed_expectation.js"
-  #   test_reuslt = results.first
-  #   asset test_result.failed?
-  # end
+    results = invoke "failed_expectation.js"
+    test_result = results.first
+    assert test_result.failed?
+    assert_match test_result.message, /expect/i
+    assert_match test_result.message, /0/
+    assert_match test_result.message, /1/
+  end
 end
