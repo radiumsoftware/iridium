@@ -88,6 +88,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     assert test_result.failed?
     assert_includes test_result.message, "Server should be down!"
     assert_equal 1, test_result.assertions
+    assert_equal ["failure.js"], test_result.backtrace
   end
 
   def test_reports_an_error
@@ -105,6 +106,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     test_result = results.first
     assert test_result.error?
     assert_equal "ReferenceError: Can't find variable: foobar", test_result.message
+    assert_equal ["error.js:2"], test_result.backtrace
   end
 
   def teardown
