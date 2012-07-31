@@ -14,13 +14,15 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def invoke(*files)
     results = nil
     options = files.extract_options!
+    stdout, stderr = nil, nil
+
     Dir.chdir working_directory do
-      capture_io do
+      stdout, stderr = capture_io do
         results = Iridium::IntegrationTestRunner.new(files).run(options)
       end
     end
 
-    return results
+    return results, stdout, stderr
   end
 
   def working_directory
@@ -48,7 +50,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results = invoke "success.js"
+    results, stdout, stderr = invoke "success.js"
     test_result = results.first
     assert_kind_of Fixnum, test_result.time
     assert_equal 1, test_result.assertions
@@ -66,7 +68,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results = invoke "success.js"
+    results, stdout, stderr = invoke "success.js"
     test_result = results.first
     assert test_result.passed?
     assert_equal 1, test_result.assertions
@@ -83,7 +85,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results = invoke "failure.js"
+    results, stdout, stderr= invoke "failure.js"
     test_result = results.first
     assert test_result.failed?
     assert_includes test_result.message, "Server should be down!"
@@ -102,11 +104,26 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results = invoke "error.js"
+    results, stdout, stderr = invoke "error.js"
     test_result = results.first
     assert test_result.error?
     assert_equal "ReferenceError: Can't find variable: foobar", test_result.message
     assert_equal ["error.js:2"], test_result.backtrace
+  end
+
+  def test_stdout_prints_in_debug_mode
+    create_file "error.js", <<-test
+      casper.start('http://localhost:7777/', function() {
+        console.log('This is logged!');
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    results, stdout, stderr = invoke "error.js", :debug => true
+    assert_includes stdout, "This is logged!"
   end
 
   def teardown

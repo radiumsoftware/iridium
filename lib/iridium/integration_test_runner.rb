@@ -34,6 +34,8 @@ module Iridium
             stdin.each do |output|
               if output =~ %r{<iridium>(.+)</iridium>}
                 collector << TestResult.new(JSON.parse($1))
+              elsif options[:debug]
+                puts output
               end
             end
           rescue Errno::EIO
