@@ -1,6 +1,6 @@
 module Iridium
   class TestResult
-    attr_accessor :failed, :error, :passed
+    attr_accessor :failed, :error, :passed, :assertions
     attr_accessor :name, :file
     attr_accessor :backtrace, :message
     attr_accessor :time

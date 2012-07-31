@@ -51,6 +51,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     results = invoke "success.js"
     test_result = results.first
     assert_kind_of Fixnum, test_result.time
+    assert_equal 1, test_result.assertions
     assert test_result.name
   end
 
@@ -68,6 +69,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     results = invoke "success.js"
     test_result = results.first
     assert test_result.passed?
+    assert_equal 1, test_result.assertions
   end
 
   def test_reports_a_failure
@@ -85,6 +87,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     test_result = results.first
     assert test_result.failed?
     assert_includes test_result.message, "Server should be down!"
+    assert_equal 1, test_result.assertions
   end
 
   def test_reports_an_error
