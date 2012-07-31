@@ -26,22 +26,11 @@ module Iridium
 
       js_test_runner = File.expand_path('../casperjs/test_runner.js', __FILE__)
 
-      js_command = %Q{casperjs "#{js_test_runner}" #{file_arg}}
+      command = %Q{casperjs "#{js_test_runner}" #{file_arg}}
 
-      begin
-        PTY.spawn js_command do |stdin, stdout, pid|
-          begin
-            stdin.each do |output|
-              if output =~ %r{<iridium>(.+)</iridium>}
-                collector << TestResult.new(JSON.parse($1))
-              elsif options[:debug]
-                puts output
-              end
-            end
-          rescue Errno::EIO
-          end
-        end
-      rescue PTY::ChildExited
+      streamer = CommandStreamer.new command
+      streamer.run options do |message|
+        collector << TestResult.new(message)
       end
 
       server_thread.kill

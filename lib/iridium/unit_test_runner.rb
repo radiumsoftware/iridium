@@ -18,22 +18,11 @@ module Iridium
       return collector if options[:dry_run]
 
       js_test_runner = File.expand_path('../phantomjs/run-qunit.js', __FILE__)
-      js_command = %Q{phantomjs "#{js_test_runner}" "#{loader_path}"}
+      command = %Q{phantomjs "#{js_test_runner}" "#{loader_path}"}
 
-      begin
-        PTY.spawn js_command do |stdin, stdout, pid|
-          begin
-            stdin.each do |output|
-              if output =~ %r{<iridium>(.+)</iridium>}
-                collector << TestResult.new(JSON.parse($1))
-              elsif options[:debug]
-                puts output
-              end
-            end
-          rescue Errno::EIO
-          end
-        end
-      rescue PTY::ChildExited
+      streamer = CommandStreamer.new command
+      streamer.run options do |message|
+        collector << TestResult.new(message)
       end
 
       collector
