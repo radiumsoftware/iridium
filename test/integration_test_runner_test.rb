@@ -37,6 +37,23 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     end
   end
 
+  def test_reports_basic_information
+    create_file "success.js", <<-test
+      casper.start('http://localhost:7777/', function() {
+        this.test.assertHttpStatus(200, 'Server is up');
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    results = invoke "success.js"
+    test_result = results.first
+    assert_kind_of Fixnum, test_result.time
+    assert test_result.name
+  end
+
   def test_reports_successful_test_correctly
     create_file "success.js", <<-test
       casper.start('http://localhost:7777/', function() {
