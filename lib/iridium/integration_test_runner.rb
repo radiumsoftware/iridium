@@ -1,5 +1,6 @@
 require 'active_support/core_ext/class'
 require 'rack/server'
+require 'pty'
 
 module Iridium
   class IntegrationTestRunner
@@ -9,10 +10,10 @@ module Iridium
       end
     end
 
-    attr_reader :files
+    attr_reader :files, :collector
 
-    def initialize(files)
-      @files = files
+    def initialize(files, collector = [])
+      @files, @collector = files, collector
     end
 
     def run(options = {})
@@ -25,13 +26,25 @@ module Iridium
 
       js_test_runner = File.expand_path('../casperjs/test_runner.js', __FILE__)
 
-      output = `casperjs "#{js_test_runner}" #{file_arg}`
+      js_command = %Q{casperjs "#{js_test_runner}" #{file_arg}}
 
-      json = output.match(%r{<iridium>(.+)</iridium>})[1]
+      begin
+        PTY.spawn js_command do |stdin, stdout, pid|
+          begin
+            stdin.each do |output|
+              if output =~ %r{<iridium>(.+)</iridium>}
+                collector << TestResult.new(JSON.parse($1))
+              end
+            end
+          rescue Errno::EIO
+          end
+        end
+      rescue PTY::ChildExited
+      end
 
       server_thread.kill
 
-      JSON.parse(json).map { |hash| TestResult.new(hash) }
+      collector
     end
   end
 end
