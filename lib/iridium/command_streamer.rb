@@ -2,28 +2,25 @@ require 'pty'
 
 module Iridium
   class CommandStreamer
+    class CommandFailed < RuntimeError ; end
+
     def initialize(command)
       @command = command
     end
 
     def run(options = {})
-      raise "Block required!" unless block_given?
-
-      begin
-        PTY.spawn @command do |stdin, stdout, pid|
-          begin
-            stdin.each do |output|
-              if output =~ %r{<iridium>(.+)</iridium>}
-                yield JSON.parse($1)
-              elsif options[:debug]
-                puts output
-              end
-            end
-          rescue Errno::EIO
+      PTY.spawn @command do |stdin, stdout, pid|
+        stdin.each do |output|
+          if output =~ %r{<iridium>(.+)</iridium>}
+            yield JSON.parse($1) if block_given?
+          elsif options[:debug]
+            puts output
           end
         end
-      rescue PTY::ChildExited
+        PTY.check pid, true
       end
+    rescue PTY::ChildExited => ex
+      raise CommandFailed unless ex.status.success?
     end
   end
 end
