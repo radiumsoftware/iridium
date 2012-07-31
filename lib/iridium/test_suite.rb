@@ -1,3 +1,5 @@
+require 'rack/server'
+
 module Iridium
   # Iridium supports two types of tests right out of the box
   #
@@ -49,73 +51,43 @@ module Iridium
   # 5. Shutdown the test server
   # 6. Report results
   class TestSuite
-    attr_accessor :unit_tests, :integration_tests
-    attr_reader :app, :files, :results
-
-    def initialize(app, files, options = {})
-      @app, @files, @options = app, files, options
-      @files = @files.collect do |file|
-        file.to_s.gsub app.root.to_s, ''
-      end
+    def initialize(app, tests = [])
+      @app, @tests, = app, tests
       @results = []
     end
 
-    def integration_tests
-      files.select { |f| f =~ /test\/integration\// }
-    end
-
-    def unit_tests
-      files - integration_tests
-    end
-
-    def runners
-      _runners = []
-      _runners = unit_tests.each_with_object(_runners) do |file, memo|
-        memo << UnitTestRunner.new(app, [file])
-      end
-      _runners = integration_tests.each_with_object(_runners) do |file, memo|
-        memo << IntegrationTestRunner.new(app, [file])
-      end
-      _runners
-    end
-
-    def run
+    def run(options = {})
       setup
-      run! unless options[:dry_run]
+
+      @results = @tests.map { |t| t.run(options) }.flatten
+
       teardown
+
+      @results
     end
 
     def test_root
-      app.root.join('tmp', 'test_root')
+      @app.root.join('tmp', 'test_root')
     end
 
     private
-    def options
-      @options
-    end
-
-    def integration_tests?
-      integration_tests.size > 0
-    end
-
-    def unit_tests?
-      unit_tests.size > 0
-    end
-
     def setup
-      app.compile
-      build_unit_test_directory if unit_tests?
+      @app.compile
+      build_unit_test_directory
+      start_server
+      @results.clear
     end
 
     def teardown
-
+      kill_server
     end
 
     def build_unit_test_directory
       suite = self
+      _app = @app
 
       _pipeline = Rake::Pipeline.build do
-        input app.root
+        input _app.root
         output suite.test_root
 
         match 'test/**/*.coffee' do
@@ -130,7 +102,7 @@ module Iridium
           copy
         end
 
-        site_directory = File.basename(app.site_path)
+        site_directory = File.basename(_app.site_path)
 
         match "#{site_directory}/**/*" do
           copy do |path|
@@ -143,10 +115,14 @@ module Iridium
       _pipeline.invoke_clean
     end
 
-    def run!
-      runners.each do |test|
-        test.run
+    def start_server
+      @server = Thread.new do
+        Rack::Server.new(:app => @app, :port => 7777).start
       end
+    end
+
+    def kill_server
+      @server.kill
     end
   end
 end
