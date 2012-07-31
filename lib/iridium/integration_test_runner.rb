@@ -3,6 +3,10 @@ module Iridium
   class IntegrationTestRunner
     attr_reader :files, :collector
 
+    def self.runner_path
+      File.expand_path('../casperjs/test_runner.js', __FILE__)
+    end
+
     def initialize(files, collector = [])
       @files, @collector = files, collector
     end
@@ -10,11 +14,9 @@ module Iridium
     def run(options = {})
       file_arg = files.map { |f| %Q{"#{f}"} }.join " "
 
-      js_test_runner = File.expand_path('../casperjs/test_runner.js', __FILE__)
-
       return collector if options[:dry_run]
 
-      command = %Q{casperjs "#{js_test_runner}" #{file_arg}}
+      command = %Q{casperjs "#{self.class.runner_path}" #{file_arg}}
 
       begin
         streamer = CommandStreamer.new command

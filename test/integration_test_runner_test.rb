@@ -139,33 +139,4 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     results, stdout, stderr = invoke "error.js", :dry_run => true
     assert_equal [], results
   end
-
-  def test_handles_errors_in_test_runner
-    content = File.read Iridium::IntegrationTestRunner.runner_path
-
-    mutated_content = "thisShouldRaiseAnError!\n#{content}"
-
-    File.open Iridium::IntegrationTestRunner.runner_path, 'w' do |f|
-      f.puts mutated_content
-    end
-
-    create_file "error.js", <<-test
-      casper.start('http://localhost:7776/', function() {
-        console.log('This is logged!');
-      });
-
-      casper.run(function() {
-        this.test.done();
-      });
-    test
-
-    results, stdout, stderr = invoke "error.js", :dry_run => true
-    assert_equal 1, results.size
-    test_result = results.first
-    assert test_result.error?
-  ensure
-    File.open Iridium::IntegrationTestRunner.runner_path  do |f|
-      f.puts content
-    end
-  end
 end
