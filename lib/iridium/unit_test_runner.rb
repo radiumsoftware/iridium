@@ -15,7 +15,7 @@ module Iridium
         index.puts ERB.new(template_erb).result(binding)
       end
 
-      return [] if options[:dry_run]
+      return collector if options[:dry_run]
 
       js_test_runner = File.expand_path('../phantomjs/run-qunit.js', __FILE__)
       js_command = %Q{phantomjs "#{js_test_runner}" "#{loader_path}"}
