@@ -189,7 +189,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert_includes stdout, "This is logged!"
   end
 
-  def test_returns_an_error_if_an_asset_cannot_be_loaded
+  def test_returns_an_error_if_a_local_script_cannot_be_loaded
     create_file "truth.js", <<-test
       test('Truth', function() {
         setTimeout(function() {}, 5000);
@@ -198,11 +198,28 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
 
     Iridium.application.config.load :unknown_file
 
-    results, stdout, stderr = invoke "truth.js", :debug => true
+    results, stdout, stderr = invoke "truth.js"
 
     assert_equal 1, results.size
     test_result = results.first
     assert test_result.error?
     assert_includes test_result.message, "unknown_file.js"
+  end
+
+  def test_returns_an_error_if_an_remote_script_cannot_be_loaded
+    create_file "truth.js", <<-test
+      test('Truth', function() {
+        setTimeout(function() {}, 5000);
+      });
+    test
+
+    Iridium.application.config.load "http://www.google.com/plop/jquery-2348917.js"
+
+    results, stdout, stderr = invoke "truth.js"
+
+    assert_equal 1, results.size
+    test_result = results.first
+    assert test_result.error?
+    assert_includes test_result.message, "http://www.google.com/plop/jquery-2348917.js"
   end
 end
