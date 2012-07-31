@@ -1,4 +1,5 @@
 require 'iridium/commands/application'
+require 'iridium/commands/test'
 require 'thor/group'
 
 module Iridium

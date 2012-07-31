@@ -1,15 +1,6 @@
 require 'active_support/core_ext/class'
-require 'rack/server'
-require 'pty'
-
 module Iridium
   class IntegrationTestRunner
-    class TestServer < ::Rack::Server
-      def app
-        Iridium.application
-      end
-    end
-
     attr_reader :files, :collector
 
     def initialize(files, collector = [])
