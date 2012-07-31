@@ -2,13 +2,12 @@ require 'test_helper'
 
 class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def setup
-    Iridium.application = nil
-    Iridium.application = Class.new(TestApp) do
-      def call(env)
-        [200, {}, ["<body>Hello World</body>"]]
-      end
-    end
+    Iridium.application = TestApp
     FileUtils.mkdir_p working_directory
+  end
+
+  def teardown
+    Iridium.application = nil
   end
 
   def invoke(*files)
@@ -41,7 +40,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
 
   def test_reports_basic_information
     create_file "success.js", <<-test
-      casper.start('http://localhost:7777/', function() {
+      casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(200, 'Server is up');
       });
 
@@ -59,7 +58,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
 
   def test_reports_successful_test_correctly
     create_file "success.js", <<-test
-      casper.start('http://localhost:7777/', function() {
+      casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(200, 'Server is up');
       });
 
@@ -76,7 +75,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
 
   def test_reports_a_failure
     create_file "failure.js", <<-test
-      casper.start('http://localhost:7777/', function() {
+      casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(500, 'Server should be down!');
       });
 
@@ -95,7 +94,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
 
   def test_reports_an_error
     create_file "error.js", <<-test
-      casper.start('http://localhost:7777/', function() {
+      casper.start('http://localhost:7776/', function() {
         foobar;
       });
 
@@ -113,7 +112,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
 
   def test_stdout_prints_in_debug_mode
     create_file "error.js", <<-test
-      casper.start('http://localhost:7777/', function() {
+      casper.start('http://localhost:7776/', function() {
         console.log('This is logged!');
       });
 
@@ -126,7 +125,18 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     assert_includes stdout, "This is logged!"
   end
 
-  def teardown
-    Iridium.application = nil
+  def test_dry_return_returns_no_results
+    create_file "error.js", <<-test
+      casper.start('http://localhost:7776/', function() {
+        console.log('This is logged!');
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    results, stdout, stderr = invoke "error.js", :dry_run => true
+    assert_equal [], results
   end
 end
