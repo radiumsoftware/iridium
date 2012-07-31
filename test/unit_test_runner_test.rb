@@ -233,5 +233,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert_equal 1, results.size
     test_result = results.first
     refute test_result.passed?
+    assert test_result.message
+    assert test_result.backtrace
   end
 end
