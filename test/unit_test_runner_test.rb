@@ -36,7 +36,13 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
 
   def invoke(*files)
     options = files.extract_options!
-    Iridium::UnitTestRunner.new(Iridium.application, files).run(options)
+    results = nil
+
+    out, err = capture_io do
+      results = Iridium::UnitTestRunner.new(Iridium.application, files).run(options)
+    end
+
+    [results, out, err]
   end
 
   def test_raises_an_error_when_file_is_missing
@@ -75,7 +81,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results = invoke "truth_test.js"
+    results, stdout, stderr = invoke "truth_test.js"
     test_result = results.first
     assert_equal "Truth", test_result.name
     assert_kind_of Fixnum, test_result.time
@@ -89,7 +95,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results = invoke "truth_test.js"
+    results, stdout, stderr = invoke "truth_test.js"
     test_result = results.first
     assert test_result.passed?
     assert_equal 1, test_result.assertions
@@ -102,7 +108,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results = invoke "failed_assertion.js"
+    results, stdout, stderr = invoke "failed_assertion.js"
     test_result = results.first
     assert test_result.failed?
     assert_equal "failed", test_result.message
@@ -117,7 +123,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results = invoke "failed_expectation.js"
+    results, stdout, stderr = invoke "failed_expectation.js"
     test_result = results.first
     assert test_result.failed?
     assert_match test_result.message, /expect/i
@@ -134,7 +140,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results = invoke "error.js"
+    results, stdout, stderr = invoke "error.js"
     test_result = results.first
     assert test_result.error?
     assert test_result.backtrace
@@ -155,7 +161,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results = invoke "failed_expectation.js", "truth_test.js"
+    results, stdout, stderr = invoke "failed_expectation.js", "truth_test.js"
 
     assert_equal 2, results.size
   end
@@ -163,8 +169,20 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   def test_dry_run_returns_no_results
     create_file "foo.js", "bar"
 
-    results = invoke "foo.js", :dry_run => true
+    results, stdout, stderr = invoke "foo.js", :dry_run => true
 
     assert_equal [], results
+  end
+
+  def test_debug_mode_prints_to_stdout
+    create_file "foo.js", <<-test
+      test('Truth', function() {
+        console.log("This is logged!");
+      });
+    test
+
+    results, stdout, stderr = invoke "foo.js", :debug => true
+
+    assert_includes stdout, "This is logged!"
   end
 end
