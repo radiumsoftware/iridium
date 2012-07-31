@@ -127,6 +127,21 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert_equal 1, test_result.assertions
   end
 
+  def test_reports_errors
+    create_file "error.js", <<-test
+      test('This test has invalid js', function() {
+        foobar();
+      });
+    test
+
+    results = invoke "error.js"
+    test_result = results.first
+    assert test_result.error?
+    assert test_result.backtrace
+    assert_equal 1, test_result.assertions
+    assert_equal "ReferenceError: Can't find variable: foobar", test_result.message
+  end
+
   def tests_reports_multiple_tests
     create_file "failed_expectation.js", <<-test
       test('Unmet expectation', function() {
