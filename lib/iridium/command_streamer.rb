@@ -21,9 +21,11 @@ module Iridium
         PTY.check pid, true
       end
     rescue PTY::ChildExited => ex
-      raise CommandFailed unless ex.status.success?
+      if !ex.status.success?
+        raise CommandFailed, "#{@command} returned #{ex.status.exitstatus} when it shouldn't have!"
+      end
     rescue Errno::ENOENT => ex
-      raise CommandFailed
+      raise CommandFailed, "#{@command} could not be found!"
     end
   end
 end

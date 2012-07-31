@@ -16,9 +16,17 @@ module Iridium
 
       command = %Q{casperjs "#{js_test_runner}" #{file_arg}}
 
-      streamer = CommandStreamer.new command
-      streamer.run options do |message|
-        collector << TestResult.new(message)
+      begin
+        streamer = CommandStreamer.new command
+        streamer.run options do |message|
+          collector << TestResult.new(message)
+        end
+      rescue CommandStreamer::CommandFailed => ex
+        result = TestResult.new :error => true
+        result.name = "Javascript Execution Error"
+        result.backtrace = ex.backtrace
+
+        collector << result
       end
 
       collector

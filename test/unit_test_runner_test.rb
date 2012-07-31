@@ -185,4 +185,23 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
 
     assert_includes stdout, "This is logged!"
   end
+
+  def test_handles_phantomjs_failures
+    create_file "foo.js", <<-test
+      test('Truth', function() {
+        ok(true, "Pass!");
+      });
+    test
+
+    FileUtils.rm working_directory.join("qunit.js")
+
+    results, stdout, stderr = invoke "foo.js"
+
+    assert_equal 1, results.size
+    test_result = results.first
+    assert test_result.error?
+    assert_equal "Javascript Execution Error", test_result.name
+    assert test_result.backtrace
+    assert_match test_result.file, %r{unit_test_runner-\w+.html}
+  end
 end

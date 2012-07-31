@@ -20,9 +20,18 @@ module Iridium
       js_test_runner = File.expand_path('../phantomjs/run-qunit.js', __FILE__)
       command = %Q{phantomjs "#{js_test_runner}" "#{loader_path}"}
 
-      streamer = CommandStreamer.new command
-      streamer.run options do |message|
-        collector << TestResult.new(message)
+      begin
+        streamer = CommandStreamer.new command
+        streamer.run options do |message|
+          collector << TestResult.new(message)
+        end
+      rescue CommandStreamer::CommandFailed => ex
+        result = TestResult.new :error => true
+        result.name = "Javascript Execution Error"
+        result.backtrace = ex.backtrace
+        result.file = loader_path.to_s
+
+        collector << result
       end
 
       collector
