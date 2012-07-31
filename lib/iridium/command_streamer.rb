@@ -17,10 +17,13 @@ module Iridium
             puts output
           end
         end
+
         PTY.check pid, true
       end
     rescue PTY::ChildExited => ex
       raise CommandFailed unless ex.status.success?
+    rescue Errno::ENOENT => ex
+      raise CommandFailed
     end
   end
 end

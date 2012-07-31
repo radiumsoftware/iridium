@@ -13,4 +13,12 @@ class CommandStreamerTest < MiniTest::Unit::TestCase
       command.run
     end
   end
+
+  def test_survives_when_command_cannot_be_found
+    command = Iridium::CommandStreamer.new "asdfoijdafkdasjf"
+
+    assert_raises Iridium::CommandStreamer::CommandFailed do
+      command.run
+    end
+  end
 end
