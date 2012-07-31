@@ -1,9 +1,11 @@
+require 'pty'
+
 module Iridium
   class UnitTestRunner
-    attr_reader :app, :files
+    attr_reader :app, :files, :collector
 
-    def initialize(app, files)
-      @app, @files = app, files
+    def initialize(app, files, collector = [])
+      @app, @files, @collector = app, files, collector
     end
 
     def run(options = {})
@@ -18,9 +20,21 @@ module Iridium
       js_test_runner = File.expand_path('../phantomjs/run-qunit.js', __FILE__)
       js_command = %Q{phantomjs "#{js_test_runner}" "#{loader_path}"}
 
-      output = `#{js_command}`
+      begin
+        PTY.spawn js_command do |stdin, stdout, pid|
+          begin
+            stdin.each do |output|
+              if output =~ %r{<iridium>(.+)</iridium>}
+                collector << TestResult.new(JSON.parse($1))
+              end
+            end
+          rescue Errno::EIO
+          end
+        end
+      rescue PTY::ChildExited
+      end
 
-      JSON.parse(output).map { |hash| TestResult.new(hash) }
+      collector
     end
 
     def test_root
