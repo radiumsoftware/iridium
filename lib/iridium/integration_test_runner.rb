@@ -4,7 +4,7 @@ module Iridium
     attr_reader :files, :collector
 
     def self.runner_path
-      File.expand_path('../casperjs/test_runner.js', __FILE__)
+      File.expand_path('../casperjs/integration_test_runner.js', __FILE__)
     end
 
     def initialize(files, collector = [])

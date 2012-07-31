@@ -17,8 +17,8 @@ module Iridium
 
       return collector if options[:dry_run]
 
-      js_test_runner = File.expand_path('../phantomjs/run-qunit.js', __FILE__)
-      command = %Q{phantomjs "#{js_test_runner}" "#{loader_path}"}
+      js_test_runner = File.expand_path('../casperjs/qunit_runner.js', __FILE__)
+      command = %Q{casperjs "#{js_test_runner}" "#{loader_path}"}
 
       begin
         streamer = CommandStreamer.new command
