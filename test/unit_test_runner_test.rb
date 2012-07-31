@@ -79,6 +79,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     test_result = results.first
     assert_equal "Truth", test_result.name
     assert_kind_of Fixnum, test_result.time
+    assert_equal 1, test_result.assertions
   end
 
   def test_reports_passes
@@ -91,6 +92,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     results = invoke "truth_test.js"
     test_result = results.first
     assert test_result.passed?
+    assert_equal 1, test_result.assertions
   end
 
   def test_reports_assertion_errors
@@ -105,6 +107,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert test_result.failed?
     assert_equal "failed", test_result.message
     assert test_result.backtrace
+    assert_equal 1, test_result.assertions
   end
 
   def test_reports_expectation_errors
@@ -121,6 +124,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert_match test_result.message, /0/
     assert_match test_result.message, /1/
     assert test_result.backtrace
+    assert_equal 1, test_result.assertions
   end
 
   def tests_reports_multiple_tests
