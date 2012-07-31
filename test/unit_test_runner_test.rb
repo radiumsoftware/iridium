@@ -8,6 +8,9 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     File.open working_directory.join("qunit.js"), "w" do |qunit|
       qunit.puts File.read(File.expand_path('../../generators/application/app/dependencies/qunit.js', __FILE__))
     end
+    create_file "application.js", <<-file
+      var foo = {};
+    file
   end
 
   def teardown
@@ -186,22 +189,20 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert_includes stdout, "This is logged!"
   end
 
-  def test_handles_phantomjs_failures
-    create_file "foo.js", <<-test
+  def test_returns_an_error_if_an_asset_cannot_be_loaded
+    create_file "truth.js", <<-test
       test('Truth', function() {
-        ok(true, "Pass!");
+        setTimeout(function() {}, 5000);
       });
     test
 
-    FileUtils.rm working_directory.join("qunit.js")
+    Iridium.application.config.load :unknown_file
 
-    results, stdout, stderr = invoke "foo.js"
+    results, stdout, stderr = invoke "truth.js", :debug => true
 
     assert_equal 1, results.size
     test_result = results.first
     assert test_result.error?
-    assert_equal "Javascript Execution Error", test_result.name
-    assert test_result.backtrace
-    assert_match test_result.file, %r{unit_test_runner-\w+.html}
+    assert_includes test_result.message, "unknown_file.js"
   end
 end
