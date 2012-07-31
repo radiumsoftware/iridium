@@ -222,4 +222,16 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert test_result.error?
     assert_includes test_result.message, "http://www.google.com/plop/jquery-2348917.js"
   end
+
+  def test_returns_an_error_when_the_test_file_is_bad
+    create_file "undefined.js", <<-test
+      var baz = foo + bar;
+    test
+
+    results, stdout, stderr = invoke "undefined.js"
+
+    assert_equal 1, results.size
+    test_result = results.first
+    refute test_result.passed?
+  end
 end
