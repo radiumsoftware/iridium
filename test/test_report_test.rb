@@ -3,7 +3,7 @@ require 'test_helper'
 class TestReportTest < MiniTest::Unit::TestCase
   def result(attributes = {})
     Iridium::TestResult.new({
-
+      :backtrace => []
     }.merge(attributes))
   end
 
@@ -36,5 +36,37 @@ class TestReportTest < MiniTest::Unit::TestCase
     stdout = print [result(:failed => true), result(:failed => true)]
 
     assert_includes stdout, "2 Failure(s)"
+  end
+
+  def test_report_contains_failure_information
+    failing_result = result({
+      :failed => true,
+      :name => "Test Label",
+      :file => "/path/to/file.js",
+      :message => "Assertion message",
+    })
+
+    stdout = print [failing_result]
+
+    assert_includes stdout, failing_result.name
+    assert_includes stdout, failing_result.file
+    assert_includes stdout, failing_result.message
+  end
+
+  def test_report_contains_backtrace_for_errors
+    error_result = result({
+      :error => true,
+      :name => "Test Label",
+      :file => "/path/to/file.js",
+      :message => "Assertion message",
+      :backtrace => ['/backtrace/js:1']
+    })
+
+    stdout = print [error_result]
+
+    assert_includes stdout, error_result.name
+    assert_includes stdout, error_result.file
+    assert_includes stdout, error_result.message
+    assert_includes stdout, error_result.backtrace.first
   end
 end

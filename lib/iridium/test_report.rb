@@ -54,6 +54,21 @@ module Iridium
         total_errors,
         total_failed,
       ])
+
+      results.reject(&:passed?).each do |result|
+        io.puts result.name
+        io.puts "  #{result.file}" if result.file
+        io.puts "  #{result.message}"
+
+        if result.error?
+          io.puts "  # Backtrace"
+          result.backtrace.each do |line|
+            io.puts "  #{line}"
+          end
+        end
+
+        io.puts
+      end
     end
   end
 end
