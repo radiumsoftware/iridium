@@ -26,6 +26,10 @@ module Iridium
             end
           end.parse! args
 
+          if args.size == 0
+            args = Dir['test/**/*_test.{coffee,js}']
+          end
+
           TestSuite.execute args, options
         end
       end

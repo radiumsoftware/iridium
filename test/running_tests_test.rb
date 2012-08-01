@@ -194,6 +194,25 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_equal 0, status
   end
 
+  def test_runner_defaults_to_all_test_files_when_no_arguments
+    create_file "test/integration/truth_test.coffee", <<-test
+      casper.start 'http://localhost:7777/', ->
+        this.test.assertHttpStatus(200, 'Server is up')
+
+      casper.run ->
+        this.test.done()
+    test
+
+    create_file "test/unit/truth_test.coffee", <<-test
+      test 'Truth', ->
+        ok true, "Passed!"
+    test
+
+    status, stdout, stderr = invoke
+
+    assert_equal 0, status
+  end
+
   def invoke(*args)
     stdout, stderr, status = nil
 
