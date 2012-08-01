@@ -81,6 +81,17 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_includes stderr, "compiling"
   end
 
+  def test_runs_coffee_script_unit_test
+    create_file "test/unit/truth.coffee", <<-test
+      test 'Truth', ->
+        ok true, "Passed!"
+    test
+
+    status, stdout, stderr = invoke "test/unit/truth.coffee"
+
+    assert_equal 0, status
+  end
+
   def invoke(*args)
     stdout, stderr, status = nil
 
