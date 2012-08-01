@@ -70,7 +70,6 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     results, stdout, stderr = invoke "success.js"
     test_result = results.first
     assert test_result.passed?
-    assert_equal 1, test_result.assertions
   end
 
   def test_reports_a_failure
@@ -108,6 +107,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     assert test_result.error?
     assert_equal "ReferenceError: Can't find variable: foobar", test_result.message
     assert_equal "error.js:2", test_result.backtrace.first
+    assert_equal 0, test_result.assertions
   end
 
   def test_stdout_prints_in_debug_mode
@@ -153,6 +153,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     assert test_result.error?
     assert_equal "ReferenceError: Can't find variable: foobar", test_result.message
     assert test_result.backtrace
+    assert_equal 0, test_result.assertions
   end
 
   def test_does_not_let_one_test_bring_down_others
