@@ -238,4 +238,20 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert test_result.message
     assert test_result.backtrace
   end
+
+  def test_one_test_cannot_bring_down_others
+    create_file "success.js", <<-test
+      test('Truth', function() {
+        ok(true, "passed");
+      });
+    test
+
+    create_file "error.js", <<-test
+      foobar();
+    test
+
+    results, stdout, stderr = invoke "error.js", "success.js"
+
+    assert_equal 2, results.size
+  end
 end
