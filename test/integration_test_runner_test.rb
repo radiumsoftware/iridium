@@ -107,7 +107,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     test_result = results.first
     assert test_result.error?
     assert_equal "ReferenceError: Can't find variable: foobar", test_result.message
-    assert_equal ["error.js:2"], test_result.backtrace
+    assert_equal "error.js:2", test_result.backtrace.first
   end
 
   def test_stdout_prints_in_debug_mode
@@ -138,5 +138,20 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
 
     results, stdout, stderr = invoke "error.js", :dry_run => true
     assert_equal [], results
+  end
+
+
+  def test_handles_javascript_errors_in_source_files
+    create_file "error.js", <<-test
+      foobar();
+    test
+
+    results, stdout, stderr = invoke "error.js", :debug => true
+
+    assert_equal 1, results.size
+    test_result = results.first
+    assert test_result.error?
+    assert_equal "ReferenceError: Can't find variable: foobar", test_result.message
+    assert test_result.backtrace
   end
 end
