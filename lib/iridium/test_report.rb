@@ -33,7 +33,27 @@ module Iridium
     end
 
     def print_results(results)
+      total_passed = results.select(&:passed?).size
+      total_failed = results.select(&:failed?).size
+      total_errors = results.select(&:error?).size
 
+      total_assertions = results.inject(0) do |sum, result|
+        sum += result.assertions || 0
+      end
+
+      total_time = results.inject(0) do |sum, result|
+        sum += result.time || 0
+      end
+
+      summary = "%d Test(s), %d Assertion(s), %d Passed, %d Error(s), %d Failure(s)"
+
+      io.puts(summary % [
+        results.size, 
+        total_assertions,
+        total_passed,
+        total_errors,
+        total_failed,
+      ])
     end
   end
 end
