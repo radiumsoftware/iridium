@@ -158,6 +158,23 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_equal 1, status
   end
 
+  def test_runner_supports_debug_mode
+    create_file "test/integration/logging.coffee", <<-test
+      console.log 'integration logging'
+
+      casper.exit()
+    test
+
+    create_file "test/unit/logging.coffee", <<-test
+      console.log 'unit logging'
+    test
+
+    status, stdout, stderr = invoke "test/unit/logging.coffee", "test/integration/logging.coffee", "--debug"
+
+    assert_includes stdout, "integration logging"
+    assert_includes stdout, "unit logging"
+  end
+
   def invoke(*args)
     stdout, stderr, status = nil
 
