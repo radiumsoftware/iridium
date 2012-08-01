@@ -68,6 +68,19 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_equal 0, status
   end
 
+  def test_pukes_on_invalid_coffee_script
+    create_file "test/unit/invalid_coffeescript.coffee", <<-test
+      test 'Truth' ->
+        ok true, "Passed!"
+    test
+
+    status, stdout, stderr = invoke "test/unit/invalid_coffeescript.coffee"
+
+    assert_equal 1, status
+    assert_includes stderr, "test/unit/invalid_coffeescript.coffee"
+    assert_includes stderr, "compiling"
+  end
+
   def invoke(*args)
     stdout, stderr, status = nil
 

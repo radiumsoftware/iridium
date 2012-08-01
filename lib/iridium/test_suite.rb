@@ -51,16 +51,14 @@ module Iridium
   # 5. Shutdown the test server
   # 6. Report results
   class TestSuite
+    class SetupFailed < RuntimeError ; end
+
     def self.execute(file_names, options = {})
-      unless Iridium.application
-        $stderr.puts "No application loaded!"
-        return 1
-      end
+      raise SetupFailed, "No application loaded!" unless Iridium.application
 
       file_names.each do |file|
         if !File.exists? file
-          $stderr.puts "#{file} does not exist!"
-          return 1
+          raise SetupFailed, "#{file} does not exist!"
         end
       end
 
@@ -71,10 +69,7 @@ module Iridium
       tests << UnitTestRunner.new(Iridium.application, unit_test_files) unless unit_test_files.empty?
       tests << IntegrationTestRunner.new(integration_test_files) unless integration_test_files.empty?
 
-      if tests.empty?
-        $stderr.puts "You did not pass any files!"
-        return 1
-      end
+      raise "You did not pass any files!" if tests.empty?
 
       suite = TestSuite.new Iridium.application, tests
 
@@ -85,6 +80,9 @@ module Iridium
       else
         return 1
       end
+    rescue SetupFailed => ex
+      $stderr.puts ex
+      return 1
     end
 
     def initialize(app, tests = [])
@@ -112,6 +110,8 @@ module Iridium
       build_unit_test_directory
       start_server
       @results.clear
+    rescue ExecJS::ProgramError => ex
+      raise SetupFailed, ex.to_s
     end
 
     def teardown
