@@ -12,8 +12,12 @@ module Iridium
 
     module ClassMethods
       def call(env)
-        instance.app.call(env)
+        instance.call(env)
       end
+    end
+
+    def call(env)
+      app.call env
     end
 
     def app

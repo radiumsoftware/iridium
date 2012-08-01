@@ -153,7 +153,7 @@ module Iridium
 
     def start_server
       @server = Thread.new do
-        Rack::Server.new(:app => @app, :port => 7777).start
+        ::Rack::Server.new(:app => @app, :Port => 7777).start
       end
     end
 

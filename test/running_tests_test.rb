@@ -52,6 +52,22 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_equal 0, status
   end
 
+  def test_runs_an_integration_test
+    create_file "test/integration/truth_test.js", <<-test
+      casper.start('http://localhost:7777/', function() {
+        this.test.assertHttpStatus(200, 'Server is up');
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    status, stdout, stderr = invoke "test/integration/truth_test.js"
+
+    assert_equal 0, status
+  end
+
   def invoke(*args)
     stdout, stderr, status = nil
 
