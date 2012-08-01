@@ -2,4 +2,9 @@
 
 require 'iridium'
 
-Iridium::CLI.start
+if ARGV.first == 'test'
+  ARGV.shift
+  Iridium::Commands::Test.start
+else
+  Iridium::CLI.start
+end
