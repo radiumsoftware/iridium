@@ -65,15 +65,19 @@ module Iridium
       integration_test_files = file_names.select { |f| f =~ %r{test/integration}}
       unit_test_files = file_names - integration_test_files
 
+      report = TestReport.new
+
       tests = []
-      tests << UnitTestRunner.new(Iridium.application, unit_test_files) unless unit_test_files.empty?
-      tests << IntegrationTestRunner.new(integration_test_files) unless integration_test_files.empty?
+      tests << UnitTestRunner.new(Iridium.application, unit_test_files, report.collector) unless unit_test_files.empty?
+      tests << IntegrationTestRunner.new(integration_test_files, report.collector) unless integration_test_files.empty?
 
       raise "You did not pass any files!" if tests.empty?
 
       suite = TestSuite.new Iridium.application, tests
 
       results = suite.run options
+
+      report.print_results results
 
       if results.all?(&:passed?) || options[:dry_run]
         return 0
