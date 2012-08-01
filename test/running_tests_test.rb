@@ -36,7 +36,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   def test_raises_an_error_if_file_does_not_exist
     status, stdout, stderr = invoke "foo.js"
 
-    assert_equal 1, status
+    assert_equal 2, status
     assert_includes stderr, "foo.js"
   end
 
@@ -76,7 +76,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/unit/invalid_coffeescript.coffee"
 
-    assert_equal 1, status
+    assert_equal 2, status
     assert_includes stderr, "test/unit/invalid_coffeescript.coffee"
     assert_includes stderr, "compiling"
   end
@@ -135,7 +135,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
         ok true, "Passed!"
     test
 
-    status, stdout, stderr = invoke "test/integration/error.coffee", "test/integration/truth.coffee"
+    status, stdout, stderr = invoke "test/integration/error.coffee", "test/unit/truth.coffee"
 
     assert_equal 1, status
   end

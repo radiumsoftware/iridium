@@ -82,7 +82,7 @@ module Iridium
       end
     rescue SetupFailed => ex
       $stderr.puts ex
-      return 1
+      return 2
     end
 
     def initialize(app, tests = [])
