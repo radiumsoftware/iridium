@@ -55,6 +55,8 @@ module Iridium
         total_failed
       ])
 
+      puts "\n"
+
       results.reject(&:passed?).each do |result|
         io.puts result.name
         io.puts "  #{result.file}" if result.file
