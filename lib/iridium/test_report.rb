@@ -45,14 +45,14 @@ module Iridium
         sum += result.time || 0
       end
 
-      summary = "%d Test(s), %d Assertion(s), %d Passed, %d Error(s), %d Failure(s)"
+      summary = "\n\n%d Test(s), %d Assertion(s), %d Passed, %d Error(s), %d Failure(s)"
 
       io.puts(summary % [
         results.size, 
         total_assertions,
         total_passed,
         total_errors,
-        total_failed,
+        total_failed
       ])
 
       results.reject(&:passed?).each do |result|
