@@ -10,8 +10,12 @@ module Iridium
           OptionParser.new do |opts|
             opts.banner = "Usage: PATH [PATH] [options]"
 
-            opts.on "--debug", "Print messages from tests"  do |d|
+            opts.on "--debug", "Print messages from tests" do
               options[:debug] = true
+            end
+
+            opts.on "--dry-run", "Setup and tear down the test suite without executing the tests" do
+              options[:dry_run] = true
             end
 
             # No argument, shows at tail.  This will print an options summary.

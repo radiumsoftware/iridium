@@ -75,7 +75,7 @@ module Iridium
 
       results = suite.run options
 
-      if results.all?(&:passed?)
+      if results.all?(&:passed?) || options[:dry_run]
         return 0
       else
         return 1
