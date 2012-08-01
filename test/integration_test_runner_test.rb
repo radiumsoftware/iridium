@@ -154,4 +154,26 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     assert_equal "ReferenceError: Can't find variable: foobar", test_result.message
     assert test_result.backtrace
   end
+
+  def test_does_not_let_one_test_bring_down_others
+    create_file "success.js", <<-test
+      casper.start('http://localhost:7776/', function() {
+        this.test.assertHttpStatus(200, 'Server is up');
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    create_file "error.js", <<-test
+      foobar();
+    test
+
+    results, stdout, stderr = invoke "success.js", "error.js"
+
+    assert_equal 2, results.size
+    assert results[0].passed?
+    assert results[1].error?
+  end
 end
