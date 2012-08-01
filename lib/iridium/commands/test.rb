@@ -7,6 +7,15 @@ module Iridium
         def start(args = ARGV)
           options = {}
 
+          unless Iridium::Application
+            begin
+              require './application.rb'
+            rescue LoadError
+              $sdterr.puts "Could not find application.rb. Navigate to the root of your Iridium app"
+              return 2
+            end
+          end
+
           OptionParser.new do |opts|
             opts.banner = "Usage: PATH [PATH] [options]"
 
