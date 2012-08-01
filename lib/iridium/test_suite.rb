@@ -75,15 +75,11 @@ module Iridium
       tests << UnitTestRunner.new(Iridium.application, unit_test_files, report.collector) unless unit_test_files.empty?
       tests << IntegrationTestRunner.new(integration_test_files, report.collector) unless integration_test_files.empty?
 
-      raise "You did not pass any files!" if tests.empty?
+      raise SetupFailed, "Could not find any test files!" if tests.empty?
 
       options[:seed] ||= rand 10000
 
       tests.shuffle!(:random => Random.new(options[:seed]))
-
-      puts "Run options: #{options.keys.collect {|k| "--#{k.to_s.dasherize} #{k}" }.join(" ")}"
-      puts "\n"
-      puts "# Running Tests:\n\n"
 
       suite = TestSuite.new Iridium.application, tests
 
@@ -108,6 +104,10 @@ module Iridium
 
     def run(options = {})
       setup
+
+      puts "Run options: #{options.keys.collect {|k| "--#{k.to_s.dasherize} #{options[k]}" }.join(" ")}"
+      puts "\n"
+      puts "# Running Tests:\n\n"
 
       @results = @tests.map { |t| t.run(options) }.flatten
 
