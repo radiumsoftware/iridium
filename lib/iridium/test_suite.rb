@@ -77,6 +77,8 @@ module Iridium
 
       raise "You did not pass any files!" if tests.empty?
 
+      tests.shuffle!(:random => Random.new(options[:seed] || rand(10000)))
+
       suite = TestSuite.new Iridium.application, tests
 
       results = suite.run options

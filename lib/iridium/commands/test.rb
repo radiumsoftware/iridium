@@ -7,12 +7,12 @@ module Iridium
         def start(args = ARGV)
           options = {}
 
-          unless Iridium::Application
+          unless Iridium.application
             begin
               require './application.rb'
             rescue LoadError
               $sdterr.puts "Could not find application.rb. Navigate to the root of your Iridium app"
-              return 2
+              exit 2
             end
           end
 
@@ -25,6 +25,10 @@ module Iridium
 
             opts.on "--dry-run", "Setup and tear down the test suite without executing the tests" do
               options[:dry_run] = true
+            end
+
+            opts.on "--seed", "Seed for the random number generator" do |s|
+              options[:seed] = s.to_i
             end
 
             # No argument, shows at tail.  This will print an options summary.
