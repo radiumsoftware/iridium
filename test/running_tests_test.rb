@@ -213,6 +213,17 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_equal 0, status
   end
 
+  def test_runner_pukes_if_passing_a_non_js_or_cs_file
+    create_file "test/unit/truth_test.rb", <<-test
+      :D
+    test
+
+    status, stdout, stderr = invoke "test/unit/truth_test.rb"
+
+    assert_equal 2, status
+    assert_includes stderr, "test/unit/truth_test.rb"
+  end
+
   def invoke(*args)
     stdout, stderr, status = nil
 

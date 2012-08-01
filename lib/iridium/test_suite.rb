@@ -57,6 +57,10 @@ module Iridium
       raise SetupFailed, "No application loaded!" unless Iridium.application
 
       file_names.each do |file|
+        if file !~ %r{.(coffee|js)}
+          raise SetupFailed, "#{file} is not Javascript or Coffeescript"
+        end
+
         if !File.exists? file
           raise SetupFailed, "#{file} does not exist!"
         end
