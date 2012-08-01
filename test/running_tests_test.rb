@@ -125,6 +125,39 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_equal 0, status
   end
 
+  def test_broken_integration_tests_dont_stop_unit_tests
+    create_file "test/integration/error.coffee", <<-test
+      foobar()
+    test
+
+    create_file "test/unit/truth.coffee", <<-test
+      test 'Truth', ->
+        ok true, "Passed!"
+    test
+
+    status, stdout, stderr = invoke "test/integration/error.coffee", "test/integration/truth.coffee"
+
+    assert_equal 1, status
+  end
+
+  def test_broken_unit_tests_dont_stop_integration_tests
+    create_file "test/integration/truth.coffee", <<-test
+      casper.start 'http://localhost:7777/', ->
+        this.test.assertHttpStatus(200, 'Server is up')
+
+      casper.run ->
+        this.test.done()
+    test
+
+    create_file "test/unit/error.coffee", <<-test
+      foobar()
+    test
+
+    status, stdout, stderr = invoke "test/unit/error.coffee", "test/integration/truth.coffee"
+
+    assert_equal 1, status
+  end
+
   def invoke(*args)
     stdout, stderr, status = nil
 
