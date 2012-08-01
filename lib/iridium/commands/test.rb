@@ -11,7 +11,7 @@ module Iridium
             begin
               require './application.rb'
             rescue LoadError
-              $sdterr.puts "Could not find application.rb. Navigate to the root of your Iridium app"
+              $stderr.puts "Could not find application.rb. Navigate to the root of your Iridium app"
               exit 2
             end
           end
