@@ -51,6 +51,42 @@ module Iridium
   # 5. Shutdown the test server
   # 6. Report results
   class TestSuite
+    def self.execute(file_names, options = {})
+      unless Iridium.application
+        $stderr.puts "No application loaded!"
+        return 1
+      end
+
+      file_names.each do |file|
+        if !File.exists? file
+          $stderr.puts "#{file} does not exist!"
+          return 1
+        end
+      end
+
+      integration_test_files = file_names.select { |f| f =~ %r{test/integration}}
+      unit_test_files = file_names - integration_test_files
+
+      tests = []
+      tests << UnitTestRunner.new(Iridium.application, unit_test_files) unless unit_test_files.empty?
+      tests << IntegrationTestRunner.new(integration_test_files) unless integration_test_files.empty?
+
+      if tests.empty?
+        $stderr.puts "You did not pass any files!"
+        return 1
+      end
+
+      suite = TestSuite.new Iridium.application, tests
+
+      results = suite.run options
+
+      if results.all?(&:passed?)
+        return 0
+      else
+        return 1
+      end
+    end
+
     def initialize(app, tests = [])
       @app, @tests, = app, tests
       @results = []
