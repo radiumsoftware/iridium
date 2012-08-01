@@ -147,7 +147,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     test_result = results.first
     assert test_result.error?
     assert test_result.backtrace
-    assert_equal 1, test_result.assertions
+    assert_equal 0, test_result.assertions
     assert_equal "ReferenceError: Can't find variable: foobar", test_result.message
   end
 
@@ -203,6 +203,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert_equal 1, results.size
     test_result = results.first
     assert test_result.error?
+    assert_equal 0, test_result.assertions
     assert_includes test_result.message, "unknown_file.js"
   end
 
@@ -220,6 +221,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert_equal 1, results.size
     test_result = results.first
     assert test_result.error?
+    assert_equal 0, test_result.assertions
     assert_includes test_result.message, "http://www.google.com/plop/jquery-2348917.js"
   end
 
