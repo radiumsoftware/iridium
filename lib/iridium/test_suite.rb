@@ -1,4 +1,5 @@
 require 'rack/server'
+require 'thin'
 
 module Iridium
   # Iridium supports two types of tests right out of the box
@@ -169,6 +170,7 @@ module Iridium
 
     def start_server
       @server = Thread.new do
+        Thin::Logging.silence = true
         ::Rack::Server.new(:app => @app, :Port => 7777).start
       end
     end
