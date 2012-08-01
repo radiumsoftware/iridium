@@ -146,7 +146,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       foobar();
     test
 
-    results, stdout, stderr = invoke "error.js", :debug => true
+    results, stdout, stderr = invoke "error.js"
 
     assert_equal 1, results.size
     test_result = results.first
