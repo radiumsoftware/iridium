@@ -143,7 +143,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     status, stdout, stderr = invoke "test/integration/error.coffee", "test/unit/truth.coffee"
 
     assert_equal 1, status
-    assert_includes stdout, "1 Test(s)"
   end
 
   def test_broken_unit_tests_dont_stop_integration_tests
@@ -162,7 +161,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     status, stdout, stderr = invoke "test/unit/error.coffee", "test/integration/truth.coffee"
 
     assert_equal 1, status
-    assert_includes stdout, "1 Test(s)"
   end
 
   def test_runner_supports_debug_mode
