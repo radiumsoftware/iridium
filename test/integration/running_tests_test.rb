@@ -16,11 +16,11 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     # create files that would be there in a normal app
     File.open Iridium.application.root.join("app", "dependencies", "qunit.js"), "w" do |file|
-      file.puts File.read(File.expand_path('../../generators/application/app/dependencies/qunit.js', __FILE__))
+      file.puts File.read(File.expand_path('../../../generators/application/app/dependencies/qunit.js', __FILE__))
     end
 
     File.open Iridium.application.root.join("app", "dependencies", "minispade.js"), "w" do |file|
-      file.puts File.read(File.expand_path('../../generators/application/app/dependencies/minispade.js', __FILE__))
+      file.puts File.read(File.expand_path('../../../generators/application/app/dependencies/minispade.js', __FILE__))
     end
   end
 

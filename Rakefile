@@ -7,5 +7,10 @@ Rake::TestTask.new(:test) do |test|
   test.pattern = 'test/**/*_test.rb'
 end
 
-task :default => :test
+desc "Runs integration tests only" 
+Rake::TestTask.new(:integration) do |test|
+  test.libs << 'test'
+  test.pattern = 'test/integration/**/*_test.rb'
+end
 
+task :default => :test

@@ -1,5 +1,4 @@
 require 'rack/server'
-require 'thin'
 
 module Iridium
   # Iridium supports two types of tests right out of the box
@@ -111,9 +110,8 @@ module Iridium
       puts "# Running Tests:\n\n"
 
       @results = @tests.map { |t| t.run(options) }.flatten
-
+    ensure
       teardown
-
       @results
     end
 
@@ -170,13 +168,30 @@ module Iridium
 
     def start_server
       @server = Thread.new do
-        Thin::Logging.silence = true
-        ::Rack::Server.new(:app => @app, :Port => 7777).start
+        begin
+          Thin::Logging.silent = true
+
+          ::Rack::Server.new({
+            :app => @app, 
+            :Port => 7777,
+            :server => :thin
+          }).start
+        rescue
+          return
+        end
       end
+
+      sleep 0.5 # give the thread some time to boot
+
+      raise SetupFailed, "Server failed to start!" unless @server.alive?
     end
 
     def kill_server
-      @server.kill
+      if @server
+        @server.kill
+        sleep 0.5
+        raise "Server failed to die!" if @server.alive?
+      end
     end
   end
 end
