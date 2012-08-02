@@ -18,7 +18,7 @@ module Iridium
 
       return collector if options[:dry_run]
 
-      js_test_runner = File.expand_path('../casperjs/qunit_runner.js', __FILE__)
+      js_test_runner = File.expand_path('../casperjs/qunit_runner.coffee', __FILE__)
       command = %Q{casperjs "#{js_test_runner}" "#{loader_path}"}
 
       begin
