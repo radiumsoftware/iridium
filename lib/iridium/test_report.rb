@@ -19,7 +19,7 @@ module Iridium
     end
 
     def collector
-      @collector ||= Collector.new self
+      Collector.new self
     end
 
     def print_result(result)

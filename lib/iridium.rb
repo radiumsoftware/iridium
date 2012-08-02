@@ -1,10 +1,12 @@
-require "iridium/version"
+require 'iridium/version'
 
 require 'active_support/concern'
 require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/string/inflections'
 
 require 'thor'
+
+require 'thin'
 
 require 'yaml'
 require 'erb'

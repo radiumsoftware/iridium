@@ -99,7 +99,7 @@ class TestSuiteTest < MiniTest::Unit::TestCase
 
   def start(*test_files)
     options = test_files.extract_options!
-    Iridium::TestSuite.new(Iridium.application, test_files).run(options)
+    capture_io { Iridium::TestSuite.new(Iridium.application, test_files).run(options) }
   end
 
   def create_file(path, content)

@@ -16,11 +16,11 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     # create files that would be there in a normal app
     File.open Iridium.application.root.join("app", "dependencies", "qunit.js"), "w" do |file|
-      file.puts File.read(File.expand_path('../../generators/application/app/dependencies/qunit.js', __FILE__))
+      file.puts File.read(File.expand_path('../../../generators/application/app/dependencies/qunit.js', __FILE__))
     end
 
     File.open Iridium.application.root.join("app", "dependencies", "minispade.js"), "w" do |file|
-      file.puts File.read(File.expand_path('../../generators/application/app/dependencies/minispade.js', __FILE__))
+      file.puts File.read(File.expand_path('../../../generators/application/app/dependencies/minispade.js', __FILE__))
     end
   end
 
@@ -49,13 +49,14 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/unit/truth_test.js"
 
-    assert_equal 0, status
+    assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
+    assert_includes stdout, "1 Test(s)"
   end
 
   def test_runs_an_integration_test
     create_file "test/integration/truth_test.js", <<-test
       casper.start('http://localhost:7777/', function() {
-        this.test.assertHttpStatus(200, 'Server is up');
+        this.test.assertHttpStatus(200, 'Server should be up');
       });
 
       casper.run(function() {
@@ -65,7 +66,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/integration/truth_test.js"
 
-    assert_equal 0, status
+    assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
+    assert_includes stdout, "1 Test(s)"
   end
 
   def test_pukes_on_invalid_coffee_script
@@ -89,13 +91,14 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/unit/truth.coffee"
 
-    assert_equal 0, status
+    assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
+    assert_includes stdout, "1 Test(s)"
   end
 
   def test_runs_coffee_script_integration_test
     create_file "test/integration/truth.coffee", <<-test
       casper.start 'http://localhost:7777/', ->
-        this.test.assertHttpStatus(200, 'Server is up')
+        this.test.assertHttpStatus(200, 'Server should be up')
 
       casper.run ->
         this.test.done()
@@ -103,13 +106,14 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/integration/truth.coffee"
 
-    assert_equal 0, status
+    assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
+    assert_includes stdout, "1 Test(s)"
   end
 
   def test_runs_unit_and_integration_tests
     create_file "test/integration/truth.coffee", <<-test
       casper.start 'http://localhost:7777/', ->
-        this.test.assertHttpStatus(200, 'Server is up')
+        this.test.assertHttpStatus(200, 'Server should be up')
 
       casper.run ->
         this.test.done()
@@ -122,7 +126,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/integration/truth.coffee", "test/integration/truth.coffee"
 
-    assert_equal 0, status
+    assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
+    assert_includes stdout, "2 Test(s)"
   end
 
   def test_broken_integration_tests_dont_stop_unit_tests
@@ -143,7 +148,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   def test_broken_unit_tests_dont_stop_integration_tests
     create_file "test/integration/truth.coffee", <<-test
       casper.start 'http://localhost:7777/', ->
-        this.test.assertHttpStatus(200, 'Server is up')
+        this.test.assertHttpStatus(200, 'Server should be up')
 
       casper.run ->
         this.test.done()
@@ -178,7 +183,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   def test_runner_returns_successfully_on_dry_run
     create_file "test/integration/truth.coffee", <<-test
       casper.start 'http://localhost:7777/', ->
-        this.test.assertHttpStatus(200, 'Server is up')
+        this.test.assertHttpStatus(200, 'Server should be up')
 
       casper.run ->
         this.test.done()
@@ -192,12 +197,13 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     status, stdout, stderr = invoke "test/integration/truth.coffee", "test/integration/truth.coffee", "--dry-run"
 
     assert_equal 0, status
+    assert_includes stdout, "0 Test(s)"
   end
 
   def test_runner_defaults_to_all_test_files_when_no_arguments
     create_file "test/integration/truth_test.coffee", <<-test
       casper.start 'http://localhost:7777/', ->
-        this.test.assertHttpStatus(200, 'Server is up')
+        this.test.assertHttpStatus(200, 'Server should be up')
 
       casper.run ->
         this.test.done()
@@ -210,7 +216,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke
 
-    assert_equal 0, status
+    assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
+    assert_includes stdout, "2 Test(s)"
   end
 
   def test_runner_pukes_if_passing_a_non_js_or_cs_file
