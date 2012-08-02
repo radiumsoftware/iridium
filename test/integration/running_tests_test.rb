@@ -50,6 +50,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     status, stdout, stderr = invoke "test/unit/truth_test.js"
 
     assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
+    assert_includes stdout, "1 Test(s)"
   end
 
   def test_runs_an_integration_test
@@ -66,6 +67,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     status, stdout, stderr = invoke "test/integration/truth_test.js"
 
     assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
+    assert_includes stdout, "1 Test(s)"
   end
 
   def test_pukes_on_invalid_coffee_script
@@ -90,6 +92,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     status, stdout, stderr = invoke "test/unit/truth.coffee"
 
     assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
+    assert_includes stdout, "1 Test(s)"
   end
 
   def test_runs_coffee_script_integration_test
@@ -104,6 +107,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     status, stdout, stderr = invoke "test/integration/truth.coffee"
 
     assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
+    assert_includes stdout, "1 Test(s)"
   end
 
   def test_runs_unit_and_integration_tests
@@ -123,6 +127,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     status, stdout, stderr = invoke "test/integration/truth.coffee", "test/integration/truth.coffee"
 
     assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
+    assert_includes stdout, "2 Test(s)"
   end
 
   def test_broken_integration_tests_dont_stop_unit_tests
@@ -138,6 +143,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     status, stdout, stderr = invoke "test/integration/error.coffee", "test/unit/truth.coffee"
 
     assert_equal 1, status
+    assert_includes stdout, "1 Test(s)"
   end
 
   def test_broken_unit_tests_dont_stop_integration_tests
@@ -156,6 +162,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     status, stdout, stderr = invoke "test/unit/error.coffee", "test/integration/truth.coffee"
 
     assert_equal 1, status
+    assert_includes stdout, "1 Test(s)"
   end
 
   def test_runner_supports_debug_mode
@@ -192,6 +199,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     status, stdout, stderr = invoke "test/integration/truth.coffee", "test/integration/truth.coffee", "--dry-run"
 
     assert_equal 0, status
+    assert_includes stdout, "0 Test(s)"
   end
 
   def test_runner_defaults_to_all_test_files_when_no_arguments
@@ -211,6 +219,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     status, stdout, stderr = invoke
 
     assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
+    assert_includes stdout, "2 Test(s)"
   end
 
   def test_runner_pukes_if_passing_a_non_js_or_cs_file
