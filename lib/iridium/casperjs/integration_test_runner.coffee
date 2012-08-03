@@ -9,8 +9,15 @@ formatBacktrace = (trace) ->
   formatted = []
 
   for e in trace 
-    line = (!e.file ? "(casperjs)" : e.file) + ":" + e.line
-    line = "#{line} in #{e.function}" if e.function
+    if e.file
+      line = "#{e.file}:#{e.line}"
+    else
+      line = "(casperjs)"
+
+    if e.function
+      line = "#{line} in #{e['function']}" 
+
+    formatted.push line
 
   formatted
 

@@ -102,7 +102,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "error.js"
+    results, stdout, stderr = invoke "error.js", :debug => true
     test_result = results.first
     assert test_result.error?
     assert_equal "ReferenceError: Can't find variable: foobar", test_result.message
