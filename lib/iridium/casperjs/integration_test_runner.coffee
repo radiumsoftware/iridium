@@ -31,5 +31,7 @@ else
   console.log('No test files!')
   casper.exit(1)
 
+@casper = casper
+
 # run all the suites
 casper.test.runSuites.apply(casper.test, tests)

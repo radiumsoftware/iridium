@@ -104,8 +104,9 @@ class IridiumCasper extends require('casper').Casper
       currentTest.time = (new Date().getTime()) - startTime
       @iridiumLogger.message currentTest
 
-    @test.on 'tests.complete', ->
+    @test.on 'tests.complete', =>
       console.log("Tests complete!")
+      @exit()
 
 class Iridium
   requires: ['iridium/logger']
