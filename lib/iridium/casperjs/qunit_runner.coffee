@@ -1,85 +1,25 @@
-# Do a dance to ensure to ensure all the load path related
-# information is passed in so we can require code from the
-# outside world
-if !phantom.casperArgs.get('test-root')
-  console.log("--test-root option required!")
-  phantom.exit(2)
-
-if !phantom.casperArgs.get('iridium-root')
-  console.log("--iridium-root option required!")
-  phantom.exit(2)
-
 fs = require('fs')
-iridiumRoot = phantom.casperArgs.get('iridium-root')
-testRoot = phantom.casperArgs.get('test-root')
+
+window.testMode = 'unit'
+window.loadPaths = phantom.casperArgs.get('I').split(',')
+window.requireExternal = (path) ->
+  for directory in loadPaths
+    if fs.exists(fs.pathJoin(directory, "#{path}.coffee")) || fs.exists(fs.pathJoin(directory, "#{path}.js")) 
+      return require(fs.pathJoin(directory, path))
+
+  throw "#{path} could not be found in #{loadPaths}"
 
 # Hooray! Now we have an iridium object
-iridium = require(fs.pathJoin(iridiumRoot, 'lib', 'iridium'))
+iridium = requireExternal('iridium')
 
 # Assign the root and test root to the prototype so all new iridium
 # objects will know where they are
-iridium.Iridium::root = iridiumRoot
-iridium.Iridium::testRoot = testRoot
+iridium.Iridium::root = @window.loadPaths[0]
+iridium.Iridium::testRoot = @window.loadPaths[1]
 
-logQUnit = ->
-  currentTest = {}
-  startTime = null
+iridium = requireExternal('helper').iridium()
 
-  QUnit.testStart (context) ->
-    currentTest = {}
-    currentTest.name = context.name
-    currentTest.assertions = 0
-    startTime = (new Date()).getTime()
-
-  QUnit.log (context) -> 
-    if context.result
-      currentTest.assertions++
-      return
-
-    stackTrace = []
-    currentTest.backtrace = []
-
-    # qunit handles exceptions in a werid way. It prepends "Died" 
-    # to the stacktrace and shoves that in message
-    if context.message.match(/^Died/)
-      currentTest.error = true
-      currentTest.message = context.source
-      stackTrace = context.message
-
-    # General Assertion Error
-    else if context.message
-      currentTest.assertions++
-      currentTest.failed = true
-      currentTest.message = context.message
-      stackTrace = context.source
-
-    # Failed expectations
-    else if context.expected
-      currentTest.failed = true
-      currentTest.message = "Expected: #{context.expected}, Actual: #{context.actual}"
-      stackTrace = context.source
-
-    # format the backtrace accordingly
-    for line in stackTrace.split("\n")
-      matches = line.match(/(file|https?:\/\/.+:\d+)/)
-      if matches
-        currentTest.backtrace.push matches[1]
-      else
-        currentTest.backtrace.push line
-
-  QUnit.testDone (context) -> 
-    currentTest.time = (new Date()).getTime() - startTime
-    console.log("<iridium>#{JSON.stringify(currentTest)}</iridium>")
-
-  QUnit.done (context) ->
-    console.log('done')
-    window.qunitDone = true
-
-casper = require('casper').create()
-
-# Connect the client and casper consoles
-casper.on 'remote.message', (msg) ->
-  console.log msg
+casper = iridium.casper()
 
 casper.on 'resource.received', (request) ->
   return if request.stage == 'start'
@@ -96,9 +36,6 @@ casper.on 'resource.received', (request) ->
 
     console.log("<iridium>#{JSON.stringify(result)}</iridium>")
     casper.exit()
-
-casper.on 'load.finished', -> 
-  casper.evaluate logQUnit
 
 casper.start casper.cli.args[0]
 

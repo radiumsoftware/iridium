@@ -8,11 +8,40 @@
 #
 # This files makes it possible to have a local `test_helper.js`
 # to define your own functionality and set includes
+casper = require('casper')
+fs = require('fs')
+
 class Iridium
-  @env = "test"
-  @includes = []
-  @message = (msg) ->
+  includes: []
+  message: (msg) ->
     console.log "<iridium>#{JSON.stringify(msg)}</iridium>"
+
+  casper: ->
+    absolutePaths = []
+
+    for include in @includes
+      if include.match(/iridium\//)
+        basePath = fs.pathJoin(@root, include)
+      else
+        basePath = fs.pathJoin(@testRoot, include)
+
+      if fs.exists("#{basePath}.coffee")
+        absolutePaths.push "#{basePath}.coffee"
+      else if fs.exists("#{basePath}.js")
+        absolutePaths.push "#{basePath}.js"
+      else
+        throw "#{path} is not a valid JS or CS file!"
+
+    options =
+      clientScripts: absolutePaths
+
+    _casper = casper.create(options)
+
+    # Hook remote console to local console
+    _casper.on 'remote.message', (msg) ->
+      console.log msg
+
+    _casper
 
 exports.Iridium = Iridium
 
