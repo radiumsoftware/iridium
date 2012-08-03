@@ -5,6 +5,15 @@ f = utils.format
 includes = []
 tests = []
 
+formatBacktrace = (trace) ->
+  formatted = []
+
+  for e in trace 
+    line = (!e.file ? "(casperjs)" : e.file) + ":" + e.line
+    line = "#{line} in #{e.function}" if e.function
+
+  formatted
+
 casper = require('casper').create({
   exitOnError: false
 })
@@ -31,14 +40,6 @@ casper.test.runTest = (testFile) ->
   @running = true; # this.running is set back to false with done()
   @exec(testFile)
 
-formatBacktrace = (trace) ->
-  formatted = []
-
-  for e in trace 
-    line = (!e.file ? "(casperjs)" : e.file) + ":" + e.line
-    line = "#{line} in #{e.function}" if e.function
-
-  formatted
 
 # register listeners needed to capture events
 # to generate results to pass back to Iridium
