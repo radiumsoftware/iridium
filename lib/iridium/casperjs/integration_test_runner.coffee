@@ -4,31 +4,10 @@ utils = require('utils')
 f = utils.format
 includes = []
 tests = []
+
 casper = require('casper').create({
   exitOnError: false
 })
-
-# local utils
-checkIncludeFile = (include) ->
-  absInclude = fs.absolute(include.trim())
-
-  if !fs.exists(absInclude)
-    casper.warn("%s file not found, can't be included", absInclude)
-    return
-
-  if !utils.isJsFile(absInclude)
-    casper.warn("%s is not a supported file type, can't be included", absInclude)
-    return
-
-  if fs.isDirectory(absInclude)
-    casper.warn("%s is a directory, can't be included", absInclude)
-    return
-
-  if (tests.indexOf(include) > -1 || tests.indexOf(absInclude) > -1)
-    casper.warn("%s is a test file, can't be included", absInclude)
-    return
-
-  absInclude
 
 # parse some options from cli
 casper.options.verbose = casper.cli.get('direct') || false
@@ -45,16 +24,6 @@ if (casper.cli.args.length)
 else
   console.log('No test files!')
   casper.exit(1)
-
-# includes handling
-if casper.cli.has('includes')
-  includes = casper.cli.get('includes').split(',').map((include) ->
-    # we can't use filter() directly because of abspath transformation
-    checkIncludeFile(include)
-  ).filter((include) ->
-    utils.isString(include)
-  )
-  casper.test.includes = utils.unique(includes)
 
 # Redfine the runTest method to emit an event we can list to
 casper.test.runTest = (testFile) ->
