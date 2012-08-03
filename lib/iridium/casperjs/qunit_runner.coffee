@@ -1,3 +1,26 @@
+# Do a dance to ensure to ensure all the load path related
+# information is passed in so we can require code from the
+# outside world
+if !phantom.casperArgs.get('test-root')
+  console.log("--test-root option required!")
+  phantom.exit(2)
+
+if !phantom.casperArgs.get('iridium-root')
+  console.log("--iridium-root option required!")
+  phantom.exit(2)
+
+fs = require('fs')
+iridiumRoot = phantom.casperArgs.get('iridium-root')
+testRoot = phantom.casperArgs.get('test-root')
+
+# Hooray! Now we have an iridium object
+iridium = require(fs.pathJoin(iridiumRoot, 'lib', 'iridium'))
+
+# Assign the root and test root to the prototype so all new iridium
+# objects will know where they are
+iridium.Iridium::root = iridiumRoot
+iridium.Iridium::testRoot = testRoot
+
 logQUnit = ->
   currentTest = {}
   startTime = null

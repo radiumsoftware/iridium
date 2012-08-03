@@ -78,7 +78,6 @@ $ iridium test test/**/*_test.coffee
 $ iridium test test/**/*_test.{coffee,js} # this is the default!
 ```
 
-
 ## Customizing the Asset pipeline
 
 You may want to change the way assets are compiled. Iridium uses it's

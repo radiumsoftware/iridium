@@ -26,4 +26,18 @@ namespace :test do
   end
 end
 
+namespace :casperjs do
+  qunit_runner = File.expand_path '../lib/iridium/casperjs/qunit_runner.coffee', __FILE__
+  iridium_root = File.expand_path '../lib/iridium/casperjs', __FILE__
+  test_root = File.expand_path '../fixtures/', __FILE__
+
+  desc "Runs the unit test runner aganist a local qunit test file"
+  task :qunit => :compile do
+    qunit_file = File.expand_path '../fixtures/qunit.html', __FILE__
+    command = %Q{casperjs "#{qunit_runner}" "#{qunit_file}" --iridium-root="#{iridium_root}" --test-root="#{test_root}"}
+    puts "Running: #{command}"
+    exec command
+  end
+end
+
 task :default => 'test:all'
