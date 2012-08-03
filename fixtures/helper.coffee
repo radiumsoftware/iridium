@@ -1,17 +1,12 @@
 class Helper
   scripts: [
-    'iridium/qunit'
+    'iridium/qunit_adapter'
   ]
 
   iridium: ->
     _iridium = requireExternal('iridium').create()
-    _iridium.includes = @scripts
+    _iridium.scripts = @scripts
     _iridium
 
-exports.Helper = Helper
-
-exports.create = ->
-  new Helper
-
-exports.iridium = ->
-  @create().iridium()
+exports.casper = ->
+  (new Helper).iridium().casper()

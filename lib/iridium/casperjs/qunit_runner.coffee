@@ -17,9 +17,7 @@ iridium = requireExternal('iridium')
 iridium.Iridium::root = @window.loadPaths[0]
 iridium.Iridium::testRoot = @window.loadPaths[1]
 
-iridium = requireExternal('helper').iridium()
-
-casper = iridium.casper()
+casper = requireExternal('helper').casper()
 
 casper.on 'resource.received', (request) ->
   return if request.stage == 'start'

@@ -11,19 +11,22 @@
 casper = require('casper')
 fs = require('fs')
 
-class Iridium
-  includes: []
+class Logger
   message: (msg) ->
-    console.log "<iridium>#{JSON.stringify(msg)}</iridium>"
+    console.log(JSON.stringify({iridium: msg}))
 
+class Iridium
+  logger: new Logger
+  requires: ['iridium/logger']
+  scripts: []
   casper: ->
     absolutePaths = []
 
-    for include in @includes
-      if include.match(/iridium\//)
-        basePath = fs.pathJoin(@root, include)
+    for path in @requires.concat(@scripts)
+      if path.match(/iridium\//)
+        basePath = fs.pathJoin(@root, path)
       else
-        basePath = fs.pathJoin(@testRoot, include)
+        basePath = fs.pathJoin(@testRoot, path)
 
       if fs.exists("#{basePath}.coffee")
         absolutePaths.push "#{basePath}.coffee"

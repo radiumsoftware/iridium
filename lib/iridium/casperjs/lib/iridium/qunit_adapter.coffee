@@ -45,7 +45,7 @@ QUnit.log (context) ->
 
 QUnit.testDone (context) -> 
   currentTest.time = (new Date()).getTime() - startTime
-  console.log("<iridium>#{JSON.stringify(currentTest)}</iridium>")
+  window.logger.message(currentTest)
 
 QUnit.done (context) ->
   console.log('done')
