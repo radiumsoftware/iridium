@@ -24,6 +24,12 @@ namespace :test do
     test.libs << 'test'
     test.pattern = 'test/integration/**/*_test.rb'
   end
+
+  desc "Run tests for unit test runner"
+  Rake::TestTask.new(:unit_test_runner => :compile) do |test|
+    test.libs << 'test'
+    test.pattern = 'test/unit_test_runner_test.rb'
+  end
 end
 
 namespace :casperjs do

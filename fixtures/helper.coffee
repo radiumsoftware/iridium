@@ -1,6 +1,8 @@
 class Helper
   scripts: [
+    'qunit',
     'iridium/qunit_adapter'
+    'qunit_tests'
   ]
 
   iridium: ->

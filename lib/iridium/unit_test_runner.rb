@@ -19,7 +19,7 @@ module Iridium
       return collector if options[:dry_run]
 
       js_test_runner = File.expand_path('../casperjs/qunit_runner.coffee', __FILE__)
-      command = %Q{casperjs "#{js_test_runner}" "#{loader_path}"}
+      command = %Q{casperjs "#{js_test_runner}" "#{loader_path}" --I="#{app.js_load_paths.join(',')}"}
 
       begin
         streamer = CommandStreamer.new command
@@ -40,12 +40,6 @@ module Iridium
 
     def test_root
       app.root.join 'tmp', 'test_root'
-    end
-
-    def support_files
-      Dir[test_root.join('test', 'support', "**", "*.js")].collect do |path|
-        path.gsub "#{test_root.to_s}/", ''
-      end
     end
 
     def loader_path
@@ -86,10 +80,6 @@ module Iridium
           <div id="qunit"></div>
           <% app.config.dependencies.each do |script| %>
             <script src="<%= script.url %>"></script>
-          <% end %>
-
-          <% support_files.each do |file| %>
-            <script src="<%= file %>"></script>
           <% end %>
 
           <% files.each do |file| %>

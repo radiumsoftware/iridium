@@ -3,11 +3,13 @@ require 'test_helper'
 class UnitTestRunnerTest < MiniTest::Unit::TestCase
   def setup
     Iridium.application = TestApp.instance
-    Iridium.application.config.load :qunit
     FileUtils.mkdir_p working_directory
-    File.open working_directory.join("qunit.js"), "w" do |qunit|
-      qunit.puts File.read(File.expand_path('../../generators/application/app/dependencies/qunit.js', __FILE__))
+    FileUtils.mkdir_p root.join('test', 'support')
+
+    File.open root.join('test', 'support', 'qunit.js'), "w" do |qunit|
+      qunit.puts File.read(File.expand_path("../fixtures/qunit.js", __FILE__))
     end
+
     create_file "application.js", <<-file
       var foo = {};
     file
@@ -16,11 +18,16 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   def teardown
     Iridium.application.config.dependencies.clear
     FileUtils.rm_rf working_directory
+    FileUtils.rm_rf root.join('test')
     Iridium.application = nil
   end
 
   def working_directory
     Iridium.application.root.join('tmp', 'test_root')
+  end
+
+  def root
+    Iridium.application.root
   end
 
   def create_file(path, content)
@@ -33,6 +40,34 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     end
   end
 
+  def create_app_file(path, content)
+    full_path = root.join path
+
+    FileUtils.mkdir_p File.dirname(full_path)
+
+    File.open full_path, "w" do |f|
+      f.puts content
+    end
+  end
+
+  def test_helper
+    <<-str
+      class Helper
+        scripts: [
+          'support/qunit'
+          'iridium/qunit_adapter'
+        ]
+
+        iridium: ->
+          _iridium = requireExternal('iridium').create()
+          _iridium.scripts = @scripts
+          _iridium
+
+      exports.casper = ->
+        (new Helper).iridium().casper()
+    str
+  end
+
   def read(path)
     File.read working_directory.join(path)
   end
@@ -41,14 +76,15 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     options = files.extract_options!
     results = nil
 
-    out, err = capture_io do
+    options[:debug] = true
+
       results = Iridium::UnitTestRunner.new(Iridium.application, files).run(options)
-    end
 
     [results, out, err]
   end
 
   def test_raises_an_error_when_file_is_missing
+    create_app_file "test/helper.coffee", test_helper
     create_file "example_test.js", "foo"
 
     assert_raises RuntimeError do
@@ -57,7 +93,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_runner_generates_the_loader_correctly
-    create_file "test/support/example.js", "foo"
     create_file "truth.js", "foo"
     create_file "foo/bar.js", "bar"
 
@@ -71,13 +106,11 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert_includes content, %Q{<script src="application.js"></script>}
     assert_includes content, %Q{<script src="truth.js"></script>}
     assert_includes content, %Q{<script src="foo/bar.js"></script>}
-
-    assert_includes content, %Q{<script src="qunit.js"></script>}, "Dependencies should be included!"
-
-    assert_includes content, %Q{<script src="test/support/example.js"></script>}, "Support files should be included!"
   end
 
   def test_captures_basic_test_information
+    create_app_file "test/helper.coffee", test_helper
+
     create_file "truth_test.js", <<-test
       test('Truth', function() {
         ok(false, "Passed!")
@@ -92,6 +125,8 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_reports_passes
+    create_app_file "test/helper.coffee", test_helper
+
     create_file "truth_test.js", <<-test
       test('Truth', function() {
         ok(true, "Passed!")
@@ -105,6 +140,8 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_reports_assertion_errors
+    create_app_file "test/helper.coffee", test_helper
+
     create_file "failed_assertion.js", <<-test
       test('Failed Assertions', function() {
         ok(false, "failed");
@@ -120,6 +157,8 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_reports_expectation_errors
+    create_app_file "test/helper.coffee", test_helper
+
     create_file "failed_expectation.js", <<-test
       test('Unmet expectation', function() {
         expect(1);
@@ -137,6 +176,8 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_reports_errors
+    create_app_file "test/helper.coffee", test_helper
+
     create_file "error.js", <<-test
       test('This test has invalid js', function() {
         foobar();
@@ -152,6 +193,8 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def tests_reports_multiple_tests
+    create_app_file "test/helper.coffee", test_helper
+
     create_file "failed_expectation.js", <<-test
       test('Unmet expectation', function() {
         expect(1);
@@ -178,6 +221,8 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_debug_mode_prints_to_stdout
+    create_app_file "test/helper.coffee", test_helper
+
     create_file "foo.js", <<-test
       test('Truth', function() {
         console.log("This is logged!");
@@ -190,6 +235,8 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_returns_an_error_if_a_local_script_cannot_be_loaded
+    create_app_file "test/helper.coffee", test_helper
+
     create_file "truth.js", <<-test
       test('Truth', function() {
         setTimeout(function() {}, 5000);
@@ -208,6 +255,8 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_returns_an_error_if_an_remote_script_cannot_be_loaded
+    create_app_file "test/helper.coffee", test_helper
+
     create_file "truth.js", <<-test
       test('Truth', function() {
         setTimeout(function() {}, 5000);
@@ -226,6 +275,8 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_returns_an_error_when_the_test_file_is_bad
+    create_app_file "test/helper.coffee", test_helper
+
     create_file "undefined.js", <<-test
       var baz = foo + bar;
     test
@@ -240,6 +291,8 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_one_test_cannot_bring_down_others
+    create_app_file "test/helper.coffee", test_helper
+
     create_file "success.js", <<-test
       test('Truth', function() {
         ok(true, "passed");

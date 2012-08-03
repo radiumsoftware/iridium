@@ -49,4 +49,4 @@ QUnit.testDone (context) ->
 
 QUnit.done (context) ->
   console.log('done')
-  window.qunitDone = true
+  window.unitTestsDone = true

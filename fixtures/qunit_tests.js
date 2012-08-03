@@ -6,10 +6,10 @@ test("fails", function() {
   ok(false, "Passed!");
 });
 
-test("error test", function() {
-  foobar();
-});
+// test("error test", function() {
+//   foobar();
+// });
 
-test("expectation test", function() {
-  expect(1);
-});
+// test("expectation test", function() {
+//   expect(1);
+// });

@@ -1,4 +1,9 @@
 fs = require('fs')
+utils = require('utils')
+
+unless phantom.casperArgs.get('I')
+  console.log("No Load paths passed!")
+  phantom.exit(2)
 
 window.testMode = 'unit'
 window.loadPaths = phantom.casperArgs.get('I').split(',')
@@ -7,7 +12,8 @@ window.requireExternal = (path) ->
     if fs.exists(fs.pathJoin(directory, "#{path}.coffee")) || fs.exists(fs.pathJoin(directory, "#{path}.js")) 
       return require(fs.pathJoin(directory, path))
 
-  throw "#{path} could not be found in #{loadPaths}"
+  console.log "#{path} could not be found in #{loadPaths}"
+  phantom.exit(2)
 
 # Hooray! Now we have an iridium object
 iridium = requireExternal('iridium')
@@ -35,12 +41,15 @@ casper.on 'resource.received', (request) ->
     console.log("<iridium>#{JSON.stringify(result)}</iridium>")
     casper.exit()
 
-casper.start casper.cli.args[0]
+casper.start casper.cli.args[0], ->
+  console.log "Starting tests on: #{casper.cli.args[0]}"
+  casper.evaluate ->
+    QUnit.load()
 
 casper.waitFor(
   ->
     casper.evaluate ->
-      window.qunitDone == true
+      window.unitTestsDone == true
   , -> 
     casper.exit
   , ->

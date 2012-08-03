@@ -1,3 +1,7 @@
+unless phantom.casperArgs.get('I')
+  console.log("No Load paths passed!")
+  phantom.exit(2)
+
 fs = require('fs')
 
 window.testMode = 'integration'

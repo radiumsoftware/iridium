@@ -49,6 +49,10 @@ require 'iridium/pipeline'
 require 'iridium/rack'
 
 module Iridium
+  class MissingFile < StandardError ; end
+  class MissingTestHelper < StandardError ; end
+  class IncorrectLoadPath < StandardError ; end
+
   class << self
     def application
       @application
@@ -73,6 +77,13 @@ module Iridium
         base.root = root_path
         Iridium.application = base.instance
       end
+    end
+
+    def js_load_paths
+      [
+        File.expand_path("../iridium/casperjs/lib", __FILE__),
+        root.join('test')
+      ]
     end
 
     def production?
