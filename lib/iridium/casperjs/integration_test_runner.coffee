@@ -94,5 +94,7 @@ casper.test.on 'tests.complete', ->
   console.log("Tests complete!")
   casper.exit()
 
+@casper = casper
+
 # run all the suites
 casper.test.runSuites.apply(casper.test, tests)
