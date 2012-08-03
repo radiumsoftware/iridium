@@ -27,6 +27,10 @@ $ irdium new todos
     create  app/stylesheets/app.scss
     create  app/vendor/javascripts
     create  app/vendor/stylesheets
+    create  test/test_helper.coffee
+    create  test/integration/truth_test.coffee
+    create  test/unit/truth_test.coffee
+    create  test/support
     create  site
     create  application.rb
 ```
@@ -44,6 +48,36 @@ $ iridium server
 
 Navigate to `http://localhost:9292` in your browser and you'll see a
 blank canvas.
+
+## Running Tests
+
+Iridium makes testing your JS easy. It does all the manual work for you.
+It also unites your integration and unit tests into a single test suite.
+
+```
+$ iridium test
+Run options: --seed 9851
+
+# Running Tests:
+
+.................................................................
+
+2998 Test(s), 2998 Assertion(s), 2998 Passed, 0 Error(s), 0 Failure(s)
+```
+
+Integration tests use CasperJS and unit tests use qUnit. Stub tests are
+generated with your application. These tests should pass out of the box
+given you have the proper CapserJS version installed. All your tests are
+run through the `iridium test` command. Here are some examples:
+
+```
+$ iridium test test/integration/foo.js
+$ iridium test test/unit/bar.js
+$ iridium test test/integration/* test/models/*
+$ iridium test test/**/*_test.coffee
+$ iridium test test/**/*_test.{coffee,js} # this is the default!
+```
+
 
 ## Customizing the Asset pipeline
 
