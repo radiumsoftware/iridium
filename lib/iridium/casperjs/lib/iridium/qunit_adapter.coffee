@@ -38,7 +38,7 @@ QUnit.log (context) ->
 
   # format the backtrace accordingly
   for line in stackTrace.split("\n")
-    matches = line.match(/(file|https?:\/\/.+:\d+)/)
+    matches = line.match(/(file:\/\/|https?:\/\/|\/.+:\d+)/)
     if matches
       currentTest.backtrace.push matches[1]
     else
