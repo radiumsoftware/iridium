@@ -25,6 +25,11 @@ iridium.Iridium::testRoot = @window.loadPaths[1]
 
 casper = requireExternal('helper').casper()
 
+casper.on 'page.error', (error, trace) ->
+  console.log(error)
+  utils.dump(trace)
+  casper.exit(2)
+
 casper.on 'resource.received', (request) ->
   return if request.stage == 'start'
 

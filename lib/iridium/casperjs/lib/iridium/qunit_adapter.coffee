@@ -5,6 +5,7 @@ QUnit.testStart (context) ->
   currentTest = {}
   currentTest.name = context.name
   currentTest.assertions = 0
+  currentTest.backtrace = []
   startTime = (new Date()).getTime()
 
 QUnit.log (context) -> 
@@ -48,5 +49,6 @@ QUnit.testDone (context) ->
   window.logger.message(currentTest)
 
 QUnit.done (context) ->
-  console.log('done')
   window.unitTestsDone = true
+
+QUnit.config.autorun = false
