@@ -27,10 +27,17 @@ iridium = requireExternal('iridium')
 iridium.Iridium::root = @window.loadPaths[0]
 iridium.Iridium::testRoot = @window.loadPaths[1]
 
+logger = requireExternal('iridium/logger').create()
+
 casper = requireExternal('helper').casper()
 
 tests = casper.cli.args.filter (path) ->
   fs.isFile(path) || fs.isDirectory(path)
+
+for test in tests 
+  unless fs.isFile(test)
+    console.log "#{test} does not exist!"
+    phantom.exit(2)
 
 casper.on 'page.error', (error, trace) ->
   console.log(error)
@@ -49,8 +56,7 @@ casper.on 'resource.received', (request) ->
     result.message = "Resource Failed to Load: #{request.url}"
     result.backtrace = []
     result.assertions = 0
-
-    console.log("<iridium>#{JSON.stringify(result)}</iridium>")
+    logger.message result
     casper.exit()
 
 casper.start casper.cli.get('index'), ->

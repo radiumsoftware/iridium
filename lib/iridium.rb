@@ -8,6 +8,8 @@ require 'thor'
 
 require 'thin'
 
+require 'json'
+
 require 'yaml'
 require 'erb'
 require 'rack/rewrite'

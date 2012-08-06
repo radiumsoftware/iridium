@@ -10,27 +10,27 @@ module Iridium
     end
 
     def run(options = {})
-      assert_files
-
-      File.open loader_path, "w+" do |index|
-        index.puts ERB.new(template_erb).result(binding)
-      end
-
-      return collector if options[:dry_run]
-
-      js_test_runner = File.expand_path('../casperjs/qunit_runner.coffee', __FILE__)
-
-      command_options = { 
-        "I" => app.js_load_paths.join(",")
-        "index" => loader_path
-      }
-
-      switches = command_options.keys.map {|s| %Q{--#{s}="#{command_options[s]}"}.join(" ")
-      file_args = files.map {|f| %Q{"#{f}"}}.join(" "}
-
-      command = %Q{casperjs "#{js_test_runner}" #{file_args} #{switches}}
-
       begin
+        assert_files
+
+        File.open loader_path, "w+" do |index|
+          index.puts ERB.new(template_erb).result(binding)
+        end
+
+        return collector if options[:dry_run]
+
+        js_test_runner = File.expand_path('../casperjs/qunit_runner.coffee', __FILE__)
+
+        command_options = { 
+          "I" => app.js_load_paths.join(","),
+          "index" => loader_path
+        }
+
+        switches = command_options.keys.map { |s| %Q{--#{s}="#{command_options[s]}"} }.join(" ")
+        file_args = files.map { |f| %Q{"#{f}"} }.join(" ")
+
+        command = %Q{casperjs "#{js_test_runner}" #{file_args} #{switches}}
+
         streamer = CommandStreamer.new command
         streamer.run options do |message|
           collector << TestResult.new(message)
@@ -42,17 +42,14 @@ module Iridium
         result.file = loader_path.to_s
 
         collector << result
+      ensure
+        FileUtils.rm loader_path if File.exists? loader_path
+        return collector
       end
-
-      collector
-    end
-
-    def tmp_path
-      app.tmp_path
     end
 
     def loader_path
-      tmp_path.join "unit_test_runner-#{Digest::MD5.hexdigest(files.to_s)}.html"
+      app.site_path.join "unit_test_runner.html"
     end
 
     def template_erb
@@ -67,7 +64,7 @@ module Iridium
 
     def assert_files
       files.each do |file|
-        full_path = test_root.join file
+        full_path = app.root.join file
         raise "#{full_path} does not exist!" unless File.exists?(full_path)
       end
     end

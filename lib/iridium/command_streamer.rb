@@ -1,4 +1,5 @@
 require 'pty'
+require 'json'
 
 module Iridium
   class CommandStreamer
@@ -11,10 +12,18 @@ module Iridium
     def run(options = {})
       PTY.spawn @command do |stdin, stdout, pid|
         stdin.each do |output|
-          if output =~ %r{<iridium>(.+)</iridium>}
-            yield JSON.parse($1) if block_given?
-          elsif options[:debug]
-            puts output
+          begin
+            if block_given?
+              json = JSON.parse output
+
+              if json['iridium']
+                yield json['iridium']
+              else
+                puts output if options[:debug]
+              end
+            end
+          rescue JSON::ParseError
+            puts output if options[:debug]
           end
         end
 

@@ -11,10 +11,7 @@
 
 fs = require('fs')
 colorizer = require('colorizer')
-
-class Logger
-  message: (msg) ->
-    console.log(JSON.stringify({iridium: msg}))
+logger = requireExternal('iridium/logger').create()
 
 class IridiumCasper extends require('casper').Casper
   formatBacktrace: (trace) ->
@@ -35,8 +32,6 @@ class IridiumCasper extends require('casper').Casper
 
   constructor: (options) ->
     super options
-
-    @test.iridiumLogger = new Logger
 
     # Hook remote console to this one
     @on 'remote.message', (msg) ->
@@ -100,15 +95,16 @@ class IridiumCasper extends require('casper').Casper
         currentTest.backtrace = [failure.file]
         @done()
 
-    @test.on 'test.done', ->
+    @test.on 'test.done', =>
       currentTest.time = (new Date().getTime()) - startTime
-      @iridiumLogger.message currentTest
+      @logger.message currentTest
 
     @test.on 'tests.complete', =>
       console.log("Tests complete!")
       @exit()
 
 class Iridium
+  logger: logger,
   requires: ['iridium/logger']
   scripts: []
   casper: ->
