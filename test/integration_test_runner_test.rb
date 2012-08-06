@@ -67,7 +67,8 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "success.js"
+    results, stdout, stderr = invoke "test/success.js"
+
     test_result = results.first
     assert_kind_of Fixnum, test_result.time
     assert_equal 1, test_result.assertions
@@ -87,7 +88,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "success.js"
+    results, stdout, stderr = invoke "test/success.js"
     test_result = results.first
     assert test_result.passed?
   end
@@ -105,12 +106,12 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr= invoke "failure.js"
+    results, stdout, stderr= invoke "test/failure.js"
     test_result = results.first
     assert test_result.failed?
     assert_includes test_result.message, "Server should be down!"
     assert_equal 1, test_result.assertions
-    assert_equal ["failure.js"], test_result.backtrace
+    assert_equal ["test/failure.js"], test_result.backtrace
   end
 
   def test_reports_an_error
@@ -126,11 +127,11 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "error.js", :debug => true
+    results, stdout, stderr = invoke "test/error.js", :debug => true
     test_result = results.first
     assert test_result.error?
     assert_equal "ReferenceError: Can't find variable: foobar", test_result.message
-    assert_equal "error.js:2", test_result.backtrace.first
+    assert_equal "test/error.js:2", test_result.backtrace.first
     assert_equal 0, test_result.assertions
   end
 
@@ -147,7 +148,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "error.js", :debug => true
+    results, stdout, stderr = invoke "test/error.js", :debug => true
     assert_includes stdout, "This is logged!"
   end
 
@@ -164,10 +165,9 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "error.js", :dry_run => true
+    results, stdout, stderr = invoke "test/error.js", :dry_run => true
     assert_equal [], results
   end
-
 
   def test_handles_javascript_errors_in_source_files
     create_file "test/helper.coffee", test_helper
@@ -176,7 +176,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       foobar();
     test
 
-    results, stdout, stderr = invoke "error.js"
+    results, stdout, stderr = invoke "test/error.js"
 
     assert_equal 1, results.size
     test_result = results.first
@@ -203,7 +203,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       foobar();
     test
 
-    results, stdout, stderr = invoke "error.js", "success.js"
+    results, stdout, stderr = invoke "test/error.js", "test/success.js"
 
     assert_equal 2, results.size
     assert results[0].error?

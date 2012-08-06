@@ -128,8 +128,6 @@ class Iridium
     options ||= {}
     options.clientScripts = absolutePaths
 
-    console.log(JSON.stringify(options))
-
     new IridiumCasper(options)
 
 exports.Iridium = Iridium
