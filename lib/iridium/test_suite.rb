@@ -66,6 +66,10 @@ module Iridium
         end
       end
 
+      if Dir[Iridium.application.root.join('test/helper.{js,coffee}')].empty?
+        raise SetupFailed, "You could not find test/helper.js or test/helper.coffee"
+      end
+
       integration_test_files = file_names.select { |f| f =~ %r{test/integration}}
       unit_test_files = file_names - integration_test_files
 
@@ -73,7 +77,7 @@ module Iridium
 
       tests = []
       tests << UnitTestRunner.new(Iridium.application, unit_test_files, report.collector) unless unit_test_files.empty?
-      tests << IntegrationTestRunner.new(integration_test_files, report.collector) unless integration_test_files.empty?
+      tests << IntegrationTestRunner.new(Iridium.application, integration_test_files, report.collector) unless integration_test_files.empty?
 
       raise SetupFailed, "Could not find any test files!" if tests.empty?
 

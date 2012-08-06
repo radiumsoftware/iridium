@@ -5,8 +5,7 @@ module Iridium
     attr_reader :app, :files, :collector
 
     def initialize(app, files, collector = [])
-      @app, @collector = app, collector
-      @files = files.collect { |f| f.gsub(%r{.coffee$}, '.js') }
+      @app, @files, @collector = app, files, collector
     end
 
     def run(options = {})

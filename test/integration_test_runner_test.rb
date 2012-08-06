@@ -57,7 +57,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_reports_basic_information
     create_file "test/helper.coffee", test_helper
 
-    create_file "success.js", <<-test
+    create_file "test/success.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(200, 'Server is up');
       });
@@ -77,7 +77,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_reports_successful_test_correctly
     create_file "test/helper.coffee", test_helper
 
-    create_file "success.js", <<-test
+    create_file "test/success.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(200, 'Server is up');
       });
@@ -95,7 +95,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_reports_a_failure
     create_file "test/helper.coffee", test_helper
 
-    create_file "failure.js", <<-test
+    create_file "test/failure.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(500, 'Server should be down!');
       });
@@ -116,7 +116,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_reports_an_error
     create_file "test/helper.coffee", test_helper
 
-    create_file "error.js", <<-test
+    create_file "test/error.js", <<-test
       casper.start('http://localhost:7776/', function() {
         foobar;
       });
@@ -137,7 +137,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_stdout_prints_in_debug_mode
     create_file "test/helper.coffee", test_helper
 
-    create_file "error.js", <<-test
+    create_file "test/error.js", <<-test
       casper.start('http://localhost:7776/', function() {
         console.log('This is logged!');
       });
@@ -154,7 +154,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_dry_return_returns_no_results
     create_file "test/helper.coffee", test_helper
 
-    create_file "error.js", <<-test
+    create_file "test/error.js", <<-test
       casper.start('http://localhost:7776/', function() {
         console.log('This is logged!');
       });
@@ -172,7 +172,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_handles_javascript_errors_in_source_files
     create_file "test/helper.coffee", test_helper
 
-    create_file "error.js", <<-test
+    create_file "test/error.js", <<-test
       foobar();
     test
 
@@ -189,7 +189,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_does_not_let_one_test_bring_down_others
     create_file "test/helper.coffee", test_helper
 
-    create_file "success.js", <<-test
+    create_file "test/success.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(200, 'Server is up');
       });
@@ -199,7 +199,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    create_file "error.js", <<-test
+    create_file "test/error.js", <<-test
       foobar();
     test
 

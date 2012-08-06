@@ -6,21 +6,21 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     Iridium.application = TestApp.instance
     Iridium.application.config.dependencies.clear
     Iridium.application.config.load :minispade
-    Iridium.application.config.load :qunit
 
     create_file "app/javascripts/app.js", <<-file
-      window.Iridium = true;
+      window.IridiumBooted = true;
     file
+
+    FileUtils.mkdir_p Iridium.application.root.join "test", "support"
+
+    File.open Iridium.application.root.join('test', 'support', 'qunit.js'), "w" do |qunit|
+      qunit.puts File.read(File.expand_path("../../fixtures/qunit.js", __FILE__))
+    end
 
     FileUtils.mkdir_p Iridium.application.root.join "app", "dependencies"
 
-    # create files that would be there in a normal app
-    File.open Iridium.application.root.join("app", "dependencies", "qunit.js"), "w" do |file|
-      file.puts File.read(File.expand_path('../../../generators/application/app/dependencies/qunit.js', __FILE__))
-    end
-
     File.open Iridium.application.root.join("app", "dependencies", "minispade.js"), "w" do |file|
-      file.puts File.read(File.expand_path('../../../generators/application/app/dependencies/minispade.js', __FILE__))
+      file.puts File.read(File.expand_path('../../fixtures/minispade.js', __FILE__))
     end
   end
 
@@ -33,6 +33,28 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     Iridium.application = nil
   end
 
+  def working_directory
+    Iridium.application.root
+  end
+
+  def test_helper
+    <<-str
+      class Helper
+        scripts: [
+          'support/qunit'
+          'iridium/qunit_adapter'
+        ]
+
+        iridium: ->
+          _iridium = requireExternal('iridium').create()
+          _iridium.scripts = @scripts
+          _iridium
+
+      exports.casper = (options) ->
+        (new Helper).iridium().casper(options)
+    str
+  end
+
   def test_raises_an_error_if_file_does_not_exist
     status, stdout, stderr = invoke "foo.js"
 
@@ -40,7 +62,20 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_includes stderr, "foo.js"
   end
 
+  def test_raise_an_error_if_there_is_no_test_helper
+    create_file "test/unit/truth_test.js", <<-test
+      var foo = {}
+    test
+
+    status, stdout, stderr = invoke "test/unit/truth_test.js"
+
+    assert_equal 2, status
+    assert_includes stderr, "test/helper"
+  end
+
   def test_runs_a_unit_test_in_javascript
+    create_file "test/helper.coffee", test_helper
+
     create_file "test/unit/truth_test.js", <<-test
       test('Truth', function() {
         ok(true, "Passed!")
@@ -54,6 +89,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runs_an_integration_test
+    create_file "test/helper.coffee", test_helper
+
     create_file "test/integration/truth_test.js", <<-test
       casper.start('http://localhost:7777/', function() {
         this.test.assertHttpStatus(200, 'Server should be up');
@@ -71,6 +108,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_pukes_on_invalid_coffee_script
+    create_file "test/helper.coffee", test_helper
+
     create_file "test/unit/invalid_coffeescript.coffee", <<-test
       test 'Truth' ->
         ok true, "Passed!"
@@ -84,6 +123,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runs_coffee_script_unit_test
+    create_file "test/helper.coffee", test_helper
+
     create_file "test/unit/truth.coffee", <<-test
       test 'Truth', ->
         ok true, "Passed!"
@@ -96,6 +137,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runs_coffee_script_integration_test
+    create_file "test/helper.coffee", test_helper
+
     create_file "test/integration/truth.coffee", <<-test
       casper.start 'http://localhost:7777/', ->
         this.test.assertHttpStatus(200, 'Server should be up')
@@ -111,6 +154,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runs_unit_and_integration_tests
+    create_file "test/helper.coffee", test_helper
+
     create_file "test/integration/truth.coffee", <<-test
       casper.start 'http://localhost:7777/', ->
         this.test.assertHttpStatus(200, 'Server should be up')
@@ -131,6 +176,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_broken_integration_tests_dont_stop_unit_tests
+    create_file "test/helper.coffee", test_helper
+
     create_file "test/integration/error.coffee", <<-test
       foobar()
     test
@@ -146,6 +193,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_broken_unit_tests_dont_stop_integration_tests
+    create_file "test/helper.coffee", test_helper
+
     create_file "test/integration/truth.coffee", <<-test
       casper.start 'http://localhost:7777/', ->
         this.test.assertHttpStatus(200, 'Server should be up')
@@ -164,6 +213,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runner_supports_debug_mode
+    create_file "test/helper.coffee", test_helper
+
     create_file "test/integration/logging.coffee", <<-test
       console.log 'integration logging'
 
@@ -181,6 +232,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runner_returns_successfully_on_dry_run
+    create_file "test/helper.coffee", test_helper
+
     create_file "test/integration/truth.coffee", <<-test
       casper.start 'http://localhost:7777/', ->
         this.test.assertHttpStatus(200, 'Server should be up')
@@ -201,6 +254,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runner_defaults_to_all_test_files_when_no_arguments
+    create_file "test/helper.coffee", test_helper
+
     create_file "test/integration/truth_test.coffee", <<-test
       casper.start 'http://localhost:7777/', ->
         this.test.assertHttpStatus(200, 'Server should be up')
@@ -221,6 +276,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runner_pukes_if_passing_a_non_js_or_cs_file
+    create_file "test/helper.coffee", test_helper
+
     create_file "test/unit/truth_test.rb", <<-test
       :D
     test
