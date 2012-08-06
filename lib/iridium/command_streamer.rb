@@ -22,7 +22,7 @@ module Iridium
                 puts output if options[:debug]
               end
             end
-          rescue JSON::ParseError
+          rescue JSON::ParserError
             puts output if options[:debug]
           end
         end

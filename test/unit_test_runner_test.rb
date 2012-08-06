@@ -80,19 +80,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     end
   end
 
-  def test_runner_generates_the_loader_correctly
-    create_file "test/truth_test.js", "foo"
-
-    invoke "test/truth_test.js", :dry_run => true
-
-    test_loader = Dir[working_directory.join("**/*")].select { |f| f =~ /unit_test_runner.+\.html/ }.first
-    assert test_loader, "Could not find a loader!"
-
-    content = read File.basename(test_loader)
-
-    assert_includes content, %Q{<script src="application.js"></script>}
-  end
-
   def test_captures_basic_test_information
     create_file "test/helper.coffee", test_helper
 

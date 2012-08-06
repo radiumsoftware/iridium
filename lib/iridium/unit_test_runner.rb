@@ -10,9 +10,9 @@ module Iridium
     end
 
     def run(options = {})
-      begin
-        assert_files
+      assert_files
 
+      begin
         File.open loader_path, "w+" do |index|
           index.puts ERB.new(template_erb).result(binding)
         end
