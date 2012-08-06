@@ -236,7 +236,15 @@ Iridium! This is because the event handlers are setup on the existing
 capser instance and this test redfines the variable. Keep this in mind!
 You've been warned.
 
-## Customizing the Asset pipeline
+## Advanced Configuration
+
+Iridium is written with Javascript developers in mind. They may not have
+experience in ruby. I've tried as much as I can to shield some
+complexity from newbies. Each part of Iridium is hidden by default, but
+can be generated and customized.
+
+
+### Customizing the Asset pipeline
 
 You may want to change the way assets are compiled. Iridium uses it's
 own pipeline by default. You can override this by creating your
@@ -251,7 +259,7 @@ $ iridium generate assetfile
     create Assetfile
 ```
 
-## Customizing index.html
+### Customizing index.html
 
 `index.html` is an annoying part of web development. You cannot start or
 serve your application without an HTML page to load your JS. Iridium has
@@ -267,7 +275,7 @@ $ iridium generate index
     create app/public/index.html.erb
 ```
 
-## Customization per Environment
+### Customization per Environment
 
 More complicated applications need to support different environment.
 Common envrioments are: development, test, and production. Each
@@ -283,7 +291,90 @@ $ iridium generate envs
     create  config/production.rb
 ```
 
-## Deploying
+### Configuration, Middleware, and Proxying
+
+Your application may need files that should not be compiled with the
+main app code. `minispade` is the default example. You can specify these
+files using `config.load`. These files defined here should exist in
+`app/dependencies`. Here's an example:
+
+```ruby
+# application.rb
+YourApp.configure do
+  config.load :minispade
+  config.load http://www.example.com/my_script.js
+end
+```
+
+Your Iridium app is served as a rack app. You can inject your own
+middleware as you like. Here's an example:
+
+```ruby
+# application.rb
+
+YourApp.configure do
+  # config.middleware mimics the Rack::Builder api
+  config.middleware.use MyCustomMiddleware
+end
+```
+
+Iridium also has basic proxy support for handling your backend API. You
+should only use this proxy if the API does not support CORs or there is
+some other issue with it. You may want to use this proxy in test mode to
+point your app to a test server intead. Here's an example:
+
+```
+# application.rb
+YourApp.configure do
+  config.proxy "/api", "http://api.myproduct.com"
+end
+```
+
+Proxies can be overwritten per env like this:
+
+```
+# application.rb
+YourApp.configure do
+  config.proxy "/api", "http://api.myproduct.com"
+end
+
+# config/test.rb
+YourApp.configure do
+  config.proxy "/api", "http://test-api.myproduct.com"
+end
+```
+
+### Customizing The Unit Test Loader
+
+Iridium uses a generated HTML file to load your test code into. You can
+override this behavior by creating:
+`test/support/unit_test_loader.html.erb`. 
+
+Here's what the default ERB template looks like:
+
+```erb
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Unit Tests</title>
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <% app.config.dependencies.each do |script| %>
+      <script src="<%= script.url %>"></script>
+    <% end %>
+
+    <script src="application.js"></script>
+  </body>
+</html>
+```
+
+### Deploying
 
 JS applications are simply a collection of static assets in a diretory.
 This is trival to serve up with Rack. Iridium apps are rack apps for

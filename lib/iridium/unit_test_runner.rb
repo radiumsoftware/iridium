@@ -53,7 +53,7 @@ module Iridium
     end
 
     def template_erb
-      template_path = app.root.join('test', 'unit', 'runner.html.erb')
+      template_path = app.root.join('test', 'support', 'unit_test_loader.html.erb')
 
       if File.exists? template_path
         File.read template_path
