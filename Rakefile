@@ -32,9 +32,15 @@ namespace :test do
   end
 
   desc "Run tests for integration runner"
-  Rake::TestTask.new(:integration_test_runner=> :compile) do |test|
+  Rake::TestTask.new(:integration_test_runner => :compile) do |test|
     test.libs << 'test'
     test.pattern = 'test/integration_test_runner_test.rb'
+  end
+
+  desc "Run tests for thor commands"
+  Rake::TestTask.new(:commands => :compile) do |test|
+    test.libs << 'test'
+    test.pattern = 'test/commands/**/*_test.rb'
   end
 end
 

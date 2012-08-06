@@ -23,6 +23,7 @@ module Iridium
 
         directory "app"
         directory "site"
+        directory "test"
         template "application.rb.tt"
 
         if options[:assetfile]

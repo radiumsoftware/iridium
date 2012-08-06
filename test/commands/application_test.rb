@@ -20,6 +20,11 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos', 'app', 'dependencies'
     assert_file 'todos', 'app', 'public'
 
+    assert_file 'todos', 'test', 'helper.coffee'
+    assert_file 'todos', 'test', 'integration', 'navigation_test.coffee'
+    assert_file 'todos', 'test', 'unit', 'truth_test.coffee'
+    assert_file 'todos', 'test', 'support', 'qunit.js'
+  
     assert_file 'todos', 'site'
 
     assert_file 'todos', 'application.rb'
