@@ -2,11 +2,16 @@ require 'test_helper'
 
 class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def setup
-    Iridium.application = TestApp
-    FileUtils.mkdir_p working_directory
+    Iridium.application = TestApp.instance
+    FileUtils.mkdir_p Iridium.application.root.join('test', 'support')
+    FileUtils.mkdir_p Iridium.application.site_path
   end
 
   def teardown
+    Iridium.application.config.dependencies.clear
+    FileUtils.rm_rf Iridium.application.root.join('app')
+    FileUtils.rm_rf Iridium.application.root.join('test')
+    FileUtils.rm_rf Iridium.application.site_path
     Iridium.application = nil
   end
 
@@ -15,21 +20,17 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     options = files.extract_options!
     stdout, stderr = nil, nil
 
-    Dir.chdir working_directory do
+    Dir.chdir Iridium.application.root do
       stdout, stderr = capture_io do
-        results = Iridium::IntegrationTestRunner.new(files).run(options)
+        results = Iridium::IntegrationTestRunner.new(Iridium.application, files).run(options)
       end
     end
 
     return results, stdout, stderr
   end
 
-  def working_directory
-    Iridium.application.root.join('tmp', 'test_root')
-  end
-
   def create_file(path, content)
-    full_path = working_directory.join path
+    full_path = Iridium.application.root.join path
 
     FileUtils.mkdir_p File.dirname(full_path)
 
@@ -38,7 +39,24 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     end
   end
 
+  def test_helper
+    <<-str
+      class Helper
+        scripts: [ ]
+
+        iridium: ->
+          _iridium = requireExternal('iridium').create()
+          _iridium.scripts = @scripts
+          _iridium
+
+      exports.casper = (options) ->
+        (new Helper).iridium().casper(options)
+    str
+  end
+
   def test_reports_basic_information
+    create_file "test/helper.coffee", test_helper
+
     create_file "success.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(200, 'Server is up');
@@ -57,6 +75,8 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_reports_successful_test_correctly
+    create_file "test/helper.coffee", test_helper
+
     create_file "success.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(200, 'Server is up');
@@ -73,6 +93,8 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_reports_a_failure
+    create_file "test/helper.coffee", test_helper
+
     create_file "failure.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(500, 'Server should be down!');
@@ -92,6 +114,8 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_reports_an_error
+    create_file "test/helper.coffee", test_helper
+
     create_file "error.js", <<-test
       casper.start('http://localhost:7776/', function() {
         foobar;
@@ -111,6 +135,8 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_stdout_prints_in_debug_mode
+    create_file "test/helper.coffee", test_helper
+
     create_file "error.js", <<-test
       casper.start('http://localhost:7776/', function() {
         console.log('This is logged!');
@@ -126,6 +152,8 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_dry_return_returns_no_results
+    create_file "test/helper.coffee", test_helper
+
     create_file "error.js", <<-test
       casper.start('http://localhost:7776/', function() {
         console.log('This is logged!');
@@ -142,6 +170,8 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
 
 
   def test_handles_javascript_errors_in_source_files
+    create_file "test/helper.coffee", test_helper
+
     create_file "error.js", <<-test
       foobar();
     test
@@ -157,6 +187,8 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_does_not_let_one_test_bring_down_others
+    create_file "test/helper.coffee", test_helper
+
     create_file "success.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(200, 'Server is up');
@@ -171,10 +203,10 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       foobar();
     test
 
-    results, stdout, stderr = invoke "success.js", "error.js"
+    results, stdout, stderr = invoke "error.js", "success.js"
 
     assert_equal 2, results.size
-    assert results[0].passed?
-    assert results[1].error?
+    assert results[0].error?
+    assert results[1].passed?
   end
 end

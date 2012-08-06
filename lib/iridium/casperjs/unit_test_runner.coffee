@@ -9,7 +9,6 @@ unless phantom.casperArgs.get('test-path')
   console.log("--test-path")
   phantom.exit(2)
 
-window.testMode = 'unit'
 window.loadPaths = [phantom.casperArgs.get('lib-path'), phantom.casperArgs.get('test-path')]
 window.requireExternal = (path) ->
   for directory in loadPaths
@@ -24,6 +23,7 @@ iridium = requireExternal('iridium')
 
 # Assign the root and test root to the prototype so all new iridium
 # objects will know where they are
+iridium.Iridium::modle = 'unit'
 iridium.Iridium::root = loadPaths[0]
 iridium.Iridium::testRoot = loadPaths[1]
 

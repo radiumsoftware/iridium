@@ -9,5 +9,5 @@ class Helper
     _iridium.scripts = @scripts
     _iridium
 
-exports.casper = ->
-  (new Helper).iridium().casper()
+exports.casper = (options) ->
+  (new Helper).iridium().casper(options)

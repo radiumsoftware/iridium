@@ -30,6 +30,12 @@ namespace :test do
     test.libs << 'test'
     test.pattern = 'test/unit_test_runner_test.rb'
   end
+
+  desc "Run tests for integration runner"
+  Rake::TestTask.new(:integration_test_runner=> :compile) do |test|
+    test.libs << 'test'
+    test.pattern = 'test/integration_test_runner_test.rb'
+  end
 end
 
 namespace :casperjs do
@@ -42,7 +48,7 @@ namespace :casperjs do
     loader = File.expand_path '../fixtures/blank.html', __FILE__
     tests = File.expand_path '../fixtures/qunit_tests.js', __FILE__
 
-    command = %Q{casperjs "#{runner}" "#{tests}" --lib-path=#{iridium_root} --test-path=#{test_root} --index=#{loader}}
+    command = %Q{casperjs "#{runner}" "#{tests}"  --index=#{loader}}
     puts "Running: #{command}"
     exec command
   end
@@ -51,7 +57,7 @@ namespace :casperjs do
   task :integration => :compile do
     integration_runner = File.expand_path '../lib/iridium/casperjs/integration_test_runner.coffee', __FILE__
     test_file = File.expand_path '../fixtures/integration_test.coffee', __FILE__
-    command = %Q{casperjs "#{integration_runner}" "#{test_file}" --I=#{load_paths}}
+    command = %Q{casperjs "#{integration_runner}" "#{test_file}" --lib-path=#{iridium_root} --test-path=#{test_root}}
     puts "Running: #{command}"
     exec command
   end

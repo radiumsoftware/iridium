@@ -1,39 +1,43 @@
-unless phantom.casperArgs.get('I')
-  console.log("No Load paths passed!")
-  phantom.exit(2)
-
 fs = require('fs')
 
-window.testMode = 'integration'
-window.loadPaths = phantom.casperArgs.get('I').split(',')
+unless phantom.casperArgs.get('lib-path')
+  console.log("--lib-path is required!")
+  phantom.exit(2)
+
+unless phantom.casperArgs.get('test-path')
+  console.log("--test-path")
+  phantom.exit(2)
+
+window.testMode = 'unit'
+window.loadPaths = [phantom.casperArgs.get('lib-path'), phantom.casperArgs.get('test-path')]
 window.requireExternal = (path) ->
   for directory in loadPaths
     if fs.exists(fs.pathJoin(directory, "#{path}.coffee")) || fs.exists(fs.pathJoin(directory, "#{path}.js")) 
       return require(fs.pathJoin(directory, path))
 
-  throw "#{path} could not be found in #{loadPaths}"
+  console.log "#{path} could not be found in #{loadPaths}"
+  phantom.exit(2)
 
 # Hooray! Now we have an iridium object
 iridium = requireExternal('iridium')
 
 # Assign the root and test root to the prototype so all new iridium
 # objects will know where they are
+iridium.Iridium::mode = 'integration'
 iridium.Iridium::root = @window.loadPaths[0]
 iridium.Iridium::testRoot = @window.loadPaths[1]
 
-tests = []
-
 casper = requireExternal('helper').casper({
-  exitOnError: true
+  exitOnError: false
 })
 
-# test paths are passed as args
-if (casper.cli.args.length)
-  tests = casper.cli.args.filter (path) ->
-    fs.isFile(path) || fs.isDirectory(path)
-else
-  console.log('No test files!')
-  casper.exit(1)
+tests = casper.cli.args
+
+for test in tests 
+  absolutePath = fs.absolute(test)
+  unless fs.isFile(absolutePath)
+    console.log "#{absolutePath} does not exist!"
+    phantom.exit(2)
 
 @casper = casper
 

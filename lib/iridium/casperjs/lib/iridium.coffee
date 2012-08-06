@@ -33,6 +33,8 @@ class IridiumCasper extends require('casper').Casper
   constructor: (options) ->
     super options
 
+    @logger = logger
+
     # Hook remote console to this one
     @on 'remote.message', (msg) ->
       console.log msg
@@ -104,10 +106,9 @@ class IridiumCasper extends require('casper').Casper
       @exit()
 
 class Iridium
-  logger: logger,
   requires: ['iridium/logger']
   scripts: []
-  casper: ->
+  casper: (options) ->
     absolutePaths = []
 
     for path in @requires.concat(@scripts)
@@ -124,8 +125,10 @@ class Iridium
         console.log "#{path} is not a valid JS or CS file!"
         phantom.exit 2
 
-    options =
-      clientScripts: absolutePaths
+    options ||= {}
+    options.clientScripts = absolutePaths
+
+    console.log(JSON.stringify(options))
 
     new IridiumCasper(options)
 

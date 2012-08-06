@@ -1,14 +1,9 @@
-require 'active_support/core_ext/class'
 module Iridium
   class IntegrationTestRunner
-    attr_reader :files, :collector
+    attr_reader :app, :files, :collector
 
-    def self.runner_path
-      File.expand_path('../casperjs/integration_test_runner.coffee', __FILE__)
-    end
-
-    def initialize(files, collector = [])
-      @files, @collector = files, collector
+    def initialize(app, files, collector = [])
+      @app, @files, @collector = app, files, collector
     end
 
     def run(options = {})
@@ -16,7 +11,17 @@ module Iridium
 
       return collector if options[:dry_run]
 
-      command = %Q{casperjs "#{self.class.runner_path}" #{file_arg}}
+      js_test_runner = File.expand_path('../casperjs/integration_test_runner.coffee', __FILE__)
+
+      command_options = { 
+        "lib-path" => Iridium.js_lib_path,
+        "test-path" => app.root.join('test')
+      }
+
+      switches = command_options.keys.map { |s| %Q{--#{s}="#{command_options[s]}"} }.join(" ")
+      file_args = files.map { |f| %Q{"#{f}"} }.join(" ")
+
+      command = %Q{casperjs "#{js_test_runner}" #{file_args} #{switches}}
 
       begin
         streamer = CommandStreamer.new command
