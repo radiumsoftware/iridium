@@ -52,3 +52,6 @@ QUnit.done (context) =>
   window.unitTestsDone = true
 
 QUnit.config.autorun = false
+
+window.startUnitTests = QUnit.load
+

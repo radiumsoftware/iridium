@@ -49,7 +49,7 @@ casper.on 'resource.received', (request) ->
 casper.start casper.cli.args[0], ->
   console.log "Starting tests on: #{casper.cli.args[0]}"
   casper.evaluate ->
-    QUnit.load()
+    window.startUnitTests()
 
 casper.waitFor(
   ->
