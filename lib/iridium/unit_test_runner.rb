@@ -19,7 +19,7 @@ module Iridium
 
         return collector if options[:dry_run]
 
-        js_test_runner = File.expand_path('../casperjs/qunit_runner.coffee', __FILE__)
+        js_test_runner = File.expand_path('../casperjs/unit_test_runner.coffee', __FILE__)
 
         command_options = { 
           "index" => loader_path,
