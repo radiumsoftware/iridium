@@ -31,12 +31,14 @@ logger = requireExternal('iridium/logger').create()
 
 casper = requireExternal('helper').casper()
 
-tests = casper.cli.args.filter (path) ->
-  fs.isFile(path) || fs.isDirectory(path)
+console.log JSON.stringify(casper.cli.args)
+
+tests = casper.cli.args
 
 for test in tests 
-  unless fs.isFile(test)
-    console.log "#{test} does not exist!"
+  absolutePath = fs.absolute(test)
+  unless fs.isFile(absolutePath)
+    console.log "#{absolutePath} does not exist!"
     phantom.exit(2)
 
 casper.on 'page.error', (error, trace) ->
