@@ -107,7 +107,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_includes stdout, "1 Test(s)"
   end
 
-  def test_pukes_on_invalid_coffee_script
+  def test_pukes_on_invalid_coffee_script_tests
     create_file "test/helper.coffee", test_helper
 
     create_file "test/unit/invalid_coffeescript.coffee", <<-test
@@ -119,7 +119,43 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     assert_equal 2, status
     assert_includes stderr, "test/unit/invalid_coffeescript.coffee"
-    assert_includes stderr, "compiling"
+    assert_includes stderr, "error"
+  end
+
+  def test_pukes_on_invalid_coffee_script_in_test_helper
+    create_file "test/helper.coffee", <<-helper
+      thisMethod(), ->
+    helper
+
+    create_file "test/unit/truth_test.coffee", <<-test
+      test 'Truth', ->
+        ok true, "Passed!"
+    test
+
+    status, stdout, stderr = invoke "test/unit/truth_test.coffee"
+
+    assert_equal 2, status
+    assert_includes stderr, "test/helper.coffee"
+    assert_includes stderr, "error"
+  end
+
+  def test_pukes_on_invalid_coffee_script_in_support_files
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/support/error.coffee", <<-helper
+      thisMethod(), ->
+    helper
+
+    create_file "test/unit/truth_test.coffee", <<-test
+      test 'Truth', ->
+        ok true, "Passed!"
+    test
+
+    status, stdout, stderr = invoke "test/unit/truth_test.coffee"
+
+    assert_equal 2, status
+    assert_includes stderr, "test/support/error.coffee"
+    assert_includes stderr, "error"
   end
 
   def test_runs_coffee_script_unit_test

@@ -1,4 +1,5 @@
 require 'rack/server'
+require 'coffee-script'
 
 module Iridium
   # Iridium supports two types of tests right out of the box
@@ -70,6 +71,18 @@ module Iridium
         raise SetupFailed, "You could not find test/helper.js or test/helper.coffee"
       end
 
+      files_to_check = file_names.select { |f| f =~ %r{.coffee$} }
+      files_to_check += Dir[Iridium.application.root.join('test', 'support', '**', '*.coffee')]
+      files_to_check += Dir[Iridium.application.root.join('test', 'helper.coffee')]
+
+      files_to_check.each do |file|
+        begin
+          CoffeeScript.compile File.read(file)
+        rescue ExecJS::ProgramError => ex
+          raise SetupFailed, "Could not compile #{file}: #{ex}"
+        end
+      end
+
       integration_test_files = file_names.select { |f| f =~ %r{test/integration}}
       unit_test_files = file_names - integration_test_files
 
@@ -126,7 +139,6 @@ module Iridium
     private
     def setup
       @app.compile
-      build_unit_test_directory
       start_server
       @results.clear
     rescue ExecJS::ProgramError => ex
@@ -135,39 +147,6 @@ module Iridium
 
     def teardown
       kill_server
-    end
-
-    def build_unit_test_directory
-      suite = self
-      _app = @app
-
-      _pipeline = Rake::Pipeline.build do
-        input _app.root
-        output suite.test_root
-
-        match 'test/**/*.coffee' do
-          coffee_script
-        end
-
-        match 'test/**/*_test.js' do
-          copy
-        end
-
-        match "test/support/**/*.js" do
-          copy
-        end
-
-        site_directory = File.basename(_app.site_path)
-
-        match "#{site_directory}/**/*" do
-          copy do |path|
-            path.sub(%r{^#{site_directory}\/}, '')
-          end
-        end
-      end
-
-      _pipeline.tmpdir = test_root.join('tmp')
-      _pipeline.invoke_clean
     end
 
     def start_server
