@@ -84,7 +84,6 @@ module Iridium
         </head>
 
         <body>
-          <div id="qunit"></div>
           <% app.config.dependencies.each do |script| %>
             <script src="<%= script.url %>"></script>
           <% end %>

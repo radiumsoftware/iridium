@@ -284,7 +284,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
       foobar();
     test
 
-    results, stdout, stderr = invoke "test/error.js", "test/success.js"
+    results, stdout, stderr = invoke "test/error.js", "test/success.js", :debug => true
 
     assert_kind_of Array, results
     assert_equal 2, results.size

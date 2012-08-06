@@ -53,4 +53,6 @@ QUnit.done (context) =>
 
 QUnit.config.autorun = false
 
+document.write('<div id="qunit"></div>')
+
 window.startUnitTests = QUnit.load

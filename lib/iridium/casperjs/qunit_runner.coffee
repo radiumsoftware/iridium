@@ -31,8 +31,6 @@ logger = requireExternal('iridium/logger').create()
 
 casper = requireExternal('helper').casper()
 
-console.log JSON.stringify(casper.cli.args)
-
 tests = casper.cli.args
 
 for test in tests 
@@ -42,9 +40,13 @@ for test in tests
     phantom.exit(2)
 
 casper.on 'page.error', (error, trace) ->
-  console.log(error)
-  utils.dump(trace)
-  casper.exit(2)
+  result = {}
+  result.name = "Uncaught error"
+  result.message = error
+  result.backtrace = casper.formatBacktrace(trace)
+  result.error = true
+  logger.message result
+
 
 casper.on 'resource.received', (request) ->
   return if request.stage == 'start'
