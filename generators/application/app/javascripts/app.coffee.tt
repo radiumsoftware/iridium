@@ -4,13 +4,13 @@
 # automatically prefixed with your application name. You can require
 # this file like so:
 #
-#   minispade.require('app_name/app');
+#   require('app_name/app');
 #
 # Files placed in "app/vendor/javascripts" are not prefixed at all.
 # Say you downloaded jQuery to: "app/vendor/javascripts/jquery.min.js".
 # You can require that code like so:
 #
-#   minispade.require('jquery');
+#   require('jquery');
 #
 # Any ".min" or version numbers are not included in the module name.
 #
