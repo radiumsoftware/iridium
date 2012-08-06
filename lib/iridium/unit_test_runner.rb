@@ -19,7 +19,16 @@ module Iridium
       return collector if options[:dry_run]
 
       js_test_runner = File.expand_path('../casperjs/qunit_runner.coffee', __FILE__)
-      command = %Q{casperjs "#{js_test_runner}" "#{loader_path}" --I="#{app.js_load_paths.join(',')}"}
+
+      command_options = { 
+        "I" => app.js_load_paths.join(",")
+        "index" => loader_path
+      }
+
+      switches = command_options.keys.map {|s| %Q{--#{s}="#{command_options[s]}"}.join(" ")
+      file_args = files.map {|f| %Q{"#{f}"}}.join(" "}
+
+      command = %Q{casperjs "#{js_test_runner}" #{file_args} #{switches}}
 
       begin
         streamer = CommandStreamer.new command
@@ -38,12 +47,12 @@ module Iridium
       collector
     end
 
-    def test_root
-      app.root.join 'tmp', 'test_root'
+    def tmp_path
+      app.tmp_path
     end
 
     def loader_path
-      test_root.join "unit_test_runner-#{Digest::MD5.hexdigest(files.to_s)}.html"
+      tmp_path.join "unit_test_runner-#{Digest::MD5.hexdigest(files.to_s)}.html"
     end
 
     def template_erb
@@ -80,10 +89,6 @@ module Iridium
           <div id="qunit"></div>
           <% app.config.dependencies.each do |script| %>
             <script src="<%= script.url %>"></script>
-          <% end %>
-
-          <% files.each do |file| %>
-            <script src="<%= file %>"></script>
           <% end %>
 
           <script src="application.js"></script>

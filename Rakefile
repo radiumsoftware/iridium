@@ -39,9 +39,11 @@ namespace :casperjs do
 
   desc "Runs the unit test runner aganist a local qunit test file"
   task :qunit => :compile do
-    qunit_runner = File.expand_path '../lib/iridium/casperjs/qunit_runner.coffee', __FILE__
-    qunit_file = File.expand_path '../fixtures/qunit.html', __FILE__
-    command = %Q{casperjs "#{qunit_runner}" "#{qunit_file}" --I=#{load_paths}}
+    runner = File.expand_path '../lib/iridium/casperjs/qunit_runner.coffee', __FILE__
+    loader = File.expand_path '../fixtures/blank.html', __FILE__
+    tests = File.expand_path '../fixtures/qunit_tests.js', __FILE__
+
+    command = %Q{casperjs "#{runner}" "#{tests}" --I=#{load_paths} --index=#{loader}}
     puts "Running: #{command}"
     exec command
   end

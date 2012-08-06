@@ -5,6 +5,10 @@ unless phantom.casperArgs.get('I')
   console.log("No Load paths passed!")
   phantom.exit(2)
 
+unless phantom.casperArgs.get('index')
+  console.log("No html loader passed!")
+  phantom.exit(2)
+
 window.testMode = 'unit'
 window.loadPaths = phantom.casperArgs.get('I').split(',')
 window.requireExternal = (path) ->
@@ -24,6 +28,9 @@ iridium.Iridium::root = @window.loadPaths[0]
 iridium.Iridium::testRoot = @window.loadPaths[1]
 
 casper = requireExternal('helper').casper()
+
+tests = casper.cli.args.filter (path) ->
+  fs.isFile(path) || fs.isDirectory(path)
 
 casper.on 'page.error', (error, trace) ->
   console.log(error)
@@ -46,9 +53,12 @@ casper.on 'resource.received', (request) ->
     console.log("<iridium>#{JSON.stringify(result)}</iridium>")
     casper.exit()
 
-casper.start casper.cli.args[0], ->
-  console.log "Starting tests on: #{casper.cli.args[0]}"
-  casper.evaluate ->
+casper.start casper.cli.get('index'), ->
+  for test in tests
+    @page.injectJs test
+
+casper.then ->
+  @evaluate ->
     window.startUnitTests()
 
 casper.waitFor(
