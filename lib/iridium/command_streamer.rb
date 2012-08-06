@@ -16,7 +16,7 @@ module Iridium
             if block_given?
               json = JSON.parse output
 
-              if json['iridium']
+              if json.is_a?(Hash) && json['iridium']
                 yield json['iridium']
               else
                 puts output if options[:debug]

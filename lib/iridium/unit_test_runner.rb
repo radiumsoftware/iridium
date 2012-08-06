@@ -22,8 +22,9 @@ module Iridium
         js_test_runner = File.expand_path('../casperjs/qunit_runner.coffee', __FILE__)
 
         command_options = { 
-          "I" => app.js_load_paths.join(","),
-          "index" => loader_path
+          "index" => loader_path,
+          "lib-path" => Iridium.js_lib_path,
+          "test-path" => app.root.join('test')
         }
 
         switches = command_options.keys.map { |s| %Q{--#{s}="#{command_options[s]}"} }.join(" ")

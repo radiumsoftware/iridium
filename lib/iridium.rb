@@ -63,6 +63,10 @@ module Iridium
     def application=(app)
       @application = app
     end
+
+    def js_lib_path
+      File.expand_path("../iridium/casperjs/lib", __FILE__)
+    end
   end
 
   class Application
@@ -79,13 +83,6 @@ module Iridium
         base.root = root_path
         Iridium.application = base.instance
       end
-    end
-
-    def js_load_paths
-      [
-        File.expand_path("../iridium/casperjs/lib", __FILE__),
-        root.join('test')
-      ]
     end
 
     def production?

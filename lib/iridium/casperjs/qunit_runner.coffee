@@ -1,16 +1,16 @@
 fs = require('fs')
 utils = require('utils')
 
-unless phantom.casperArgs.get('I')
-  console.log("No Load paths passed!")
+unless phantom.casperArgs.get('lib-path')
+  console.log("--lib-path is required!")
   phantom.exit(2)
 
-unless phantom.casperArgs.get('index')
-  console.log("No html loader passed!")
+unless phantom.casperArgs.get('test-path')
+  console.log("--test-path")
   phantom.exit(2)
 
 window.testMode = 'unit'
-window.loadPaths = phantom.casperArgs.get('I').split(',')
+window.loadPaths = [phantom.casperArgs.get('lib-path'), phantom.casperArgs.get('test-path')]
 window.requireExternal = (path) ->
   for directory in loadPaths
     if fs.exists(fs.pathJoin(directory, "#{path}.coffee")) || fs.exists(fs.pathJoin(directory, "#{path}.js")) 
@@ -24,8 +24,8 @@ iridium = requireExternal('iridium')
 
 # Assign the root and test root to the prototype so all new iridium
 # objects will know where they are
-iridium.Iridium::root = @window.loadPaths[0]
-iridium.Iridium::testRoot = @window.loadPaths[1]
+iridium.Iridium::root = loadPaths[0]
+iridium.Iridium::testRoot = loadPaths[1]
 
 logger = requireExternal('iridium/logger').create()
 

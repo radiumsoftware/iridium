@@ -35,7 +35,6 @@ end
 namespace :casperjs do
   iridium_root = File.expand_path '../lib/iridium/casperjs/lib', __FILE__
   test_root = File.expand_path '../fixtures/', __FILE__
-  load_paths = [iridium_root, test_root].map {|f| %Q{"#{f}"}}.join(',')
 
   desc "Runs the unit test runner aganist a local qunit test file"
   task :qunit => :compile do
@@ -43,7 +42,7 @@ namespace :casperjs do
     loader = File.expand_path '../fixtures/blank.html', __FILE__
     tests = File.expand_path '../fixtures/qunit_tests.js', __FILE__
 
-    command = %Q{casperjs "#{runner}" "#{tests}" --I=#{load_paths} --index=#{loader}}
+    command = %Q{casperjs "#{runner}" "#{tests}" --lib-path=#{iridium_root} --test-path=#{test_root} --index=#{loader}}
     puts "Running: #{command}"
     exec command
   end
