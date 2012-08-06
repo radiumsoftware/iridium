@@ -1,3 +1,31 @@
+# WARNING: This is currently prerelease software!
+
+Please note this is prerelease software and can only be used through
+bundler. It also requires git depenencies of rake-pipline and
+rake-pipeline-web-filers. It also requires CasperJS 1.0 RC1. If you
+don't have any of that installed then you can turn back now. CasperJS
+1.0 can be installed with homebrew on mac. Here's how you can boostrap.
+
+First create a `Gemfile`
+
+```
+source :rubygems
+
+gem 'iridium', :gihtub => 'radiumsoftware/iridium'
+gem "rake-pipeline", :github => "livingsocial/rake-pipeline"
+gem "rake-pipeline-web-filters", :github => "wycats/rake-pipeline-web-filters"
+```
+
+Now bootstrap:
+
+```
+$ brew install casperjs # or upgrade
+$ bundle
+$ bundle exec iridium
+```
+
+Don't forget you **must use bundle exec!**
+
 # Iridium: A Toolchain for JS Development
 
 Iridium is a tool to help you with modern Javascript development. It's
