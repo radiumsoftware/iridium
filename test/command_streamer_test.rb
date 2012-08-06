@@ -6,7 +6,7 @@ class CommandStreamerTest < MiniTest::Unit::TestCase
     command.run
   end
 
-  def test_raises_an_error_when_command_failes
+  def test_raises_an_error_when_command_fails
     command = Iridium::CommandStreamer.new "ls /foo/bar"
 
     assert_raises Iridium::CommandStreamer::CommandFailed do
