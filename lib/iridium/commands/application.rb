@@ -44,8 +44,8 @@ module Iridium
       end
 
       no_tasks do
-        def classified
-          app_path.classify
+        def camelized
+          app_path.camelize
         end
 
         def underscored

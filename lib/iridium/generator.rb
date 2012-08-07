@@ -19,7 +19,7 @@ module Iridium
         app_name.underscore
       end
 
-      def classified
+      def camelized
         app_name
       end
     end

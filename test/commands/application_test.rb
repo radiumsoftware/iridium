@@ -8,6 +8,8 @@ class ApplicationCommandTest < GeneratorTestCase
   end
 
   def tests_generates_an_app_skeleton
+    ENV['stop'] = "1"
+
     invoke 'application', 'todos'
 
     assert_file 'todos'
