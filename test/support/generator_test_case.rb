@@ -5,8 +5,8 @@ class GeneratorTestCase < MiniTest::Unit::TestCase
     Iridium.application = TestApp.instance
   end
 
-  def read(path)
-    File.read(path)
+  def read(*path)
+    File.read destination_root.join(*path)
   end
 
   def invoke(*args)

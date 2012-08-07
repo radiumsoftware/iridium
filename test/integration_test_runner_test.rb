@@ -1,20 +1,6 @@
 require 'test_helper'
 
 class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
-  def setup
-    Iridium.application = TestApp.instance
-    FileUtils.mkdir_p Iridium.application.root.join('test', 'support')
-    FileUtils.mkdir_p Iridium.application.site_path
-  end
-
-  def teardown
-    Iridium.application.config.dependencies.clear
-    FileUtils.rm_rf Iridium.application.root.join('app')
-    FileUtils.rm_rf Iridium.application.root.join('test')
-    FileUtils.rm_rf Iridium.application.site_path
-    Iridium.application = nil
-  end
-
   def invoke(*files)
     results = nil
     options = files.extract_options!
@@ -27,16 +13,6 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     end
 
     return results, stdout, stderr
-  end
-
-  def create_file(path, content)
-    full_path = Iridium.application.root.join path
-
-    FileUtils.mkdir_p File.dirname(full_path)
-
-    File.open full_path, "w" do |f|
-      f.puts content
-    end
   end
 
   def test_helper

@@ -15,14 +15,6 @@ class TestSuiteTest < MiniTest::Unit::TestCase
     MockTest.new(Iridium::TestResult.new(:passed => true))
   end
 
-  def setup
-    Iridium.application = TestApp.instance
-  end
-
-  def teardown
-    Iridium.application = nil
-  end
-
   def test_suite_collects_results_from_tests
     results = start mock_test, mock_test
 

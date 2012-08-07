@@ -1,14 +1,6 @@
 require 'test_helper'
 
 class AssetPipelineTest < MiniTest::Unit::TestCase
-  def setup
-    Iridium.application = TestApp.instance
-  end
-
-  def teardown
-    Iridium.application = nil
-  end
-
   def test_can_access_the_app_inside_the_dsl
     assert Iridium.application
 

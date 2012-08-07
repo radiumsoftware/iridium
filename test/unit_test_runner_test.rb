@@ -2,9 +2,7 @@ require 'test_helper'
 
 class UnitTestRunnerTest < MiniTest::Unit::TestCase
   def setup
-    Iridium.application = TestApp.instance
-    FileUtils.mkdir_p Iridium.application.root.join('test', 'support')
-    FileUtils.mkdir_p Iridium.application.site_path
+    super
 
     File.open Iridium.application.root.join('test', 'support', 'qunit.js'), "w" do |qunit|
       qunit.puts File.read(File.expand_path("../fixtures/qunit.js", __FILE__))
@@ -12,27 +10,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
 
     File.open Iridium.application.site_path.join('application.js'), "w" do |file|
       file.puts "var foo = {};"
-    end
-  end
-
-  def teardown
-    Iridium.application.config.dependencies.clear
-    FileUtils.rm_rf Iridium.application.root.join('test')
-    FileUtils.rm_rf Iridium.application.site_path
-    Iridium.application = nil
-  end
-
-  def working_directory
-    Iridium.application.root
-  end
-
-  def create_file(path, content)
-    full_path = working_directory.join path
-
-    FileUtils.mkdir_p File.dirname(full_path)
-
-    File.open full_path, "w" do |f|
-      f.puts content
     end
   end
 
@@ -52,10 +29,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
       exports.casper = ->
         (new Helper).iridium().casper()
     str
-  end
-
-  def read(path)
-    File.read working_directory.join(path)
   end
 
   def invoke(*files)
