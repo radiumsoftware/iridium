@@ -1,13 +1,16 @@
 fs = require('fs')
 utils = require('utils')
 
+console.abort = (msg) ->
+  @log(JSON.stringify({abort: msg}))
+
 unless phantom.casperArgs.get('lib-path')
-  console.log("--lib-path is required!")
-  phantom.exit(2)
+  console.abort("--lib-path is required!")
+  phantom.exit(0)
 
 unless phantom.casperArgs.get('test-path')
-  console.log("--test-path")
-  phantom.exit(2)
+  console.abort("--test-path is required!")
+  phantom.exit(0)
 
 window.loadPaths = [phantom.casperArgs.get('lib-path'), phantom.casperArgs.get('test-path')]
 window.requireExternal = (path) ->
@@ -46,7 +49,6 @@ casper.on 'page.error', (error, trace) ->
   result.backtrace = casper.formatBacktrace(trace)
   result.error = true
   logger.message result
-
 
 casper.on 'resource.received', (request) ->
   return if request.stage == 'start'

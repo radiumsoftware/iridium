@@ -324,6 +324,33 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_includes stderr, "test/unit/truth_test.rb"
   end
 
+  def test_runner_pukes_on_bad_load_files
+    create_file "test/helper.coffee", <<-test_helper
+      class Helper
+        scripts: [
+          'iridium/fooBarBaz'
+        ]
+
+        iridium: ->
+          _iridium = requireExternal('iridium').create()
+          _iridium.scripts = @scripts
+          _iridium
+
+      exports.casper = (options) ->
+        (new Helper).iridium().casper(options)
+    test_helper
+
+    create_file "test/unit/truth_test.coffee", <<-test
+      test 'Truth', ->
+        ok true, "Passed!"
+    test
+
+    status, stdout, stderr = invoke "test/unit/truth_test.coffee"
+
+    assert_equal 2, status
+    assert_includes stderr, "iridium/fooBarBaz"
+  end
+
   def invoke(*args)
     stdout, stderr, status = nil
 

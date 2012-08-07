@@ -1,12 +1,15 @@
 fs = require('fs')
 
+console.abort = (msg) ->
+  @log(JSON.stringify({abort: msg}))
+
 unless phantom.casperArgs.get('lib-path')
-  console.log("--lib-path is required!")
-  phantom.exit(2)
+  console.abort("--lib-path is required!")
+  phantom.exit(0)
 
 unless phantom.casperArgs.get('test-path')
-  console.log("--test-path")
-  phantom.exit(2)
+  console.abort("--test-path is required!")
+  phantom.exit(0)
 
 window.testMode = 'unit'
 window.loadPaths = [phantom.casperArgs.get('lib-path'), phantom.casperArgs.get('test-path')]

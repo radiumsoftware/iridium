@@ -42,10 +42,10 @@ module Iridium
         result.file = loader_path.to_s
 
         collector << result
-      ensure
-        FileUtils.rm loader_path if File.exists? loader_path
-        return collector
       end
+
+      FileUtils.rm loader_path if File.exists? loader_path
+      collector
     end
 
     def loader_path

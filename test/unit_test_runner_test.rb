@@ -262,4 +262,31 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert_kind_of Array, results
     assert_equal 2, results.size
   end
+
+  def test_raises_an_error_when_js_aborts
+    create_file "test/helper.coffee", <<-str
+      class Helper
+        scripts: [
+          'this_file_doesnt_exist'
+        ]
+
+        iridium: ->
+          _iridium = requireExternal('iridium').create()
+          _iridium.scripts = @scripts
+          _iridium
+
+      exports.casper = ->
+        (new Helper).iridium().casper()
+    str
+
+    create_file "test/success.js", <<-test
+      test('Truth', function() {
+        ok(true, "passed");
+      });
+    test
+
+    assert_raises Iridium::CommandStreamer::ProcessAborted do
+      invoke "test/success.js"
+    end
+  end
 end

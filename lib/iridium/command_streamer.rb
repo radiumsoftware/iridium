@@ -4,6 +4,7 @@ require 'json'
 module Iridium
   class CommandStreamer
     class CommandFailed < RuntimeError ; end
+    class ProcessAborted < RuntimeError ; end
 
     def initialize(command)
       @command = command
@@ -18,6 +19,8 @@ module Iridium
 
               if json.is_a?(Hash) && json['iridium']
                 yield json['iridium']
+              elsif json.is_a?(Hash) && json['abort']
+                raise ProcessAborted, json['abort']
               else
                 puts output if options[:debug]
               end

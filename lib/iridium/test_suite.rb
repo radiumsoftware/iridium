@@ -109,6 +109,9 @@ module Iridium
       else
         return 1
       end
+    rescue CommandStreamer::ProcessAborted => ex
+      $stderr.puts ex
+      return 2
     rescue SetupFailed => ex
       $stderr.puts ex
       return 2

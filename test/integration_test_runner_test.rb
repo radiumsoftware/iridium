@@ -185,4 +185,35 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     assert results[0].error?
     assert results[1].passed?
   end
+
+  def test_raises_an_error_when_js_aborts
+    create_file "test/helper.coffee", <<-str
+      class Helper
+        scripts: [
+          'this_file_doesnt_exist'
+        ]
+
+        iridium: ->
+          _iridium = requireExternal('iridium').create()
+          _iridium.scripts = @scripts
+          _iridium
+
+      exports.casper = ->
+        (new Helper).iridium().casper()
+    str
+
+    create_file "test/success.js", <<-test
+      casper.start('http://localhost:7776/', function() {
+        this.test.assertHttpStatus(200, 'Server is up');
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    assert_raises Iridium::CommandStreamer::ProcessAborted do
+      invoke "test/success.js"
+    end
+  end
 end

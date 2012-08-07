@@ -122,8 +122,8 @@ class Iridium
       else if fs.exists("#{basePath}.js")
         absolutePaths.push "#{basePath}.js"
       else
-        console.log "#{path} is not a valid JS or CS file!"
-        phantom.exit 2
+        console.abort "#{path} is not a valid JS or CS file!"
+        phantom.exit 0
 
     options ||= {}
     options.clientScripts = absolutePaths
