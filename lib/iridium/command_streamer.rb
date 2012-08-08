@@ -12,20 +12,23 @@ module Iridium
 
     def run(options = {})
       PTY.spawn @command do |stdin, stdout, pid|
-        stdin.each do |output|
-          begin
-            json = JSON.parse output
+        begin
+          stdin.each do |output|
+            begin
+              json = JSON.parse output
 
-            if json.is_a?(Hash) && json['iridium']
-              yield json['iridium'] if block_given?
-            elsif json.is_a?(Hash) && json['abort']
-              raise ProcessAborted, json['abort']
-            else
+              if json.is_a?(Hash) && json['iridium']
+                yield json['iridium'] if block_given?
+              elsif json.is_a?(Hash) && json['abort']
+                raise ProcessAborted, json['abort']
+              else
+                puts output if options[:debug]
+              end
+            rescue JSON::ParserError
               puts output if options[:debug]
             end
-          rescue JSON::ParserError
-            puts output if options[:debug]
           end
+        rescue Errno::EIO 
         end
 
         PTY.check pid, true
