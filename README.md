@@ -11,7 +11,7 @@ First create a `Gemfile`
 ```
 source :rubygems
 
-gem 'iridium', :github => 'radiumsoftware/iridium', :branch => 'prerelease'
+gem 'iridium', :github => 'radiumsoftware/iridium'
 gem "rake-pipeline", :github => "livingsocial/rake-pipeline"
 gem "rake-pipeline-web-filters", :github => "wycats/rake-pipeline-web-filters"
 ```
@@ -27,8 +27,6 @@ $ bundle exec iridium
 Don't forget you **must use bundle exec!**
 
 # Iridium: A Toolchain for JS Development
-
-[![Build Status](https://secure.travis-ci.org/radiumsoftware/iridium.png)](http://travis-ci.org/radiumsoftware/iridium)
 
 Iridium is a tool to help you with modern Javascript development. It's
 here to make you a faster developer and solve common problems. It
