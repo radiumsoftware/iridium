@@ -28,6 +28,8 @@ Don't forget you **must use bundle exec!**
 
 # Iridium: A Toolchain for JS Development
 
+[![Build Status](https://secure.travis-ci.org/radiumsoftware/iridium.png)](http://travis-ci.org/radiumsoftware/iridium)
+
 Iridium is a tool to help you with modern Javascript development. It's
 here to make you a faster developer and solve common problems. It
 focuses primarily on:
