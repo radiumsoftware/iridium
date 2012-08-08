@@ -1,5 +1,5 @@
 before_script: 
-  - ./script/install_casperjs
+  - ./scripts/install_casperjs
   - echo "CasperJS Version: $(casperjs --version)"
   - echo "PhantomJS Version: $(phantomjs --version)"
 script: bundle exec rake
