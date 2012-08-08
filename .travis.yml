@@ -1,5 +1,5 @@
 before_script: 
-  - EXPORT PATH=./vendor/casperjs/bin:$PATH
+  - export PATH=./vendor/casperjs/bin:$PATH
   - echo "PATH: $PATH"
   - ./script/install_casperjs
   - echo "CasperJS Version: $(casperjs --version)"
