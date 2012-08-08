@@ -57,6 +57,14 @@ module Iridium
     def self.execute(file_names, options = {})
       raise SetupFailed, "No application loaded!" unless Iridium.application
 
+      file_names = file_names.collect do |path|
+        if File.directory? path
+          Dir["#{path}/**/*_test.{js,coffee}"]
+        else
+          path
+        end
+      end.flatten
+
       file_names.each do |file|
         if file !~ %r{.(coffee|js)}
           raise SetupFailed, "#{file} is not Javascript or Coffeescript"

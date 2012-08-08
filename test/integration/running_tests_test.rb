@@ -351,6 +351,19 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_includes stderr, "iridium/fooBarBaz"
   end
 
+  def test_runner_parses_directories
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/unit/truth_test.coffee", <<-test
+      test 'Truth', ->
+        ok true, "Passed!"
+    test
+
+    status, stdout, stderr = invoke "test/unit"
+
+    assert_equal 0, status
+  end
+
   def invoke(*args)
     stdout, stderr, status = nil
 
@@ -361,16 +374,5 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     end
 
     return status, stdout, stderr
-  end
-
-  private
-  def create_file(path, content)
-    full_path = Iridium.application.root.join path
-
-    FileUtils.mkdir_p File.dirname(full_path)
-
-    File.open full_path, "w" do |f|
-      f.puts content
-    end
   end
 end
