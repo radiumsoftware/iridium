@@ -94,9 +94,10 @@ module Iridium
 
       raise SetupFailed, "Could not find any test files!" if tests.empty?
 
-      options[:seed] ||= rand 10000
+      options[:seed] ||= srand % 0xFFFF
+      srand options[:seed]
 
-      tests.shuffle!(:random => Random.new(options[:seed]))
+      tests.shuffle!
 
       suite = TestSuite.new Iridium.application, tests
 
