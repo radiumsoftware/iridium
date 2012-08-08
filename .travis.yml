@@ -1,0 +1,5 @@
+before_script: 'echo CasperJS Version: $(casperjs --version) ; echo "PhantomJS Version: $(phantomjs --version)"'
+script: bundle exec rake
+rvm:
+  - 1.9.2
+  - 1.9.3
