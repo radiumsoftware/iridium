@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "This command fails for testing purposes"
+exit 1

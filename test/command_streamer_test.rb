@@ -8,7 +8,9 @@ class CommandStreamerTest < MiniTest::Unit::TestCase
   end
 
   def test_raises_an_error_when_command_fails
-    command = Iridium::CommandStreamer.new "ls /foo/bar"
+    script_path = File.expand_path "../../script/fail", __FILE__
+
+    command = Iridium::CommandStreamer.new script_path
 
     assert_raises Iridium::CommandStreamer::CommandFailed do
       command.run
