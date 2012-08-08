@@ -13,6 +13,7 @@ module Iridium
     def run(options = {})
       PTY.spawn @command do |stdin, stdout, pid|
         begin
+          stdin.flush
           stdin.each do |output|
             begin
               json = JSON.parse output
