@@ -5,7 +5,12 @@ if [ ! $CASPERJS_VERSION ] ; then
   exit 1
 fi
 
-git clone git://github.com/n1k0/casperjs.git
-cd casperjs
-git checkout tags/$CASPERJS_VERSION
-ln -sf `pwd`/bin/casperjs /usr/local/bin/casperjs
+mkdir -p vendor/casperjs
+
+if [ -d vendor/casperjs ] ; then
+  rm -rf vendor/casperjs
+fi
+
+git clone git://github.com/n1k0/casperjs.git vendor/casperjs
+cd vendor/casperjs
+git checkout "tags/$CASPERJS_VERSION"
