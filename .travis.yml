@@ -1,6 +1,5 @@
 before_script: 
   - export PATH=./vendor/casperjs/bin:$PATH
-  - echo "PATH: $PATH"
   - ./script/install_casperjs
   - echo "CasperJS Version: $(casperjs --version)"
   - echo "PhantomJS Version: $(phantomjs --version)"

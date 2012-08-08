@@ -11,6 +11,6 @@ if [ -d vendor/casperjs ] ; then
   rm -rf vendor/casperjs
 fi
 
-git clone git://github.com/n1k0/casperjs.git vendor/casperjs
+git clone --quiet git://github.com/n1k0/casperjs.git vendor/casperjs
 cd vendor/casperjs
 git checkout "tags/$CASPERJS_VERSION"
