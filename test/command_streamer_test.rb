@@ -46,9 +46,7 @@ class CommandStreamerTest < MiniTest::Unit::TestCase
     command = Iridium::CommandStreamer.new "echo #{Shellwords.shellescape(json)}"
 
     assert_raises Iridium::CommandStreamer::ProcessAborted do
-      command.run do
-        # do nothing, block required to accept messages
-      end
+      command.run
     end
   end
 end
