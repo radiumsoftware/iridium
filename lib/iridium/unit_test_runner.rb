@@ -89,8 +89,9 @@ module Iridium
 
           <script src="application.js"></script>
 
-          <script language="text/javascript">
-            minispade.require('<%= app.class.to_s.underscore %>/app')
+          <script type="text/javascript">
+            minispade.require('<%= app.class.to_s.underscore %>/app');
+          </script>
         </body>
       </html>
       str

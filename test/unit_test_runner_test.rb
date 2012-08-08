@@ -4,12 +4,22 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   def setup
     super
 
+    Iridium.application.config.load :minispade
+
     File.open Iridium.application.root.join('test', 'support', 'qunit.js'), "w" do |qunit|
       qunit.puts File.read(File.expand_path("../fixtures/qunit.js", __FILE__))
     end
 
+    File.open Iridium.application.site_path.join("minispade.js"), "w" do |file|
+      file.puts File.read(File.expand_path('../fixtures/minispade.js', __FILE__))
+    end
+
     File.open Iridium.application.site_path.join('application.js'), "w" do |file|
-      file.puts "var foo = {};"
+      file.puts <<-code
+        minispade.register('test_app/app', function() { 
+          window.appLoaded = true;
+        })
+      code
     end
   end
 
@@ -288,5 +298,19 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert_raises Iridium::CommandStreamer::ProcessAborted do
       invoke "test/success.js"
     end
+  end
+
+  def test_app_module_is_required
+    create_file "test/helper.coffee", test_helper
+    create_file "test/module_test.coffee", <<-test
+      test 'minispade modules are required', ->
+        ok window.appLoaded, "test_app/app should be required!"
+    test
+
+    results, stdout, stderr = invoke "test/module_test.coffee"
+
+    assert_kind_of Array, results
+    assert_equal 1, results.size
+    assert results.first.passed?
   end
 end
