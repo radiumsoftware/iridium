@@ -26,6 +26,8 @@ module Iridium
         directory "test"
         template "application.rb.tt"
 
+        copy_file "gitignore", ".gitignore"
+
         if options[:assetfile]
           copy_file "Assetfile"
         end
