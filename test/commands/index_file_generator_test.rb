@@ -15,6 +15,6 @@ class IndexFileGeneratorTest < GeneratorTestCase
 
     assert_includes content, %Q{<script src="/application.js"></script>}
     assert_includes content, %Q{<link href="/application.css" rel="stylesheet">}
-    assert_includes content, %Q{minispade.require("test_app/app");}
+    assert_includes content, %Q{minispade.require("test_app/boot");}
   end
 end

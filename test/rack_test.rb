@@ -74,6 +74,6 @@ class RackTest < MiniTest::Unit::TestCase
 
     assert_includes last_response.body, %Q{<link href="/application.css" rel="stylesheet">}
     assert_includes last_response.body, %Q{<script src="/application.js"></script>}
-    assert_includes last_response.body, %Q{minispade.require("test_app/app");}
+    assert_includes last_response.body, %Q{minispade.require("test_app/boot");}
   end
 end

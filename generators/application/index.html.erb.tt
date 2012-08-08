@@ -16,7 +16,7 @@
   <body>
     <script src="/application.js"></script>
     <script type="text/javascript">
-      minispade.require("<%= underscored %>/app");
+      minispade.require("<%= underscored %>/boot");
     </script>
   </body>
 </html>

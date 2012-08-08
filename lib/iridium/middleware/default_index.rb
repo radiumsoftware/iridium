@@ -58,7 +58,7 @@ module Iridium
 
             <script src="/application.js"></script>
             <script type="text/javascript">
-              minispade.require("<%= iridium.class.to_s.underscore %>/app");
+              minispade.require("<%= iridium.class.to_s.underscore %>/boot");
             </script>
           </body>
         </html>

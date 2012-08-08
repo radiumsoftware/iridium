@@ -14,4 +14,14 @@
 #
 # Any ".min" or version numbers are not included in the module name.
 #
-# Your application beings here...
+# This file makes all the code available. Your app is iniitliazed in the
+# boot file. Here's an example
+#
+#   require('jquery')
+#   require('ember')
+#   require('models')
+#   require('views')
+#   require('controllers')
+#   require('helpers')
+#
+# Your application begins here...

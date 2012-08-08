@@ -8,8 +8,6 @@ class ApplicationCommandTest < GeneratorTestCase
   end
 
   def tests_generates_an_app_skeleton
-    ENV['stop'] = "1"
-
     invoke 'application', 'todos'
 
     assert_file 'todos'
@@ -17,6 +15,8 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos', 'app'
     assert_file 'todos', 'app', 'images'
     assert_file 'todos', 'app', 'stylesheets'
+    assert_file 'todos', 'app', 'javascripts', 'app.coffee'
+    assert_file 'todos', 'app', 'javascripts', 'boot.coffee'
     assert_file 'todos', 'app', 'vendor', 'javascripts'
     assert_file 'todos', 'app', 'vendor', 'stylesheets'
     assert_file 'todos', 'app', 'dependencies'
@@ -74,6 +74,6 @@ class ApplicationCommandTest < GeneratorTestCase
 
     assert_includes content, %Q{<script src="/application.js"></script>}
     assert_includes content, %Q{<link href="/application.css" rel="stylesheet">}
-    assert_includes content, %Q{minispade.require("todos/app");}
+    assert_includes content, %Q{minispade.require("todos/boot");}
   end
 end
