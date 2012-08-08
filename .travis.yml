@@ -1,5 +1,11 @@
-before_script: 'echo CasperJS Version: $(casperjs --version) ; echo "PhantomJS Version: $(phantomjs --version)"'
+before_script: 
+  - ./script/install_casperjs
+  - echo "CasperJS Version: $(casperjs --version)"
+  - echo "PhantomJS Version: $(phantomjs --version)"
 script: bundle exec rake
 rvm:
   - 1.9.2
   - 1.9.3
+env:
+  - CASPERJS_VERSION=1.0.0RC1
+  - CASPERJS_VERSION=0.6.10

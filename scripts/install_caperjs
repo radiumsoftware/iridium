@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ ! $CASPERJS_VERSION ] ; then
+  echo "CASPERJS_VERSION missing!"
+  exit 1
+fi
+
+git clone git://github.com/n1k0/casperjs.git
+cd casperjs
+git checkout tags/$CASPERJS_VERSION
+ln -sf `pwd`/bin/casperjs /usr/local/bin/casperjs
