@@ -50,6 +50,12 @@ require 'iridium/configuration'
 require 'iridium/pipeline'
 require 'iridium/rack'
 
+require 'iridium/jslint'
+require 'iridium/jslint_runner'
+require 'iridium/jslint_report'
+
+require 'iridium/commands/jslint'
+
 module Iridium
   class MissingFile < StandardError ; end
   class MissingTestHelper < StandardError ; end
