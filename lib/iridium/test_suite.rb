@@ -57,6 +57,11 @@ module Iridium
     def self.execute(file_names, options = {})
       raise SetupFailed, "No application loaded!" unless Iridium.application
 
+      trap 'INT' do
+        puts "Quiting..."
+        abort
+      end
+
       file_names = file_names.collect do |path|
         if File.directory? path
           Dir["#{path}/**/*_test.{js,coffee}"]

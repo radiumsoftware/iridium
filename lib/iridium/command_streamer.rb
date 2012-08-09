@@ -12,6 +12,11 @@ module Iridium
 
     def run(options = {})
       PTY.spawn @command do |stdin, stdout, pid|
+        trap 'INT' do
+          puts "Quiting..."
+          abort
+        end
+
         begin
           stdin.each do |output|
             begin
