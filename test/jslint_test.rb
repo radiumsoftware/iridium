@@ -2,14 +2,17 @@ require 'test_helper'
 
 class JSHintTest < MiniTest::Unit::TestCase
   def test_returns_no_results_on_a_good_file
-    results = Iridium::JSLint.run Iridium::JSLint.source
+    create_file "app/test.js", Iridium::JSLint.source
+
+    results = Iridium::JSLint.run Iridium.application.root.join("app", "test.js") 
 
     assert_kind_of Array, results
     assert_empty results
   end
 
   def test_parses_results
-    results = Iridium::JSLint.run "foo = 'bar'"
+    create_file "app/test.js", "foo = 'bar'"
+    results = Iridium::JSLint.run Iridium.application.root.join("app", "test.js")
 
     assert_kind_of Array, results
     assert_equal 2, results.size
