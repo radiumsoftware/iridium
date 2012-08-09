@@ -26,10 +26,11 @@ module Iridium
         end
       end
 
-      report = JSLintReport.new 
+      report = JSLintReport.new file_names
 
       results = file_names.collect do |file|
         result = Iridium::JSLint.run File.read(file), options
+        result.each { |r| r.file = file }
         report.print result
         result
       end.flatten.compact

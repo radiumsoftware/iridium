@@ -3,12 +3,14 @@ require 'execjs'
 module Iridium
   class JSLint
     class Result
+      attr_accessor :file
+
       def initialize(jslint_error)
         @error = jslint_error
       end
 
       def type
-        @error['id']
+        @error['id'].match(/\((\w+)\)/)[1]
       end
 
       # Expected '{a}' and instead saw '{b}'.",
