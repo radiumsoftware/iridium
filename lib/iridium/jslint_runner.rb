@@ -10,7 +10,7 @@ module Iridium
 
       file_names = file_names.collect do |path|
         if File.directory? path
-          Dir["#{path}/**/*_test.{js,coffee}"]
+          Dir["#{path}/**/*.js"]
         else
           path
         end

@@ -5,13 +5,12 @@ require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/string/inflections'
 
 require 'thor'
-
 require 'thin'
-
 require 'json'
-
 require 'yaml'
 require 'erb'
+require 'execjs'
+
 require 'rack/rewrite'
 require 'rake-pipeline'
 require 'rake-pipeline/middleware'

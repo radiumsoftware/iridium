@@ -1,5 +1,3 @@
-require 'execjs'
-
 module Iridium
   class JSLint
     class Result
