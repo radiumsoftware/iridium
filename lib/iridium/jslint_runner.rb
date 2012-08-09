@@ -2,7 +2,7 @@ module Iridium
   class JSLintRunner
     class SetupFailed < RuntimeError ; end
 
-    def self.execute(file_names, options = {})
+    def self.execute(file_names)
       trap 'INT' do
         puts "Quiting..."
         abort
@@ -29,7 +29,7 @@ module Iridium
       report = JSLintReport.new file_names
 
       results = file_names.collect do |file|
-        result = Iridium::JSLint.run file, options
+        result = Iridium::JSLint.run file
         report.print result
         result
       end.flatten.compact

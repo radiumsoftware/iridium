@@ -53,7 +53,7 @@ module Iridium
       js
     end
 
-    def self.run(file, options = {})
+    def self.run(file)
       context.call('LINTER', File.read(file)).collect do |h| 
         Result.new file, h 
       end
