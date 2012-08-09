@@ -76,4 +76,13 @@ class JsLintingTest < MiniTest::Unit::TestCase
     assert_equal 0, result
     assert_includes stdout, "2 File(s)"
   end
+
+  def test_pukes_on_non_javascript
+    create_file "app/javascripts/file1.rb", good_file
+
+    result, stdout, stderr = invoke "app/javascripts/file1.rb"
+
+    assert_equal 2, result
+    assert_includes stderr, "app/javascripts/file1.rb"
+  end
 end
