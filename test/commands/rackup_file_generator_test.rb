@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'iridium/commands/rackup_file_generator'
 
 class RackupFileGeneratorTest < GeneratorTestCase
   def command

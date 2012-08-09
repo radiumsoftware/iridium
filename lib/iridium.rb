@@ -53,7 +53,12 @@ require 'iridium/jslint'
 require 'iridium/jslint_runner'
 require 'iridium/jslint_report'
 
+require 'iridium/commands/application'
+require 'iridium/commands/test'
 require 'iridium/commands/jslint'
+require 'iridium/commands/asset_file_generator'
+require 'iridium/commands/env_files_generator'
+require 'iridium/commands/rackup_file_generator'
 
 module Iridium
   class MissingFile < StandardError ; end

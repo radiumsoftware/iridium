@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'iridium/commands/env_files_generator'
 
 class EnvFilesGeneratorTest < GeneratorTestCase
   def command

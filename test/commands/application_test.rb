@@ -1,6 +1,4 @@
 require 'test_helper'
-require 'pathname'
-require 'iridium/commands/application'
 
 class ApplicationCommandTest < GeneratorTestCase
   def command

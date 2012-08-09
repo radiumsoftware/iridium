@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'iridium/commands/asset_file_generator'
 
 class AssetFileGeneratorTest < GeneratorTestCase
   def command

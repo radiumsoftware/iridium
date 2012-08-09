@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'iridium/commands/index_file_generator'
 
 class IndexFileGeneratorTest < GeneratorTestCase
   def command
