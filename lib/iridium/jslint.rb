@@ -3,10 +3,12 @@ require 'execjs'
 module Iridium
   class JSLint
     class Result
-      attr_accessor :file
+      def initialize(file, jslint_error)
+        @file, @error = file, jslint_error
+      end
 
-      def initialize(jslint_error)
-        @error = jslint_error
+      def file
+        @file
       end
 
       def type
@@ -53,8 +55,10 @@ module Iridium
       js
     end
 
-    def self.run(content, options = {})
-      context.call('LINTER', content).collect { |h| Result.new h }
+    def self.run(file, options = {})
+      context.call('LINTER', File.read(file)).collect do |h| 
+        Result.new file, h 
+      end
     end
   end
 end
