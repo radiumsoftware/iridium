@@ -39,7 +39,7 @@ focuses primarily on:
 
 ## Getting Started
 
-Iridium support the most common use case right out of the box. You have
+Iridium supports the most common use case right out of the box. You have
 a directory of assets that need to be compiled into a web application.
 Iridium uses `Rake::Pipeline` and sensible defaults to make writing
 structured and testable Javascript possible. The first step is to use
