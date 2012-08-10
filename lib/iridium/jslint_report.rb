@@ -23,7 +23,7 @@ module Iridium
 
       return if results.empty?
 
-      puts "\n\n\n"
+      puts "\n\n"
 
       results.each do |result|
         puts "#{result.type.upcase}: #{result.message}"
