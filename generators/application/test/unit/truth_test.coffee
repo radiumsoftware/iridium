@@ -1,3 +1,3 @@
-test 'Truth', -> 
-  ok true === true, "Passed!"
+test 'Truth', ->
+  ok true == true, "Passed!"
 
