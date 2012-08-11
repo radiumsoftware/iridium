@@ -46,7 +46,7 @@ structured and testable Javascript possible. The first step is to use
 the built in generator to create the structure:
 
 ```
-$ iridium new todos
+$ iridium app todos
     create  app
     create  app/dependencies
     create  app/dependencies/minispade.js
