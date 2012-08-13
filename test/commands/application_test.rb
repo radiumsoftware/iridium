@@ -45,9 +45,12 @@ class ApplicationCommandTest < GeneratorTestCase
     content = read destination_root.join('todos', 'application.rb')
 
     assert_includes content, 'Todos'
-    assert_includes content, %Q{config.load :minispade}
 
+    assert_includes content, %Q{config.load :minispade}
     assert_file 'todos', 'app', 'dependencies', 'minispade.js'
+
+    assert_includes content, %Q{config.load :handlebars}
+    assert_file 'todos', 'app', 'dependencies', 'handlebars.js'
   end
 
   def test_assetfile_is_optional

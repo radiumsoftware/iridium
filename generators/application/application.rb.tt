@@ -1,3 +1,4 @@
 class <%= camelized %> < Iridium::Application
   config.load :minispade
+  config.load :handlebars
 end
