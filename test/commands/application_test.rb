@@ -51,6 +51,9 @@ class ApplicationCommandTest < GeneratorTestCase
 
     assert_includes content, %Q{config.load :handlebars}
     assert_file 'todos', 'app', 'dependencies', 'handlebars.js'
+
+    assert_includes content, %Q{config.load :jquery}
+    assert_file 'todos', 'app', 'dependencies', 'jquery.js'
   end
 
   def test_assetfile_is_optional
