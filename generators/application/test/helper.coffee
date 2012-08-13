@@ -17,7 +17,7 @@
 #   iridium = requireExternal('iridium').create()
 #
 #   iridium.scripts = [
-#     # load the unit test framework. This translates to: appliction_root/test/support.qunit.js
+#     # load the unit test framework. This translates to: appliction_root/test/support/qunit.js
 #     "support/qunit", 
 #
 #     # load the qunit adapter from Iridium's internal code base
