@@ -62,8 +62,6 @@ $ iridium app todos
     create  app
     create  app/dependencies
     create  app/dependencies/minispade.js
-    create  app/dependencies/handlebars.js
-    create  app/dependencies/jquery.js
     create  app/images
     create  app/javascripts/app.coffee
     create  app/javascripts/models
@@ -73,6 +71,8 @@ $ iridium app todos
     create  app/public
     create  app/stylesheets/app.scss
     create  app/vendor/javascripts
+    create  app/vendor/javscripts/handlebars.js
+    create  app/vendor/javscripts/jquery.js
     create  app/vendor/stylesheets
     create  site
     create  test
