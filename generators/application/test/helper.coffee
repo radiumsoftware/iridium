@@ -76,7 +76,8 @@ iridium = requireExternal('iridium').create()
 exports.casper = (options) ->
   iridium.scripts = [
     'support/qunit', 
-    'iridium/qunit_adapter'
+    'iridium/qunit_adapter',
+    'support/sinon'
   ]
 
   iridium.casper(options)
