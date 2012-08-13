@@ -4,7 +4,7 @@
 # automatically prefixed with your application name. You can require
 # this file like so:
 #
-#   require('app_name/app')
+#   require('<%= camelized %>/app')
 #
 # Files placed in "app/vendor/javascripts" are not prefixed at all.
 # Say you downloaded jQuery to: "app/vendor/javascripts/jquery.min.js".

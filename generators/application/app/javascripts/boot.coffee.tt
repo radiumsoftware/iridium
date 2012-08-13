@@ -6,7 +6,7 @@
 # 
 # Here's an example:
 #
-#   require('my_app')
+#   require('<%= camelized %>/app')
 #   MyApp.boot()
 #
 # Your boot code begins here...
