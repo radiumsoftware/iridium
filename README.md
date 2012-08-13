@@ -52,6 +52,10 @@ $ iridium app todos
     create  app/dependencies/minispade.js
     create  app/images
     create  app/javascripts/app.coffee
+    create  app/javascripts/models
+    create  app/javascripts/views
+    create  app/javascripts/controllers
+    create  app/javascripts/templates
     create  app/public
     create  app/stylesheets/app.scss
     create  app/vendor/javascripts
@@ -60,9 +64,13 @@ $ iridium app todos
     create  test
     create  test/helper.coffee
     create  test/integration/navigation_test.coffee
+    create  test/unit/truth_test.coffee
+    create  test/models
+    create  test/views
+    create  test/controllers
+    create  test/templates
     create  test/support/qunit.js
     create  test/support/sinon.js
-    create  test/unit/truth_test.coffee
     create  application.rb
 ```
 

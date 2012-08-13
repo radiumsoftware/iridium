@@ -15,6 +15,12 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos', 'app', 'stylesheets'
     assert_file 'todos', 'app', 'javascripts', 'app.coffee'
     assert_file 'todos', 'app', 'javascripts', 'boot.coffee'
+
+    assert_file 'todos', 'app', 'javascripts', 'models'
+    assert_file 'todos', 'app', 'javascripts', 'views'
+    assert_file 'todos', 'app', 'javascripts', 'controllers'
+    assert_file 'todos', 'app', 'javascripts', 'templates'
+
     assert_file 'todos', 'app', 'vendor', 'javascripts'
     assert_file 'todos', 'app', 'vendor', 'stylesheets'
     assert_file 'todos', 'app', 'dependencies'
@@ -23,6 +29,10 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos', 'test', 'helper.coffee'
     assert_file 'todos', 'test', 'integration', 'navigation_test.coffee'
     assert_file 'todos', 'test', 'unit', 'truth_test.coffee'
+    assert_file 'todos', 'test', 'models'
+    assert_file 'todos', 'test', 'views'
+    assert_file 'todos', 'test', 'controllers'
+    assert_file 'todos', 'test', 'templates'
     assert_file 'todos', 'test', 'support', 'qunit.js'
     assert_file 'todos', 'test', 'support', 'sinon.js'
 
