@@ -1,0 +1,2 @@
+test 'Truth', ->
+  ok window.<%= camelized %>, "<%= camelized %> should be defined!"
