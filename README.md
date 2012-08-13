@@ -50,6 +50,8 @@ $ iridium app todos
     create  app
     create  app/dependencies
     create  app/dependencies/minispade.js
+    create  app/dependencies/handlebars.js
+    create  app/dependencies/jquery.js
     create  app/images
     create  app/javascripts/app.coffee
     create  app/javascripts/models
