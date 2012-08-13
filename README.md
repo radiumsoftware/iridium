@@ -37,6 +37,18 @@ focuses primarily on:
 * Focus on JS/CSS/HTML
 * Make JS testable
 
+## Sensible Defaults
+
+Iridium makes some choices for you by default. These choices work well
+together. All Iridium apps include integrated right out of the box:
+
+* jQuery for DOM manipulation
+* Handlebars for templating
+* Minispade for simple modules and `require`
+* Qunit for unit tests
+* CasperJS for integration tests
+* Sinon.js injected into test environment
+
 ## Getting Started
 
 Iridium supports the most common use case right out of the box. You have
