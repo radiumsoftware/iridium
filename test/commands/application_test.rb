@@ -42,6 +42,8 @@ class ApplicationCommandTest < GeneratorTestCase
 
     assert_file 'todos', '.gitignore'
 
+    assert_file 'todos', 'readme.md'
+
     content = read destination_root.join('todos', 'application.rb')
 
     assert_includes content, 'Todos'

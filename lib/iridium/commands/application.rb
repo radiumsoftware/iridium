@@ -25,6 +25,7 @@ module Iridium
         directory "site"
         directory "test"
         template "application.rb.tt"
+        template "readme.md.tt"
 
         copy_file "gitignore", ".gitignore"
 
