@@ -61,6 +61,7 @@ $ iridium app todos
     create  test/helper.coffee
     create  test/integration/navigation_test.coffee
     create  test/support/qunit.js
+    create  test/support/sinon.js
     create  test/unit/truth_test.coffee
     create  application.rb
 ```
