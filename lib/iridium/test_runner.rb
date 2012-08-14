@@ -1,5 +1,5 @@
 module Iridium
-  class IntegrationTestRunner
+  class TestRunner
     attr_reader :app, :files, :collector
 
     def initialize(app, files, collector = [])
@@ -11,11 +11,12 @@ module Iridium
 
       return collector if options[:dry_run]
 
-      js_test_runner = File.expand_path('../casperjs/integration_test_runner.coffee', __FILE__)
+      js_test_runner = File.expand_path('../casperjs/test_runner.coffee', __FILE__)
 
       command_options = { 
         "lib-path" => Iridium.js_lib_path,
-        "test-path" => app.root.join('test')
+        "test-path" => app.root.join('test'),
+        "index" => app.site_path.join('unit_test_runner.html')
       }
 
       switches = command_options.keys.map { |s| %Q{--#{s}="#{command_options[s]}"} }.join(" ")

@@ -7,8 +7,12 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     Iridium.application.config.dependencies.clear
     Iridium.application.config.load :minispade
 
+    create_file "app/javascripts/boot.js", <<-file
+      window.AppBooted = true;
+    file
+
     create_file "app/javascripts/app.js", <<-file
-      window.IridiumBooted = true;
+      window.AppLoaded = true;
     file
 
     FileUtils.mkdir_p Iridium.application.root.join "test", "support"
@@ -252,9 +256,11 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/logging.coffee", <<-test
-      console.log 'integration logging'
+      casper.start 'http://localhost:7777/', ->
+        console.log 'integration logging'
 
-      casper.exit()
+      casper.run ->
+        this.test.done()
     test
 
     create_file "test/unit/logging.coffee", <<-test
@@ -360,6 +366,38 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     test
 
     status, stdout, stderr = invoke "test/unit"
+
+    assert_equal 0, status
+  end
+
+  def test_app_module_is_loaded_in_unit_tests
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/app_test.coffee", <<-test
+      test 'minispade modules are required', ->
+        ok window.AppLoaded, "test_app/app should be required!"
+    test
+
+    status, stdout, stderr = invoke "test/app_test.coffee"
+
+    assert_equal 0, status
+  end
+
+  def test_boot_module_is_loaded_in_integration_tests
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/integration/boot_test.coffee", <<-test
+      casper.start 'http://localhost:7777/', ->
+        booted = casper.evaluate ->
+          window.AppBooted
+
+        @test.assert booted, "window.AppBooted should be true on the page!"
+
+      casper.run ->
+        @test.done()
+    test
+
+    status, stdout, stderr = invoke "test/integration/boot_test.coffee"
 
     assert_equal 0, status
   end

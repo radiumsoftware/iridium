@@ -151,42 +151,6 @@ using QUnit. Test suite configuration happens through
 job is to create and export a `casper` function. It must return a casper
 object. The casper object is used to execute all the tests.
 
-I'll describe how the test runner works behind the scenes. This is vital
-information if you want to customize the suite!
-
-Here's the high level process for running a unit test:
-
-1. Patch CasperJS to enable external requires
-2. Setup the load path
-3. Add `lib/iridium` to the load path. (All internal JS/CS files)
-4. Add `your_app/test` to the load path. (So you can require your own files)
-5. Require `your_app/test/helper`
-6. Create a casper object
-7. Navigate to a generated HTML page that has your application code in
-   it
-8. CasperJS injects all configured files
-9. CasperJS ibjects all test files
-10 . Execute test suite
-11. Capture and report results
-
-Here's the high level process for running an integration test
-
-1. Patch CasperJS to enable external requires
-2. Setup the load path
-3.. Add `lib/iridium` to the load path. (All internal JS/CS files)
-4. Add `your_app/test` to the load path. (So you can require your own files)
-5. Require `your_app/test/helper`
-6. Create a casper object
-7. Boot a server that serves your app
-8. Navigate to your app on the running server
-8. Run a test
-9. Capture and report results
-
-More fun facts:
-
-* CasperJS execeutes in a CommonJS type environment. **This is different
-  than the default pipline!**
-
 ### The Test Helper
 
 `test/helper.coffee` is the link between your code and requirements and

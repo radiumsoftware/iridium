@@ -99,7 +99,8 @@ class IridiumCasper extends require('casper').Casper
 
     @test.on 'test.done', =>
       currentTest.time = (new Date().getTime()) - startTime
-      @logger.message currentTest
+      # don't count the unit test runner integration test as a result
+      @logger.message currentTest unless currentTest.name.match(/lib\/iridium\/unit_test_runner\.coffee/)
 
     @test.on 'tests.complete', =>
       console.log("Tests complete!")

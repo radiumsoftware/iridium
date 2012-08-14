@@ -70,6 +70,8 @@ module Iridium
         end
       end.flatten
 
+      raise SetupFailed, "Could not find any test files!" if file_names.empty?
+
       file_names.each do |file|
         if file !~ %r{.(coffee|js)}
           raise SetupFailed, "#{file} is not Javascript or Coffeescript"
@@ -96,21 +98,14 @@ module Iridium
         end
       end
 
-      integration_test_files = file_names.select { |f| f =~ %r{test/integration}}
-      unit_test_files = file_names - integration_test_files
-
       report = TestReport.new
-
-      tests = []
-      tests << UnitTestRunner.new(Iridium.application, unit_test_files, report.collector) unless unit_test_files.empty?
-      tests << IntegrationTestRunner.new(Iridium.application, integration_test_files, report.collector) unless integration_test_files.empty?
-
-      raise SetupFailed, "Could not find any test files!" if tests.empty?
 
       options[:seed] ||= srand % 0xFFFF
       srand options[:seed]
 
-      tests.shuffle!
+      file_names.shuffle!
+
+      tests = [TestRunner.new(Iridium.application, file_names, report.collector)]
 
       suite = TestSuite.new Iridium.application, tests
 
@@ -157,13 +152,67 @@ module Iridium
     def setup
       @app.compile
       start_server
+      create_unit_test_loader
       @results.clear
     rescue ExecJS::ProgramError => ex
       raise SetupFailed, ex.to_s
     end
 
     def teardown
+      delete_unit_test_loader
       kill_server
+    end
+
+    def create_unit_test_loader
+      File.open loader_path, "w+" do |index|
+        index.puts ERB.new(template_erb).result(binding)
+      end
+    end
+
+    def delete_unit_test_loader
+      FileUtils.rm loader_path if File.exists? loader_path
+    end
+
+    def loader_path
+      @app.site_path.join "unit_test_runner.html"
+    end
+
+    def template_erb
+      template_path = @app.root.join('test', 'support', 'unit_test_runner.html.erb')
+
+      if File.exists? template_path
+        File.read template_path
+      else
+        default_template
+      end
+    end
+
+    def default_template
+      <<-str
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="utf-8">
+          <title>Unit Tests</title>
+
+          <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+          <![endif]-->
+        </head>
+
+        <body>
+          <% @app.config.dependencies.each do |script| %>
+            <script src="<%= script.url %>"></script>
+          <% end %>
+
+          <script src="application.js"></script>
+
+          <script type="text/javascript">
+            minispade.require('<%= @app.class.to_s.underscore %>/app');
+          </script>
+        </body>
+      </html>
+      str
     end
 
     def start_server
