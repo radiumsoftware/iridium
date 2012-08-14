@@ -82,7 +82,7 @@ module Iridium
         # minify and contact lib.js and vendor.js into a single
         # application.js
         match "build/*.js" do
-          minify if app.production?
+          uglify if app.production?
 
           filter Rake::Pipeline::OrderingConcatFilter, ["build/vendor.js", "build/lib.js"], "application.js"
         end
