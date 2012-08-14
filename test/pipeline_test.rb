@@ -67,9 +67,40 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes content, %Q{#this-selector}
   end
 
+  def tests_compiles_sass
+    create_file "app/stylesheets/app.sass", <<-sass
+#this-selector
+  color: black
+    sass
+
+    compile ; assert_file "site/application.css"
+
+    content = read "site/application.css"
+
+    assert_includes content, %Q{#this-selector}
+  end
+
   def test_does_not_compile_scss_partials
     create_file "app/stylesheets/app.scss", "#this-selector { color: black; }"
     create_file "app/stylesheets/_partial.scss", "#partial { color: black; }"
+
+    compile ; assert_file "site/application.css"
+
+    content = read "site/application.css"
+
+    refute_includes content, %Q{#partial}
+  end
+
+  def test_does_not_compile_sass_partials
+    create_file "app/stylesheets/app.sass", <<-sass
+#this-selector
+  color: black
+    sass
+
+    create_file "app/stylesheets/_partial.sass", <<-sass
+#partial 
+  color: black
+    sass
 
     compile ; assert_file "site/application.css"
 

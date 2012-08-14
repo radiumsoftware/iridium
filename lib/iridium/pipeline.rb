@@ -89,7 +89,7 @@ module Iridium
 
         # compile all SCSS files into equivalent css file.
         # SCSS partials are not included in compiled output.
-        match /stylesheets\/(?:.+\/)?[^_].+\.scss/ do
+        match /stylesheets\/(?:.+\/)?[^_].+\.s[ca]ss/ do
           sass
         end
 
