@@ -73,11 +73,14 @@ module Iridium
           concat "build/lib.js"
         end
 
+        # Use the specified vendor order to create a vendor.js file
         match "vendor/javascripts/*.js" do
           ordered_files = app.config.dependencies.collect { |f| "vendor/javascripts/#{f}.js" }
           filter Rake::Pipeline::OrderingConcatFilter, ordered_files, "build/vendor.js"
         end
 
+        # minify and contact lib.js and vendor.js into a single
+        # application.js
         match "build/*.js" do
           minify if app.production?
 
