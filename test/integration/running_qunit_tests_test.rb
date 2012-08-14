@@ -18,8 +18,8 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
           </head>
 
           <body>
-            <% Iridium.application.config.dependencies.each do |script| %>
-              <script src="<%= script.url %>"></script>
+            <% Iridium.application.config.scripts.each do |script| %>
+              <script src="<%= script %>"></script>
             <% end %>
           </body>
         </html>
@@ -212,7 +212,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    Iridium.application.config.load :unknown_file
+    Iridium.application.config.script "unknown_file.js"
 
     create_loader # call again to pull in new config
 
@@ -235,7 +235,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    Iridium.application.config.load "http://www.google.com/plop/jquery-2348917.js"
+    Iridium.application.config.script "http://www.google.com/plop/jquery-2348917.js"
 
     create_loader # call again to pull in new config
 

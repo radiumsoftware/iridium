@@ -26,9 +26,6 @@
 #
 # Your application begins here...
 
-require("jquery")
-require("handlebars")
-
 <%= camelized %> = {}
 
 window.<%= camelized %> = <%= camelized %>

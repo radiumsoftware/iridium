@@ -1,26 +1,16 @@
 module Iridium
   class Config
-    class Dependency < Struct.new(:name, :options)
-      def url
-        if name.to_s =~ /https?:\/\//
-          name
-        elsif name.is_a? Symbol
-          "#{name}.js"
-        else
-          "#{name}"
-        end
-      end
-    end
-
     attr_accessor :settings
     attr_accessor :root
     attr_accessor :proxies
     attr_accessor :dependencies
+    attr_accessor :scripts
 
     def initialize
       @middleware_stack = MiddlewareStack.new
       @proxies = {}
       @dependencies = []
+      @scripts = []
     end
 
     def middleware
@@ -31,8 +21,16 @@ module Iridium
       self.proxies[url] = to
     end
 
-    def load(name, options = {})
-      dependencies << Dependency.new(name, options)
+    def load(*names)
+      names.each do |name|
+        dependencies << name
+      end
+    end
+
+    def script(*names)
+      names.each do |name|
+        scripts << name
+      end
     end
 
     def root=(value)

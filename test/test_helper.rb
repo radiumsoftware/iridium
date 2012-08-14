@@ -36,6 +36,7 @@ class MiniTest::Unit::TestCase
 
   def teardown
     if Iridium.application
+      Iridium.application.config.scripts.clear
       Iridium.application.config.dependencies.clear
       FileUtils.rm_rf Iridium.application.root.join("app")
       FileUtils.rm_rf Iridium.application.root.join("Assetfile") if File.exists?(Iridium.application.root.join('Assetfile'))

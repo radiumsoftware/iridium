@@ -3,6 +3,7 @@ require 'fileutils'
 
 class DefaultIndexTest < MiniTest::Unit::TestCase
   def setup
+    super
     @app = MiniTest::Mock.new
     @middleware = Iridium::Middleware::DefaultIndex.new app, TestApp.instance
   end
@@ -30,6 +31,16 @@ class DefaultIndexTest < MiniTest::Unit::TestCase
     body = body.map(&:to_s).join("")
 
     assert_includes body, %q{minispade.require("test_app/boot");}
+  end
+
+  def test_index_contains_scripts
+    Iridium.application.config.scripts << "http://jquery.com/jquery.js"
+
+    status, headers, body = middleware.call 'PATH_INFO' => '/index.html'
+
+    body = body.map(&:to_s).join("")
+
+    assert_includes body, %q{<script src="http://jquery.com/jquery.js"></script>}
   end
 
   def test_skips_requests_other_than_index

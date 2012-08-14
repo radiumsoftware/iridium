@@ -23,7 +23,6 @@ class ApplicationCommandTest < GeneratorTestCase
 
     assert_file 'todos', 'app', 'vendor', 'javascripts'
     assert_file 'todos', 'app', 'vendor', 'stylesheets'
-    assert_file 'todos', 'app', 'dependencies'
     assert_file 'todos', 'app', 'public'
 
     assert_file 'todos', 'test', 'helper.coffee'
@@ -49,14 +48,9 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_includes content, 'Todos'
 
     assert_includes content, %Q{config.load :minispade}
-    assert_file 'todos', 'app', 'dependencies', 'minispade.js'
+    assert_file 'todos', 'app', 'vendor', 'javascripts', 'minispade.js'
 
-    content = read destination_root.join('todos', 'app', 'javascripts', 'app.coffee')
-
-    assert_includes content, %Q{require("handlebars")}
     assert_file 'todos', 'app', 'vendor', 'javascripts', 'handlebars.js'
-
-    assert_includes content, %Q{require("jquery")}
     assert_file 'todos', 'app', 'vendor', 'javascripts', 'jquery.js'
   end
 

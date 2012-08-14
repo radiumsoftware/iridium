@@ -201,7 +201,7 @@ module Iridium
         </head>
 
         <body>
-          <% @app.config.dependencies.each do |script| %>
+          <% @app.config.scripts.each do |script| %>
             <script src="<%= script.url %>"></script>
           <% end %>
 

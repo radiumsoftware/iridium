@@ -21,9 +21,9 @@ class RunningTestsTest < MiniTest::Unit::TestCase
       qunit.puts File.read(File.expand_path("../../fixtures/qunit.js", __FILE__))
     end
 
-    FileUtils.mkdir_p Iridium.application.root.join "app", "dependencies"
+    FileUtils.mkdir_p Iridium.application.root.join "app", "vendor", "javascripts"
 
-    File.open Iridium.application.root.join("app", "dependencies", "minispade.js"), "w" do |file|
+    File.open Iridium.application.root.join("app", "vendor", "javascripts", "minispade.js"), "w" do |file|
       file.puts File.read(File.expand_path('../../fixtures/minispade.js', __FILE__))
     end
   end

@@ -35,16 +35,6 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes content, %{minispade.require('foo');}
   end
 
-  def tests_compiles_vendored_js_into_top_level_modules
-    create_file "app/vendor/javascripts/jquery.js", "jQuery"
-
-    compile ; assert_file "site/application.js"
-
-    content = read "site/application.js"
-
-    assert_includes content, %Q{minispade.register('jquery'}
-  end
-
   def tests_compiles_coffee_script
     create_file "app/javascripts/main.coffee", "square = (x) -> x * x"
 
@@ -152,12 +142,6 @@ class PipelineTest < MiniTest::Unit::TestCase
       "#first-selector should come before #second-selector in compiled css file"
   end
 
-  def tests_copies_dependenencies_into_public
-    create_file "app/dependencies/faye.min.js", "window.faye = {}"
-
-    compile ; assert_file "site/faye.min.js"
-  end
-
   def tests_copies_public_files_into_public
     create_file "app/public/faye.min.js", "window.faye = {}"
 
@@ -176,6 +160,68 @@ class PipelineTest < MiniTest::Unit::TestCase
     str
 
     compile ; assert_file "site/index.html"
+  end
+
+  def test_compiles_vendor_javascripts_when_nothing_is_specified
+    create_file "app/vendor/javascripts/file1.js", "var file1 = {};"
+    create_file "app/vendor/javascripts/file2.js", "var file2 = {};"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "file1"
+    assert_includes content, "file2"
+  end
+
+  def test_specified_vendor_dependencies_come_before_unspecified_dependencies
+    create_file "app/vendor/javascripts/file1.js", "var file1 = {};"
+    create_file "app/vendor/javascripts/file2.js", "var file2 = {};"
+
+    Iridium.application.config.load :file2
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "file1"
+    assert_includes content, "file2"
+    assert content.index("file2") < content.index("file1"), 
+      "File2 should be included before file1"
+  end
+
+  def test_unspecifed_dependencies_come_after_specified_dependencies
+    create_file "app/vendor/javascripts/jquery.js", "var jquery = {};"
+    create_file "app/vendor/javascripts/jquery_ui.js", "var jqui = {};"
+    create_file "app/vendor/javascripts/underscore.js", "var underscore = {};"
+
+    Iridium.application.config.load :jquery
+    Iridium.application.config.load :jquery_ui
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "jquery"
+    assert_includes content, "jqui"
+    assert_includes content, "underscore"
+    assert content.index("jquery") < content.index("jqui"), 
+      "jquery should be included before jquery_ui"
+
+    assert content.index("jqui") < content.index("underscore"), 
+      "jquery_ui should be included before underscore"
+  end
+
+  def test_vendored_code_comes_before_app_code
+    create_file "app/vendor/javascripts/jquery.js", "var jquery = {};"
+    create_file "app/javascripts/app.js", "var MyApp = {};"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert content.index("jquery") < content.index("MyApp"), 
+      "jquery should be included before MyApp"
   end
 
   def test_server_can_accept_an_asset_file

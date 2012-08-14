@@ -65,21 +65,23 @@ module Iridium
         # app/vendor/javascripts/jquery.min.js -> minispade.require('jquery');
         # app/javascripts/boot.js -> minispade.require('app_name/boot');
         # app/javascripts/views/main.js -> minispade.require('app_name/views/main');
-        match "{javascripts,vendor/javascripts}/**/*.js" do
+        match "javascripts/**/*.js" do
           minispade :rewrite_requires => true, :module_id_generator => proc { |input|
-            if input.path =~ /vendor/
-              File.basename(input.path, '.js').gsub('.min', '')
-            else
-              input.path.gsub(/javascripts\//, "#{app.class.to_s.demodulize.underscore}/").gsub(/\.js$/, '')
-            end
+            input.path.gsub(/javascripts\//, "#{app.class.to_s.demodulize.underscore}/").gsub(/\.js$/, '')
           }
 
-          # minifiy Javascript when compiling assets for production
-          uglify if app.production?
+          concat "build/lib.js"
+        end
 
-          # Finally concatenate all javascript files into a single
-          # application.js
-          concat "application.js"
+        match "vendor/javascripts/*.js" do
+          ordered_files = app.config.dependencies.collect { |f| "vendor/javascripts/#{f}.js" }
+          filter Rake::Pipeline::OrderingConcatFilter, ordered_files, "build/vendor.js"
+        end
+
+        match "build/*.js" do
+          minify if app.production?
+
+          filter Rake::Pipeline::OrderingConcatFilter, ["build/vendor.js", "build/lib.js"], "application.js"
         end
 
         # compile all SCSS files into equivalent css file.
@@ -104,15 +106,6 @@ module Iridium
         match "public/**/*" do
           copy do |input|
             input.sub(/public\//, '')
-          end
-        end
-
-        # All files needed per env copied into public
-        # Example:
-        # app/dependencies/faye.min.js -> side/faye.min.js
-        match "dependencies/**/*" do
-          copy do |input|
-            input.sub(/dependencies\//, '')
           end
         end
 

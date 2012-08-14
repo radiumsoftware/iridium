@@ -60,8 +60,6 @@ the built in generator to create the structure:
 ```
 $ iridium app todos
     create  app
-    create  app/dependencies
-    create  app/dependencies/minispade.js
     create  app/images
     create  app/javascripts/app.coffee
     create  app/javascripts/models
@@ -73,6 +71,7 @@ $ iridium app todos
     create  app/vendor/javascripts
     create  app/vendor/javscripts/handlebars.js
     create  app/vendor/javscripts/jquery.js
+    create  app/vendor/javscripts/minispade.js
     create  app/vendor/stylesheets
     create  site
     create  test
@@ -101,6 +100,41 @@ $ iridium server
 
 Navigate to `http://localhost:9292` in your browser and you'll see a
 blank canvas.
+
+## Vendored Javascripts
+
+Files in `vendor/javascripts` are included before your application code.
+All files in this directory are loaded before your app code in
+alphabetical order unless and order is specified. You don't have to
+specify the order for all files. You can declare files that should be
+included before all others and not worry about the others. For example,
+you have 10 files in `app/vendor/javascripts`. You only care that
+`minispade`, `jquery`, and `jquery_ui` are loaded first. All the other
+files will be included after those.
+
+```ruby
+# application.rb
+Todos.configure do
+  # load minispade, jquery, jquery_ui, then all other vendored files
+  # Note, the symbol referes to the file name without extension. 
+  # example: :minispade => app/vendor/javascripts/minispade.js
+
+  config.load :minispade, :jquery, :jquery_ui
+end
+```
+
+## Loading External Scripts
+
+You may want to pull in external scripts via CDN instead of bundling
+them inside your application. Configured scripts are written in as
+`<script>` tags before your application code. Here's an example:
+
+```ruby
+# application.rb
+Todos.configure do
+  config.script "http://www.mycdn.com/script.js"
+end
+```
 
 ## JSLint
 
@@ -318,19 +352,6 @@ $ iridium generate envs
 ```
 
 ### Configuration, Middleware, and Proxying
-
-Your application may need files that should not be compiled with the
-main app code. `minispade` is the default example. You can specify these
-files using `config.load`. These files defined here should exist in
-`app/dependencies`. Here's an example:
-
-```ruby
-# application.rb
-YourApp.configure do
-  config.load :minispade
-  config.load http://www.example.com/my_script.js
-end
-```
 
 Your Iridium app is served as a rack app. You can inject your own
 middleware as you like. Here's an example:

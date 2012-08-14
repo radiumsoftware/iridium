@@ -52,8 +52,8 @@ module Iridium
           </head>
 
           <body>
-            <% iridium.config.dependencies.each do |script| %>
-              <script src="<%= script.url %>"></script>
+            <% iridium.config.scripts.each do |script| %>
+              <script src="<%= script %>"></script>
             <% end %>
 
             <script src="/application.js"></script>
