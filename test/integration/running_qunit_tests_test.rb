@@ -311,4 +311,18 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
       invoke "test/success.js"
     end
   end
+
+  def test_can_dump_json_to_the_console
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/dump.js", <<-test
+      test('Console has a dump method', function() {
+        console.dump({foo: "bar"});
+      });
+    test
+
+    status, stdout, stderr = invoke "test/dump.js", :debug => true
+
+    assert_includes stdout, '{"foo":"bar"}'
+  end
 end

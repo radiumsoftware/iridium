@@ -296,6 +296,27 @@ Iridium! This is because the event handlers are setup on the existing
 capser instance and this test redfines the variable. Keep this in mind!
 You've been warned.
 
+## Debugging Tests
+
+The remote console is not printed by default. You can enable it by
+passing `--debug` to `iridium test`. Console messages will be printed to
+standard out during the tests. I've added `console.dump` for printing
+complex objects. It dumps the JSON version to the console. Here's an
+example:
+
+```coffeescript
+# test/unit/debug_test.coffee
+test "can debug", ->
+  console.log "I can see this!"
+  console.dump({foo: "bar"})
+```
+
+```
+$ iridium test test/unit/debug_test.coffee --debug
+I can see this!
+{"foo":"bar"}
+```
+
 ## Advanced Configuration
 
 Iridium is written with Javascript developers in mind. They may not have

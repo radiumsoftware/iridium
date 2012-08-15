@@ -149,7 +149,7 @@ class IridiumCasper extends require('casper').Casper
       @exit()
 
 class Iridium
-  requires: ['iridium/logger']
+  requires: ['iridium/logger', 'iridium/console']
   scripts: []
   casper: (options) ->
     absolutePaths = []

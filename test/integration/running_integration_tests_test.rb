@@ -401,4 +401,22 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     assert result.error?
     assert_equal 1, result.assertions
   end
+
+  def test_can_dump_json_to_the_console
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/integration/dump.js", <<-test
+      casper.start('http://localhost:7776/', function() {
+        console.dump({foo: "bar"});
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    status, stdout, stderr = invoke "test/integration/dump.js", :debug => true
+
+    assert_includes stdout, '{"foo":"bar"}'
+  end
 end
