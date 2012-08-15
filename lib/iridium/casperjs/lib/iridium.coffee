@@ -64,6 +64,7 @@ class IridiumCasper extends require('casper').Casper
 
     currentTest = {}
     startTime = null
+    testLocked = false
 
     # Record that a new test and started and wipe state
     @test.on 'test.started', (testFile) ->
@@ -71,6 +72,7 @@ class IridiumCasper extends require('casper').Casper
       currentTest = {}
       currentTest.assertions = 0
       currentTest.name = testFile
+      testLocked = false # so the next test can be reported
 
     # This doesn't mean that the entire test passed, but simply one
     # single assertion was correct
@@ -95,9 +97,17 @@ class IridiumCasper extends require('casper').Casper
       @done()
 
     @test.on 'test.done', =>
+      # Casper runs all code no matter what. This can pile on failed assertions
+      # that don't really make sense. So we only capture the first result then lock after that
+      return if testLocked
+
+      # don't report results coming from the integration test that runs unit tests
+      return if currentTest.name.match(/lib\/iridium\/unit_test_runner\.coffee/)
+
+      testLocked = true
       currentTest.time = (new Date().getTime()) - startTime
-      # don't count the unit test runner integration test as a result
-      @logger.message currentTest unless currentTest.name.match(/lib\/iridium\/unit_test_runner\.coffee/)
+      @logger.message currentTest
+
 
     @test.on 'tests.complete', =>
       console.log("Tests complete!")

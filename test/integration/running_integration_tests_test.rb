@@ -216,4 +216,25 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       invoke "test/integration/success.js"
     end
   end
+
+  def test_does_not_report_multiple_failures
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/integration/multiple_assertions.js", <<-test
+      casper.start('http://localhost:7776/', function() {
+        this.test.assert(false, "This fails!");
+        this.test.assert(false, "This fails! too");
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    results, stdout, stderr = invoke "test/integration/multiple_assertions.js"
+
+    assert_equal 1, results.size
+    result = results.first
+    assert result.failed?
+  end
 end
