@@ -88,16 +88,11 @@ class IridiumCasper extends require('casper').Casper
       @test.done()
 
     @test.on 'fail', (failure) -> 
-      if failure.type == 'uncaughtError'
-        currentTest.error = true
-        currentTest.message = failure.message
-        currentTest.backtrace = ["#{failure.file}:#{failure.line}"]
-      else
-        currentTest.assertions++
-        currentTest.failed = true
-        currentTest.message = failure.type + ": " + (failure.message || failure.standard || "(no message was entered)")
-        currentTest.backtrace = [failure.file]
-        @done()
+      currentTest.assertions++
+      currentTest.failed = true
+      currentTest.message = failure.type + ": " + (failure.message || failure.standard || "(no message was entered)")
+      currentTest.backtrace = [failure.file]
+      @done()
 
     @test.on 'test.done', =>
       currentTest.time = (new Date().getTime()) - startTime
