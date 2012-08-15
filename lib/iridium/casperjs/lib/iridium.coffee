@@ -59,6 +59,7 @@ class IridiumCasper extends require('casper').Casper
     # It was added in this commit: 
     # https://github.com/n1k0/casperjs/commit/4eee81406c1e672eec58ca8c80e336ab2863e988
     @test.done = ->
+      return unless @running
       @emit('test.done')
       @running = false
 
@@ -107,7 +108,6 @@ class IridiumCasper extends require('casper').Casper
       currentTest = {}
       currentTest.assertions = 0
       currentTest.name = testFile
-      testLocked = false # so the next test can be reported
 
     # This doesn't mean that the entire test passed, but simply one
     # single assertion was correct
@@ -141,8 +141,8 @@ class IridiumCasper extends require('casper').Casper
       return if currentTest.name.match(/lib\/iridium\/unit_test_runner\.coffee/)
 
       currentTest.time = (new Date().getTime()) - startTime
-      @logger.message currentTest
 
+      @logger.message currentTest
 
     @test.on 'tests.complete', =>
       console.log("Tests complete!")

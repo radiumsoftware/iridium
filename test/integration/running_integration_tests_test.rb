@@ -266,4 +266,33 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
 
     assert_equal 2, results.size
   end
+
+  def test_errors_are_reported_multiple_times
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/integration/failing_assertions.js", <<-test
+      casper.start('http://localhost:7776/', function() {
+        this.test.assert(false, "This fails!");
+        this.test.assert(false, "This fails! too");
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    create_file "test/integration/error.js", <<-test
+      casper.start('http://localhost:7776/', function() {
+        this.test.assert(foo, "This passes");
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    results, stdout, stderr = invoke "test/integration/failing_assertions.js", "test/integration/error.js"
+
+    assert_equal 2, results.size
+  end
 end
