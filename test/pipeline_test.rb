@@ -272,6 +272,18 @@ class PipelineTest < MiniTest::Unit::TestCase
     compile ; assert_file "site/index.html"
   end
 
+  def test_compiles_in_production_env
+    ENV['IRIDIUM_ENV'] = 'production'
+
+    create_file "app/vendor/javascripts/jquery.js", "var jquery = {};"
+    create_file "app/javascripts/app.js", "var MyApp = {};"
+    create_file "app/stylesheets/app.csss", "#foo { color: black; }"
+
+    compile ; assert_file "site/application.js"
+  ensure
+    ENV['IRIDIUM_ENV'] = 'test'
+  end
+
   private
   def compile
     TestApp.compile
