@@ -237,4 +237,33 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     result = results.first
     assert result.failed?
   end
+
+  def test_internal_assertion_failure_handling_does_not_bring_down_other_tests
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/integration/failing_assertions.js", <<-test
+      casper.start('http://localhost:7776/', function() {
+        this.test.assert(false, "This fails!");
+        this.test.assert(false, "This fails! too");
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    create_file "test/integration/truth.js", <<-test
+      casper.start('http://localhost:7776/', function() {
+        this.test.assert(true, "This passes");
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    results, stdout, stderr = invoke "test/integration/failing_assertions.js", "test/integration/truth.js"
+
+    assert_equal 2, results.size
+  end
 end
