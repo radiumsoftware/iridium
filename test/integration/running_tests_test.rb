@@ -402,6 +402,54 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_equal 0, status
   end
 
+  def test_uses_custom_unit_test_loader
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/unit_test_runner.html", <<-html
+      <!DOCTYPE html>
+      <html lang="en">
+        <body>
+          <script type="text/javascript">
+            window.MyLoader = true;
+          </script>
+        </body>
+      </html>
+    html
+
+    create_file "test/runner_test.coffee", <<-test
+      test 'minispade modules are required', ->
+        ok window.MyLoader, "correct unit test loader was not used!"
+    test
+
+    status, stdout, stderr = invoke "test/runner_test.coffee"
+
+    assert_equal 0, status
+  end
+
+  def test_uses_custom_unit_test_loader_in_erb
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/unit_test_runner.html.erb", <<-html
+      <!DOCTYPE html>
+      <html lang="en">
+        <body>
+          <script type="text/javascript">
+            window.MyLoader = true;
+          </script>
+        </body>
+      </html>
+    html
+
+    create_file "test/runner_test.coffee", <<-test
+      test 'minispade modules are required', ->
+        ok window.MyLoader, "correct unit test loader was not used!"
+    test
+
+    status, stdout, stderr = invoke "test/runner_test.coffee"
+
+    assert_equal 0, status
+  end
+
   def invoke(*args)
     stdout, stderr, status = nil
 

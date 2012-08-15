@@ -178,41 +178,15 @@ module Iridium
     end
 
     def template_erb
-      template_path = @app.root.join('test', 'support', 'unit_test_runner.html.erb')
+      paths = [
+        @app.root.join('test', 'unit_test_runner.html'),
+        @app.root.join('test', 'unit_test_runner.html.erb'),
+        File.expand_path("../templates/unit_test_runner.html.erb", __FILE__)
+      ]
 
-      if File.exists? template_path
-        File.read template_path
-      else
-        default_template
-      end
-    end
+      template_path = paths.find { |f| File.exists? f }
 
-    def default_template
-      <<-str
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="utf-8">
-          <title>Unit Tests</title>
-
-          <!--[if lt IE 9]>
-            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-          <![endif]-->
-        </head>
-
-        <body>
-          <% @app.config.scripts.each do |script| %>
-            <script src="<%= script.url %>"></script>
-          <% end %>
-
-          <script src="application.js"></script>
-
-          <script type="text/javascript">
-            minispade.require('<%= @app.class.to_s.underscore %>/app');
-          </script>
-        </body>
-      </html>
-      str
+      File.read template_path
     end
 
     def start_server
