@@ -62,9 +62,44 @@ class IridiumCasper extends require('casper').Casper
       @emit('test.done')
       @running = false
 
+    # More hacks. This patch makes failed assertions raise exceptions
+    # instead of just being accepted and continuing. Seriously...
+    # I have to include this. Without this patch tests will continue
+    # to run even if an assertion fails. 
+    #
+    # I would've really like to simply alias or call super but that's
+    # not possible. Aliasing doesn't work because it changes the scope
+    # and calls to "this" are not correct. I can't call super because
+    # of the way casper builds the test object. That leaves me only
+    # one option but to copy the code from the source :/
+    @test.processAssertionResult = (result) ->
+      if result.success == true
+        eventName = 'success'
+        style = 'INFO'
+        status = @options.passText
+        @testResults.passed++
+      else
+        eventName = 'fail'
+        style = 'RED_BAR'
+        status = @options.failText
+        @testResults.failed++
+
+      message = result.message || result.standard
+      casper.echo([@colorize(status, style), @formatMessage(message)].join(' '))
+      @emit(eventName, result)
+
+      # blow up if an assertion failed and it's not an exception
+      # casper passes exceptions through this function as "uncaughtError"
+      # why..because...I have no idea. An exception is thrown here
+      # that will propogate up to the error event. Skip forwarding
+      # that error to iridium then the test suite will stop
+      if !result.success && result.type != 'uncaughtError'
+        throw "ASSERTION FAILED"
+
+      result
+
     currentTest = {}
     startTime = null
-    testLocked = false
 
     # Record that a new test and started and wipe state
     @test.on 'test.started', (testFile) ->
@@ -84,6 +119,11 @@ class IridiumCasper extends require('casper').Casper
 
     #The test raised an exception
     @on 'error', (error, trace) ->
+      # we only want to report "real" exceptions as errors
+      # I mean things like calling undefined methods and other
+      # things. This error is raised when an assertion fails.
+      return if error == "ASSERTION FAILED"
+
       currentTest.error = true
       currentTest.backtrace = @formatBacktrace(trace)
       currentTest.message = error
@@ -97,14 +137,9 @@ class IridiumCasper extends require('casper').Casper
       @done()
 
     @test.on 'test.done', =>
-      # Casper runs all code no matter what. This can pile on failed assertions
-      # that don't really make sense. So we only capture the first result then lock after that
-      return if testLocked
-
       # don't report results coming from the integration test that runs unit tests
       return if currentTest.name.match(/lib\/iridium\/unit_test_runner\.coffee/)
 
-      testLocked = true
       currentTest.time = (new Date().getTime()) - startTime
       @logger.message currentTest
 
