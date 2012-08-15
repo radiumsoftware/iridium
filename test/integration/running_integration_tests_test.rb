@@ -296,6 +296,25 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     assert_equal 2, results.size
   end
 
+  def test_test_cannot_be_tereminated
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/integration/double_termination.js", <<-test
+      casper.start('http://localhost:7776/', function() {
+        this.test.assert(true);
+        this.test.done();
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    results, stdout, stderr = invoke "test/integration/double_termination.js"
+
+    assert_equal 1, results.size
+  end
+
   def test_happy_path_steps_work_correctly
     create_file "test/helper.coffee", test_helper
 
