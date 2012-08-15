@@ -37,32 +37,7 @@ module Iridium
       end
 
       def template
-        <<-str
-        <!DOCTYPE html>
-        <html lang="en">
-          <head>
-            <meta charset="utf-8">
-            <title><%= iridium.class.to_s.classify %></title>
-
-            <!--[if lt IE 9]>
-              <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-            <![endif]-->
-
-            <link href="/application.css" rel="stylesheet">
-          </head>
-
-          <body>
-            <% iridium.config.scripts.each do |script| %>
-              <script src="<%= script %>"></script>
-            <% end %>
-
-            <script src="/application.js"></script>
-            <script type="text/javascript">
-              minispade.require("<%= iridium.class.to_s.underscore %>/boot");
-            </script>
-          </body>
-        </html>
-        str
+        File.read(File.expand_path("../../templates/index.html.erb", __FILE__))
       end
     end
   end
