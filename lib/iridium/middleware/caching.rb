@@ -3,8 +3,8 @@ require 'digest/md5'
 module Iridium
   module Middleware
     class Caching
-      def initialize(app, root)
-        @app, @root = app, root
+      def initialize(app, iridium)
+        @app, @iridium = app, iridium
       end
 
       def call(env)
@@ -19,7 +19,7 @@ module Iridium
 
       private
       def asset_path(env)
-        @root.join(env['PATH_INFO'].gsub(/^\//, '')).to_s
+        root.join(env['PATH_INFO'].gsub(/^\//, '')).to_s
       end
 
       def asset?(env)
@@ -27,7 +27,11 @@ module Iridium
       end
 
       def generated_index?(env)
-        env['PATH_INFO'] =~ /^\/index\.html/ && !File.exists?(@root.join("index.html"))
+        env['PATH_INFO'] =~ /^\/index\.html/ && !File.exists?(root.join("index.html"))
+      end
+
+      def root
+        @iridium.site_path
       end
     end
   end

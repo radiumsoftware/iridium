@@ -79,4 +79,14 @@ input app.app_path do
   match "images/**/*" do
     copy
   end
+
+  if app.production?
+    match "**/*" do
+      copy { |name| [name, "#{name}.gz"] }
+    end
+
+    match "**/*.gz" do
+      gzip { |input| input }
+    end
+  end
 end

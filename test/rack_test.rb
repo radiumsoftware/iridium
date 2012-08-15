@@ -76,4 +76,15 @@ class RackTest < MiniTest::Unit::TestCase
     assert_includes last_response.body, %Q{<script src="/application.js"></script>}
     assert_includes last_response.body, %Q{minispade.require("test_app/boot");}
   end
+
+  def test_returns_compressed_files_when_requested
+    create_file "site/application.js.gz", 'gzipped'
+
+    get '/application.js', {}, 'HTTP_ACCEPT_ENCODING' => 'gzip'
+
+    assert last_response.ok?
+
+    assert_equal "gzip", last_response.headers['Content-Encoding']
+    assert_equal "gzipped", last_response.body.chomp
+  end
 end

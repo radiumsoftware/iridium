@@ -284,6 +284,19 @@ class PipelineTest < MiniTest::Unit::TestCase
     ENV['IRIDIUM_ENV'] = 'test'
   end
 
+  def test_generates_gzip_versions_in_production
+    ENV['IRIDIUM_ENV'] = 'production'
+
+    create_file "app/javascripts/app.js", "var fooBar = {};"
+
+    compile
+
+    assert_file "site/application.js"
+    assert_file "site/application.js.gz"
+  ensure
+    ENV['IRIDIUM_ENV'] = 'test'
+  end
+
   private
   def compile
     TestApp.compile

@@ -1,4 +1,6 @@
 require 'fileutils'
+require 'zlib'
+require 'stringio'
 
 module Iridium
   module Pipeline

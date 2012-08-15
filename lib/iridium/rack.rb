@@ -26,10 +26,10 @@ module Iridium
       builder = Builder.new
 
       builder.use Middleware::RackLintCompatibility
-      builder.use ::Rack::Deflater
 
       builder.use ::Rack::ConditionalGet
-      builder.use Middleware::Caching, server.site_path
+      builder.use Middleware::Caching, server
+      builder.use Middleware::GzipRewriter, server
 
       config.middleware.each do |middleware|
         builder.use middleware.name, *middleware.args, &middleware.block
