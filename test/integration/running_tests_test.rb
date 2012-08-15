@@ -96,7 +96,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/truth_test.js", <<-test
-      casper.start('http://localhost:7777/', function() {
+      casper.start(casper.appURL, function() {
         this.test.assertHttpStatus(200, 'Server should be up');
       });
 
@@ -180,7 +180,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/truth.coffee", <<-test
-      casper.start 'http://localhost:7777/', ->
+      casper.start casper.appURL, ->
         this.test.assertHttpStatus(200, 'Server should be up')
 
       casper.run ->
@@ -197,7 +197,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/truth.coffee", <<-test
-      casper.start 'http://localhost:7777/', ->
+      casper.start casper.appURL, ->
         this.test.assertHttpStatus(200, 'Server should be up')
 
       casper.run ->
@@ -236,7 +236,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/truth.coffee", <<-test
-      casper.start 'http://localhost:7777/', ->
+      casper.start casper.appURL, ->
         this.test.assertHttpStatus(200, 'Server should be up')
 
       casper.run ->
@@ -256,7 +256,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/logging.coffee", <<-test
-      casper.start 'http://localhost:7777/', ->
+      casper.start casper.appURL, ->
         console.log 'integration logging'
 
       casper.run ->
@@ -277,7 +277,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/truth.coffee", <<-test
-      casper.start 'http://localhost:7777/', ->
+      casper.start casper.appURL, ->
         this.test.assertHttpStatus(200, 'Server should be up')
 
       casper.run ->
@@ -299,7 +299,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/truth_test.coffee", <<-test
-      casper.start 'http://localhost:7777/', ->
+      casper.start casper.appURL, ->
         this.test.assertHttpStatus(200, 'Server should be up')
 
       casper.run ->
@@ -387,7 +387,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/boot_test.coffee", <<-test
-      casper.start 'http://localhost:7777/', ->
+      casper.start casper.appURL, ->
         booted = casper.evaluate ->
           window.AppBooted
 

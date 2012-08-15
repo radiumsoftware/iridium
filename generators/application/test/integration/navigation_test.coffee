@@ -1,4 +1,4 @@
-casper.start 'http://localhost:7777/', ->
+casper.start 'casper.appURL', ->
   @test.assertHttpStatus(200, 'Server is up')
 
 casper.run ->

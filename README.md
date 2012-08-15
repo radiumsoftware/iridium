@@ -269,7 +269,7 @@ work out of the box**. Here's an example that illustrates the problem
 
 ```coffeescript
 # This test passes because it's using the already defined casper object
-casper.start 'http://localhost:7777/', ->
+casper.start 'casper.appURL', ->
   @test.assertHttpStatus(200, 'Server is up')
 
 casper.run ->
@@ -284,7 +284,7 @@ Here's a test that doesn't work:
 # Adding this line breaks stuff!
 var casper = require('casper').create()
 
-casper.start 'http://localhost:7777/', ->
+casper.start 'casper.appURL', ->
   @test.assertHttpStatus(200, 'Server is up')
 
 casper.run ->

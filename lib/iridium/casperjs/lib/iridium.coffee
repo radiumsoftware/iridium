@@ -30,6 +30,8 @@ class IridiumCasper extends require('casper').Casper
 
     formatted
 
+  appURL: "http://localhost:7777/"
+
   constructor: (options) ->
     super options
 
