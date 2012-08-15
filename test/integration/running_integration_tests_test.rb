@@ -295,4 +295,91 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
 
     assert_equal 2, results.size
   end
+
+  def test_happy_path_steps_work_correctly
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/integration/multiple_steps.js", <<-test
+      casper.start('http://localhost:7776/', function() {
+        this.test.assert(true)
+      });
+
+      casper.then(function() {
+        this.test.assert(true)
+      });
+
+      casper.then(function() {
+        this.test.assert(true)
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    results, stdout, stderr = invoke "test/integration/multiple_steps.js"
+
+    assert_equal 1, results.size
+    result = results.first
+    assert result.passed?
+    assert_equal 3, result.assertions
+  end
+
+  def test_failed_assertions_halt_the_next_step
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/integration/multiple_steps.js", <<-test
+      casper.start('http://localhost:7776/', function() {
+        this.test.assert(true)
+      });
+
+      casper.then(function() {
+        this.test.assert(false)
+      });
+
+      casper.then(function() {
+        this.test.assert(true)
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    results, stdout, stderr = invoke "test/integration/multiple_steps.js"
+
+    assert_equal 1, results.size
+    result = results.first
+    assert result.failed?
+    assert_equal 2, result.assertions
+  end
+
+  def test_exceptions_halt_the_next_step
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/integration/multiple_steps.js", <<-test
+      casper.start('http://localhost:7776/', function() {
+        this.test.assert(true)
+      });
+
+      casper.then(function() {
+        fooBar();
+      });
+
+      casper.then(function() {
+        this.test.assert(true)
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    results, stdout, stderr = invoke "test/integration/multiple_steps.js"
+
+    assert_equal 1, results.size
+    result = results.first
+    assert result.error?
+    assert_equal 1, result.assertions
+  end
 end
