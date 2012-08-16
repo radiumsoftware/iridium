@@ -64,6 +64,18 @@ class DefaultIndexTest < MiniTest::Unit::TestCase
     app.verify
   end
 
+  def test_includes_a_cache_manifest_in_production
+    ENV['IRIDIUM_ENV'] = 'production'
+
+    status, headers, body = middleware.call 'PATH_INFO' => '/index.html'
+
+    body = body.map(&:to_s).join("")
+
+    assert_includes body, %q{<html manifest="/cache.manifest">}
+  ensure
+    ENV['IRIDIUM_ENV'] = 'test'
+  end
+
   private
   def app
     @app
