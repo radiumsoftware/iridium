@@ -297,6 +297,22 @@ class PipelineTest < MiniTest::Unit::TestCase
     ENV['IRIDIUM_ENV'] = 'test'
   end
 
+  def test_generates_a_cache_manifest
+    ENV['IRIDIUM_ENV'] = 'production'
+
+    create_file "app/javascripts/app.js", "var MyApp = {};"
+    create_file "app/images/logo.png", "image content"
+
+    compile ; assert_file "site/cache.manifest"
+
+    content = read "site/cache.manifest"
+
+    assert_includes content, "application.js"
+    assert_includes content, "images/logo.png"
+  ensure
+    ENV['IRIDIUM_ENV'] = 'test'
+  end
+
   private
   def compile
     TestApp.compile

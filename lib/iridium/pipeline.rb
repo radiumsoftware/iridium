@@ -1,6 +1,7 @@
 require 'fileutils'
 require 'zlib'
 require 'stringio'
+require 'erb'
 
 module Iridium
   module Pipeline
@@ -36,6 +37,22 @@ module Iridium
       Dir.chdir root do
         pipeline.invoke_clean
       end
+
+      generate_cache_manifest if production?
+    end
+
+    def generate_cache_manifest
+      assets = Dir[site_path.join '**', '*'].reject do |name|
+        name =~ /\.gz$/ || File.directory?(name)
+      end.collect { |f| f.gsub "#{site_path.to_s}/", '' }.join("\n")
+
+      File.open site_path.join('cache.manifest'), "w+" do |manifest|
+        manifest.puts ERB.new(manifest_template).result(binding).chomp
+      end
+    end
+
+    def manifest_template
+      File.read(File.expand_path("../templates/cache.manifest.erb", __FILE__))
     end
   end
 end
