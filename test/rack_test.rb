@@ -87,4 +87,14 @@ class RackTest < MiniTest::Unit::TestCase
     assert_equal "gzip", last_response.headers['Content-Encoding']
     assert_equal "gzipped", last_response.body.chomp
   end
+
+  def test_serves_the_cache_manifest_correctly
+    create_file "site/cache.manifest", "manifest"
+
+    get '/cache.manifest'
+
+    assert last_response.ok?
+
+    assert_equal "text/cache-manifest", last_response.headers['Content-Type']
+  end
 end
