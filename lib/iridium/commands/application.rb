@@ -17,7 +17,7 @@ module Iridium
       method_option :index, :type => :boolean
       method_option :envs, :type => :boolean
       def application(app_path)
-        @app_path = app_path
+        @app_path = File.basename(app_path)
 
         self.destination_root = File.expand_path app_path, destination_root
 
