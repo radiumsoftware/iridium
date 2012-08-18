@@ -137,6 +137,16 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "{{#name}}"
   end
 
+  def tests_compiles_hbs_into_js_file
+    create_file "app/javascripts/home.hbs", "{{#name}}"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "{{#name}}"
+  end
+
   def test_concats_vendor_css_before_app_css
     create_file "app/stylesheets/home.css", "#second-selector"
     create_file "app/stylesheets/vendor/bootstrap.css", "#first-selector"
