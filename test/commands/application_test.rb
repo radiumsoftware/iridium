@@ -45,13 +45,25 @@ class ApplicationCommandTest < GeneratorTestCase
 
     content = read destination_root.join('todos', 'application.rb')
 
-    assert_includes content, 'Todos'
+    assert_includes content, 'Todos < Iridium::Application'
 
     assert_includes content, %Q{config.load :minispade}
     assert_file 'todos', 'app', 'vendor', 'javascripts', 'minispade.js'
 
     assert_file 'todos', 'app', 'vendor', 'javascripts', 'handlebars.js'
     assert_file 'todos', 'app', 'vendor', 'javascripts', 'jquery.js'
+  end
+
+  def test_accepts_a_path
+    invoke 'application', 'my_apps/todos'
+
+    assert_file 'my_apps/todos'
+
+    assert_file 'my_apps/todos', 'app'
+
+    content = read destination_root.join('my_apps', 'todos', 'application.rb')
+
+    assert_includes content, 'Todos < Iridium::Application'
   end
 
   def test_assetfile_is_optional

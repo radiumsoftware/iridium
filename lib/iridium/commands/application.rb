@@ -17,7 +17,7 @@ module Iridium
       method_option :index, :type => :boolean
       method_option :envs, :type => :boolean
       def application(app_path)
-        @app_path = File.basename(app_path)
+        @app_name = File.basename app_path
 
         self.destination_root = File.expand_path app_path, destination_root
 
@@ -48,11 +48,11 @@ module Iridium
 
       no_tasks do
         def camelized
-          app_path.camelize
+          @app_name.camelize
         end
 
         def underscored
-          app_path.underscore
+          @app_name.underscore
         end
       end
     end
