@@ -18,6 +18,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
           </head>
 
           <body>
+            <div id="place-holder"></div>
             <% Iridium.application.config.scripts.each do |script| %>
               <script src="<%= script %>"></script>
             <% end %>
@@ -324,5 +325,39 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     status, stdout, stderr = invoke "test/dump.js", :debug => true
 
     assert_includes stdout, '{"foo":"bar"}'
+  end
+
+  def test_dom_content_is_not_wiped_out
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/dom_test.js", <<-test
+      test("Qunit adapter does not wipe the DOM", function() {
+        ok(document.getElementById("place-holder"), "#place-holder should exist!");
+      })
+    test
+
+    results, stdout, stderr = invoke "test/dom_test.js"
+
+    assert_kind_of Array, results
+    assert_equal 1, results.size
+    result = results.first
+    assert result.passed?
+  end
+
+  def test_qunit_div_is_added
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/dom_test.js", <<-test
+      test("qunit div is added", function() {
+        ok(document.getElementById("qunit"), "#qunit should exist!");
+      })
+    test
+
+    results, stdout, stderr = invoke "test/dom_test.js"
+
+    assert_kind_of Array, results
+    assert_equal 1, results.size
+    result = results.first
+    assert result.passed?
   end
 end

@@ -1,6 +1,6 @@
 class StubApp
   def self.call(env)
-    [200, {"Content-Type" => "text/html"}, ["<body>Hello World</body>"]]
+    [200, {"Content-Type" => "text/html"}, ['<body><div id="hello">Hello World</div></body>']]
   end
 end
 

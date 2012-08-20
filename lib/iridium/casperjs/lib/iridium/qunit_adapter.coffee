@@ -53,6 +53,8 @@ QUnit.done (context) =>
 
 QUnit.config.autorun = false
 
-document.write('<div id="qunit"></div>')
-
-window.startUnitTests = QUnit.load
+window.startUnitTests = ->
+  container = document.createElement('div')
+  container.setAttribute "id", "qunit"
+  document.body.appendChild container
+  QUnit.load()
