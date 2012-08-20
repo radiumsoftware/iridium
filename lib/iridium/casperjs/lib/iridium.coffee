@@ -32,6 +32,9 @@ class IridiumCasper extends require('casper').Casper
 
   appURL: "http://localhost:7777/"
 
+  die: (message, status) ->
+    @test.fail message
+
   constructor: (options) ->
     super options
 

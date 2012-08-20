@@ -419,4 +419,48 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
 
     assert_includes stdout, '{"foo":"bar"}'
   end
+
+  def test_step_timeouts_dont_blow_up_tests
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/integration/timeout_test.js", <<-test
+      casper.start('http://localhost:7776/', function() {
+        casper.waitForSelector("#foo-bar", function() {
+          casper.test.assert(false, "This #foo-bar is fake!")
+        })
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    results, stdout, stderr = invoke "test/integration/timeout_test.js"
+
+    assert_kind_of Array, results
+    assert_equal 1, results.size
+    result = results.first
+    assert result.failed?
+  end
+
+  def test_die_counts_as_fail
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/integration/die_test.js", <<-test
+      casper.start('http://localhost:7776/', function() {
+        casper.die("EJECT!");
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    results, stdout, stderr = invoke "test/integration/die_test.js"
+
+    assert_kind_of Array, results
+    assert_equal 1, results.size
+    result = results.first
+    assert result.failed?
+  end
 end
