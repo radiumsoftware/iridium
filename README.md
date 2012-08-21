@@ -69,12 +69,14 @@ $ iridium app todos
     create  app/javascripts/views
     create  app/javascripts/controllers
     create  app/javascripts/templates
+    create  app/locales/en.yml
     create  app/public
     create  app/stylesheets/app.scss
     create  app/vendor/javascripts
     create  app/vendor/javscripts/handlebars.js
     create  app/vendor/javscripts/jquery.js
     create  app/vendor/javscripts/minispade.js
+    create  app/vendor/javscripts/i81n.js
     create  app/vendor/stylesheets
     create  site
     create  test
@@ -83,7 +85,7 @@ $ iridium app todos
     create  test/unit/truth_test.coffee
     create  test/models
     create  test/views
-    create  test/controllers
+    create  test/controllerss
     create  test/templates
     create  test/support/qunit.js
     create  test/support/sinon.js
@@ -138,7 +140,6 @@ Todos.configure do
   config.script "http://www.mycdn.com/script.js"
 end
 ```
-
 
 ## Running Tests
 
@@ -205,34 +206,6 @@ class Helper
 # Use the Helper's iridium method to build a proper casper object
 exports.casper = (options) ->
   (new Helper).iridium().casper(options)
-```
-
-You may do whatever you want in this file. Iridium supports two testing
-modes: integration and unit. You can use this attribute to decide what
-scripts you want to include. Here's an example:
-
-```coffeescript
-iridium = requireExternal('iridium')
-
-class Helper
-  casper: (options) ->
-    @iridium = iridium.Iridium.create()
-
-    if @iridium.mode == 'unit'
-      @iridium.scripts = [
-        'support/qunit',
-        'iridium/qunit_adapter'
-      ]
-    else
-      @iridium.scripts = [
-        'support/integration_helper',
-        'support/request_logging'
-      ]
-
-    @iridium.casper(options)
-
-exports.casper = (options) ->
-  (new Helper).casper(options)
 ```
 
 I've added `requireExternal`. This is work around method. CasperJS
@@ -319,6 +292,32 @@ like. Iridium can run all your files through JSLint if you like.
 $ iridium lint app/javascripts/app.js
 $ iridium lint app/javascripts/models/* app/javascripts/controllers/*
 $ iridium lint app/javascripts/**/*.js # this is the default!
+```
+
+## Localization (I18n)
+
+Iridium supports localization via `i18n.js`. The i18n implementation is
+taken from [here](https://github.com/fnando/i18n-js). All files in
+`app/locales/*.yml` are merged into I18n translations. Here's an
+example:
+
+```yml
+# app/locales/en.yml
+en:
+  greeting: Hello!
+```
+
+```yml
+# app/locales/fi.yml
+fi:
+  greeting: Terve!
+```
+
+```js
+I18n.locale = 'en'
+I18n.t('greeting') // "Hello!"
+I18n.locale = 'fi'
+I18n.t('gretting') // "Terve!"
 ```
 
 ## Advanced Configuration
