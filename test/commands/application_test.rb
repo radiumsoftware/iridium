@@ -23,6 +23,9 @@ class ApplicationCommandTest < GeneratorTestCase
 
     assert_file 'todos', 'app', 'vendor', 'javascripts'
     assert_file 'todos', 'app', 'vendor', 'stylesheets'
+
+    assert_file 'todos', 'app', 'locales', 'en.yml'
+
     assert_file 'todos', 'app', 'public'
 
     assert_file 'todos', 'test', 'helper.coffee'
@@ -52,6 +55,7 @@ class ApplicationCommandTest < GeneratorTestCase
 
     assert_file 'todos', 'app', 'vendor', 'javascripts', 'handlebars.js'
     assert_file 'todos', 'app', 'vendor', 'javascripts', 'jquery.js'
+    assert_file 'todos', 'app', 'vendor', 'javascripts', 'i18n.js'
   end
 
   def test_accepts_a_path

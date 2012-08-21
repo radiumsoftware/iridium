@@ -341,6 +341,27 @@ de:
     assert_includes content, "I18n.translations = "
   end
 
+  def test_inserts_translations_after_i18n
+    create_file "app/locales/en.yml", <<-EN
+en:
+  hello: Hello!
+    EN
+
+    create_file "app/locales/de.yml", <<-DE
+de:
+  hello: Hallo!
+    DE
+
+    create_file "app/vendor/javascripts/i18n.js", "I18n = {};"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert content.index("I18n = {};") < content.index("I18n.translations = "), 
+      "Translations dictionary must be loaded after I18n"
+  end
+
   private
   def compile
     TestApp.compile
