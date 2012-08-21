@@ -21,7 +21,14 @@ input app.app_path do
 
   # Compile all the translations into a single dictionary
   match "locales/**/*.yml" do
-    i18n "build/i18n.js"
+    i18n "initializers/i18n_dictionaries.js"
+  end
+
+  # Compile all initializers into a single init.js to be concatentated
+  # later
+
+  match "initializers/**/*.js" do
+    concat "build/init.js"
   end
 
   # Compile all Javascript files into Minispade modules.
@@ -52,7 +59,7 @@ input app.app_path do
   match "build/*.js" do
     uglify if app.production?
 
-    ordered_concat ["build/vendor.js", "build/i18n.js", "build/lib.js"], "application.js"
+    ordered_concat ["build/vendor.js", "build/init.js", "build/lib.js"], "application.js"
   end
 
   # compile all SCSS files into equivalent css file.

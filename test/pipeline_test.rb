@@ -325,13 +325,13 @@ class PipelineTest < MiniTest::Unit::TestCase
 
   def test_compiles_yml_files_into_i18n_translations
     create_file "app/locales/en.yml", <<-EN
-en:
-  hello: Hello!
+      en:
+        hello: Hello!
     EN
 
     create_file "app/locales/de.yml", <<-DE
-de:
-  hello: Hallo!
+      de:
+        hello: Hallo!
     DE
 
     compile ; assert_file "site/application.js"
@@ -343,13 +343,13 @@ de:
 
   def test_inserts_translations_after_i18n
     create_file "app/locales/en.yml", <<-EN
-en:
-  hello: Hello!
+      en:
+        hello: Hello!
     EN
 
     create_file "app/locales/de.yml", <<-DE
-de:
-  hello: Hallo!
+      de:
+        hello: Hallo!
     DE
 
     create_file "app/vendor/javascripts/i18n.js", "I18n = {};"
@@ -360,6 +360,36 @@ de:
 
     assert content.index("I18n = {};") < content.index("I18n.translations = "), 
       "Translations dictionary must be loaded after I18n"
+  end
+
+  def test_intializers_are_compiles
+    create_file "app/initializers/bar.js", "INIT"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "INIT"
+  end
+
+  def test_initializers_are_loaded_after_vendored_code_and_before_app_code
+    create_file "app/vendor/javascripts/foo.js", "FOO"
+    create_file "app/initializers/bar.js", "BAR"
+    create_file "app/javascripts/app.js", "BAZ"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "FOO", "Vendored code not loaded!"
+    assert_includes content, "BAR", "Init code not loaded!"
+    assert_includes content, "BAZ", "App code not loaded!"
+
+    assert content.index("FOO") < content.index("BAR"), 
+      "Vendored code must be loaded before initializers!"
+
+    assert content.index("BAR") < content.index("BAZ"), 
+      "Initializers mustbe loaded before app code!"
   end
 
   private
