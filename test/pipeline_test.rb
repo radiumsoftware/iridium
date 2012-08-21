@@ -323,6 +323,24 @@ class PipelineTest < MiniTest::Unit::TestCase
     ENV['IRIDIUM_ENV'] = 'test'
   end
 
+  def test_compiles_yml_files_into_i18n_translations
+    create_file "app/locales/en.yml", <<-EN
+en:
+  hello: Hello!
+    EN
+
+    create_file "app/locales/de.yml", <<-DE
+de:
+  hello: Hallo!
+    DE
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "I18n.translations = "
+  end
+
   private
   def compile
     TestApp.compile

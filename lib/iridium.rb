@@ -18,6 +18,7 @@ require 'rake-pipeline-web-filters'
 require 'rake-pipeline-web-filters/ordered_contact_helper'
 require 'rake-pipeline-web-filters/erb_filter'
 require 'rake-pipeline-web-filters/concat_css_filter'
+require 'rake-pipeline-web-filters/i18n'
 require 'rake-pipeline-web-filters/iridium_dsl_helper'
 
 require 'iridium/reverse_proxy'

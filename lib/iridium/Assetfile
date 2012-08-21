@@ -19,6 +19,11 @@ input app.app_path do
     less
   end
 
+  # Compile all the translations into a single dictionary
+  match "locales/**/*.yml" do
+    i18n "build/i18n.js"
+  end
+
   # Compile all Javascript files into Minispade modules.
   # Files in app/vendor/javascripts become modules
   # based on their file name. Files in app/javascripts
@@ -47,7 +52,7 @@ input app.app_path do
   match "build/*.js" do
     uglify if app.production?
 
-    ordered_concat ["build/vendor.js", "build/lib.js"], "application.js"
+    ordered_concat ["build/vendor.js", "build/i18n.js", "build/lib.js"], "application.js"
   end
 
   # compile all SCSS files into equivalent css file.
