@@ -49,11 +49,11 @@ QUnit.testDone (context) =>
   window.logger.message(@currentTest)
 
 QUnit.done (context) =>
-  window.unitTestsDone = true
+  window.testsDone = true
 
 QUnit.config.autorun = false
 
-window.startUnitTests = ->
+window.startTests = ->
   container = document.createElement('div')
   container.setAttribute "id", "qunit"
   document.body.insertBefore container, document.body.firstChild

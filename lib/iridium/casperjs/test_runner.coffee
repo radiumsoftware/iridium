@@ -32,33 +32,38 @@ iridium = requireExternal('iridium')
 iridium.Iridium::root = loadPaths[0]
 iridium.Iridium::testRoot = loadPaths[1]
 
-tests = phantom.casperArgs.args
+testFiles = phantom.casperArgs.args
 
 unitTests = []
 integrationTests = []
+casperTests = []
 
-for test in tests 
+for test in testFiles
   absolutePath = fs.absolute(test)
 
   unless fs.isFile(absolutePath)
     console.abort "#{absolutePath} does not exist!"
     phantom.exit()
 
-  if test.match(/integration/) 
+  if test.match(/casper\//)
+    casperTests.push test
+  else if test.match(/integration\//)
     integrationTests.push test
   else
     unitTests.push test
 
-unitTestRunnerIntegrationTest = fs.pathJoin(loadPaths[0], "iridium", "unit_test_runner.coffee")
+unitTestRunner = fs.pathJoin(loadPaths[0], "iridium", "unit_test_runner.coffee")
+integrationTestRunner = fs.pathJoin(loadPaths[0], "iridium", "integration_test_runner.coffee")
 
-integrationTests.push unitTestRunnerIntegrationTest if unitTests.length > 0
-
-casper = requireExternal('helper').casper({
-  exitOnError: false
-})
+casper = requireExternal('helper').casper(exitOnError: false)
 
 casper.unitTests = unitTests
+casper.integrationTests = integrationTests
+casper.unitTestLoader = casper.cli.get('index')
+
+casperTests.push unitTestRunner if unitTests.length > 0
+casperTests.push integrationTestRunner if integrationTests.length > 0
 
 @casper = casper
 
-casper.test.runSuites.apply(casper.test, integrationTests)
+casper.test.runSuites.apply(casper.test, casperTests)

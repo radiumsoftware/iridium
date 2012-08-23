@@ -8,10 +8,12 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     Iridium.application.config.load :minispade
 
     create_file "app/javascripts/boot.js", <<-file
+      require('test_app/app');
       window.AppBooted = true;
     file
 
     create_file "app/javascripts/app.js", <<-file
+      window.TestApp = true;
       window.AppLoaded = true;
     file
 
@@ -62,7 +64,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   def test_raises_an_error_if_file_does_not_exist
     status, stdout, stderr = invoke "foo.js"
 
-    assert_equal 2, status
+    assert_equal 2, status, "Tests should fail! #{stdout}"
     assert_includes stderr, "foo.js"
   end
 
@@ -73,7 +75,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/unit/truth_test.js"
 
-    assert_equal 2, status
+    assert_equal 2, status, "Tests should fail! #{stdout}"
     assert_includes stderr, "test/helper"
   end
 
@@ -96,12 +98,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/truth_test.js", <<-test
-      casper.start(casper.appURL, function() {
-        this.test.assertHttpStatus(200, 'Server should be up');
-      });
-
-      casper.run(function() {
-        this.test.done();
+      test('Truth', function() {
+        ok(true, "Passed!")
       });
     test
 
@@ -121,7 +119,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/unit/invalid_coffeescript.coffee"
 
-    assert_equal 2, status
+    assert_equal 2, status, "Tests should fail! #{stdout}"
     assert_includes stderr, "test/unit/invalid_coffeescript.coffee"
     assert_includes stderr, "error"
   end
@@ -138,7 +136,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/unit/truth_test.coffee"
 
-    assert_equal 2, status
+    assert_equal 2, status, "Tests should fail! #{stdout}"
     assert_includes stderr, "test/helper.coffee"
     assert_includes stderr, "error"
   end
@@ -157,7 +155,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/unit/truth_test.coffee"
 
-    assert_equal 2, status
+    assert_equal 2, status, "Tests should fail! #{stdout}"
     assert_includes stderr, "test/support/error.coffee"
     assert_includes stderr, "error"
   end
@@ -180,11 +178,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/truth.coffee", <<-test
-      casper.start casper.appURL, ->
-        this.test.assertHttpStatus(200, 'Server should be up')
-
-      casper.run ->
-        this.test.done()
+      test 'Truth', ->
+        ok true, "Passed!"
     test
 
     status, stdout, stderr = invoke "test/integration/truth.coffee"
@@ -197,11 +192,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/truth.coffee", <<-test
-      casper.start casper.appURL, ->
-        this.test.assertHttpStatus(200, 'Server should be up')
-
-      casper.run ->
-        this.test.done()
+      test 'Truth', ->
+        ok true, "Passed!"
     test
 
     create_file "test/unit/truth.coffee", <<-test
@@ -229,18 +221,15 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/integration/error.coffee", "test/unit/truth.coffee"
 
-    assert_equal 1, status
+    assert_equal 1, status, "Tests should fail! #{stdout}"
   end
 
   def test_broken_unit_tests_dont_stop_integration_tests
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/truth.coffee", <<-test
-      casper.start casper.appURL, ->
-        this.test.assertHttpStatus(200, 'Server should be up')
-
-      casper.run ->
-        this.test.done()
+      test 'Truth', ->
+        ok true, "Passed!"
     test
 
     create_file "test/unit/error.coffee", <<-test
@@ -249,22 +238,20 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/unit/error.coffee", "test/integration/truth.coffee"
 
-    assert_equal 1, status
+    assert_equal 1, status, "Tests should fail! #{stdout}"
   end
 
   def test_runner_supports_debug_mode
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/logging.coffee", <<-test
-      casper.start casper.appURL, ->
+      test 'Truth', ->
         console.log 'integration logging'
-
-      casper.run ->
-        this.test.done()
     test
 
     create_file "test/unit/logging.coffee", <<-test
-      console.log 'unit logging'
+      test 'Truth', ->
+        console.log 'unit logging'
     test
 
     status, stdout, stderr = invoke "test/unit/logging.coffee", "test/integration/logging.coffee", "--debug"
@@ -277,11 +264,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/truth.coffee", <<-test
-      casper.start casper.appURL, ->
-        this.test.assertHttpStatus(200, 'Server should be up')
-
-      casper.run ->
-        this.test.done()
+      test 'Truth', ->
+        ok true, "passed!"
     test
 
     create_file "test/unit/truth.coffee", <<-test
@@ -291,7 +275,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/integration/truth.coffee", "test/integration/truth.coffee", "--dry-run"
 
-    assert_equal 0, status
+    assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
     assert_includes stdout, "0 Test(s)"
   end
 
@@ -299,11 +283,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/truth_test.coffee", <<-test
-      casper.start casper.appURL, ->
-        this.test.assertHttpStatus(200, 'Server should be up')
-
-      casper.run ->
-        this.test.done()
+      test 'Truth', ->
+        ok true, "passed!"
     test
 
     create_file "test/unit/truth_test.coffee", <<-test
@@ -326,7 +307,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/unit/truth_test.rb"
 
-    assert_equal 2, status
+    assert_equal 2, status, "Tests should fail: #{stdout}"
     assert_includes stderr, "test/unit/truth_test.rb"
   end
 
@@ -367,7 +348,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/unit"
 
-    assert_equal 0, status
+    assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
   end
 
   def test_app_module_is_loaded_in_unit_tests
@@ -380,26 +361,20 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/app_test.coffee"
 
-    assert_equal 0, status
+    assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
   end
 
   def test_boot_module_is_loaded_in_integration_tests
     create_file "test/helper.coffee", test_helper
 
     create_file "test/integration/boot_test.coffee", <<-test
-      casper.start casper.appURL, ->
-        booted = casper.evaluate ->
-          window.AppBooted
-
-        @test.assert booted, "window.AppBooted should be true on the page!"
-
-      casper.run ->
-        @test.done()
+      test "app is booted", ->
+        ok window.AppBooted, "App should be booted!"
     test
 
     status, stdout, stderr = invoke "test/integration/boot_test.coffee"
 
-    assert_equal 0, status
+    assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
   end
 
   def test_uses_custom_unit_test_loader
@@ -423,7 +398,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/runner_test.coffee"
 
-    assert_equal 0, status
+    assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
   end
 
   def test_uses_custom_unit_test_loader_in_erb
@@ -447,7 +422,40 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     status, stdout, stderr = invoke "test/runner_test.coffee"
 
-    assert_equal 0, status
+    assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
+  end
+
+  def test_app_code_is_directly_accessible_in_integration_tests
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/integration/code_access_test.coffee", <<-test
+      test "can access the app", ->
+        ok window.TestApp, "TestApp should be accessible!"
+    test
+
+    status, stdout, stderr = invoke "test/integration/code_access_test.coffee"
+
+    assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
+  end
+
+  def test_failing_integration_test_does_not_stop_other_integration_tests
+    create_file "test/helper.coffee", test_helper
+
+    create_file "test/integration/failing_test.coffee", <<-test
+      test "one test is ran", ->
+        ok false, "This should fail!"
+    test
+
+    create_file "test/integration/truth_test.coffee", <<-test
+      test "another test is ran", ->
+        ok true, "This passes!"
+    test
+
+    status, stdout, stderr = invoke "test/integration/failing_test.coffee", "test/integration/truth_test.coffee", "--debug"
+
+    assert_equal 1, status, "Test should fail! Output:\n #{stdout}"
+    assert_includes stdout, "2 Test(s)"
+    assert_includes stdout, "2 Assertion(s)"
   end
 
   def invoke(*args)

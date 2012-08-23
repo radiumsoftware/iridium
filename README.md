@@ -222,45 +222,15 @@ then use an integration test!
 
 ### Writing Integration Tests
 
-Writing integration is slightly different than the casper examples.
-Iridium boot your app on: `http://localhost:7777` before running any
-tests. One important compromise must be made to make the test runner
-work. This is caused by casper's internal testing structure. Every test
-executes in a `casper.Tester` context. Events comming from your tests go
-through this object and back through casper. Iridium needs these events
-to log tests. The event handlers are only bound to one particular test
-object. All tests must go through the casper object defined in your
-`test/helper`! This means: **Examples from the CasperJS website will NOT
-work out of the box**. Here's an example that illustrates the problem
+Integration tests execute a running app. Your entire stack is loaded and
+served via ruby. Your app is booted then your integration test are ran.
+The page is refreshed before test run. This ensures that every single
+integration tests get's a completely clean start.
 
 ```coffeescript
-# This test passes because it's using the already defined casper object
-casper.start 'casper.appURL', ->
-  @test.assertHttpStatus(200, 'Server is up')
-
-casper.run ->
-  @test.done()
+test "my app says hello", ->
+  ok $("#hello-world"), "#hello-world is missing!"
 ```
-
-Here's a test that doesn't work:
-
-```coffeescript
-# This test passes because it's using the already defined casper object
-
-# Adding this line breaks stuff!
-var casper = require('casper').create()
-
-casper.start 'casper.appURL', ->
-  @test.assertHttpStatus(200, 'Server is up')
-
-casper.run ->
-  @test.done()
-```
-
-This test will still run however it will not report anything back to
-Iridium! This is because the event handlers are setup on the existing
-capser instance and this test redfines the variable. Keep this in mind!
-You've been warned.
 
 ## Debugging Tests
 

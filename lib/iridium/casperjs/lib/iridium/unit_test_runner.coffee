@@ -1,11 +1,3 @@
-casper.on 'page.error', (error, trace) ->
-  result = {}
-  result.name = "Uncaught error"
-  result.message = error
-  result.backtrace = casper.formatBacktrace(trace)
-  result.error = true
-  logger.message result
-
 casper.on 'resource.received', (request) ->
   return if request.stage == 'start'
 
@@ -19,20 +11,20 @@ casper.on 'resource.received', (request) ->
     result.backtrace = []
     result.assertions = 0
     logger.message result
-    casper.exit()
+    casper.test.done()
 
-casper.start casper.cli.get('index'), ->
+casper.start casper.unitTestLoader, ->
   for test in @unitTests
     @page.injectJs test
 
 casper.then ->
   @evaluate ->
-    window.startUnitTests()
+    window.startTests()
 
 casper.waitFor(
   ->
     casper.evaluate ->
-      window.unitTestsDone == true
+      window.testsDone == true
   , -> 
     casper.test.done()
   , ->

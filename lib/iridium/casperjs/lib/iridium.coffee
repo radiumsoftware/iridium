@@ -49,6 +49,14 @@ class IridiumCasper extends require('casper').Casper
     @options.colorizerType = cls
     @colorizer = colorizer.create(cls)
 
+    @on 'page.error', (error, trace) ->
+      result = {}
+      result.name = "Uncaught error"
+      result.message = error
+      result.backtrace = casper.formatBacktrace(trace)
+      result.error = true
+      logger.message result
+
     # Redfine the runTest method to emit an event we can list to
     @test.runTest = (testFile) ->
       @emit("test.started", testFile)
@@ -141,14 +149,13 @@ class IridiumCasper extends require('casper').Casper
 
     @test.on 'test.done', =>
       # don't report results coming from the integration test that runs unit tests
-      return if currentTest.name.match(/lib\/iridium\/unit_test_runner\.coffee/)
+      return if currentTest.name.match(/lib\/iridium\//)
 
       currentTest.time = (new Date().getTime()) - startTime
 
       @logger.message currentTest
 
     @test.on 'tests.complete', =>
-      console.log("Tests complete!")
       @exit()
 
 class Iridium

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
+class RunningCasperTestsTest < MiniTest::Unit::TestCase
   def invoke(*files)
     results = nil
     options = files.extract_options!
@@ -33,7 +33,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_reports_basic_information
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/success.js", <<-test
+    create_file "test/casper/success.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(200, 'Server is up');
       });
@@ -43,7 +43,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "test/integration/success.js"
+    results, stdout, stderr = invoke "test/casper/success.js"
 
     test_result = results.first
     assert_kind_of Fixnum, test_result.time
@@ -54,7 +54,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_reports_successful_test_correctly
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/success.js", <<-test
+    create_file "test/casper/success.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(200, 'Server is up');
       });
@@ -64,7 +64,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "test/integration/success.js"
+    results, stdout, stderr = invoke "test/casper/success.js"
     test_result = results.first
     assert test_result.passed?
   end
@@ -72,7 +72,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_reports_a_failure
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/failure.js", <<-test
+    create_file "test/casper/failure.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(500, 'Server should be down!');
       });
@@ -82,18 +82,18 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "test/integration/failure.js"
+    results, stdout, stderr = invoke "test/casper/failure.js"
     test_result = results.first
     assert test_result.failed?
     assert_includes test_result.message, "Server should be down!"
     assert_equal 1, test_result.assertions
-    assert_equal ["test/integration/failure.js"], test_result.backtrace
+    assert_equal ["test/casper/failure.js"], test_result.backtrace
   end
 
   def test_reports_an_error
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/error.js", <<-test
+    create_file "test/casper/error.js", <<-test
       casper.start('http://localhost:7776/', function() {
         foobar;
       });
@@ -103,18 +103,18 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "test/integration/error.js", :debug => true
+    results, stdout, stderr = invoke "test/casper/error.js", :debug => true
     test_result = results.first
     assert test_result.error?
     assert_equal "ReferenceError: Can't find variable: foobar", test_result.message
-    assert_equal "test/integration/error.js:2", test_result.backtrace.first
+    assert_equal "test/casper/error.js:2", test_result.backtrace.first
     assert_equal 0, test_result.assertions
   end
 
   def test_stdout_prints_in_debug_mode
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/error.js", <<-test
+    create_file "test/casper/error.js", <<-test
       casper.start('http://localhost:7776/', function() {
         console.log('This is logged!');
       });
@@ -124,14 +124,14 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "test/integration/error.js", :debug => true
+    results, stdout, stderr = invoke "test/casper/error.js", :debug => true
     assert_includes stdout, "This is logged!"
   end
 
   def test_dry_return_returns_no_results
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/error.js", <<-test
+    create_file "test/casper/error.js", <<-test
       casper.start('http://localhost:7776/', function() {
         console.log('This is logged!');
       });
@@ -141,18 +141,18 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "test/integration/error.js", :dry_run => true
+    results, stdout, stderr = invoke "test/casper/error.js", :dry_run => true
     assert_equal [], results
   end
 
   def test_handles_javascript_errors_in_source_files
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/error.js", <<-test
+    create_file "test/casper/error.js", <<-test
       foobar();
     test
 
-    results, stdout, stderr = invoke "test/integration/error.js"
+    results, stdout, stderr = invoke "test/casper/error.js"
 
     assert_equal 1, results.size
     test_result = results.first
@@ -165,7 +165,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_does_not_let_one_test_bring_down_others
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/success.js", <<-test
+    create_file "test/casper/success.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(200, 'Server is up');
       });
@@ -175,11 +175,11 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    create_file "test/integration/error.js", <<-test
+    create_file "test/casper/error.js", <<-test
       foobar();
     test
 
-    results, stdout, stderr = invoke "test/integration/error.js", "test/integration/success.js"
+    results, stdout, stderr = invoke "test/casper/error.js", "test/casper/success.js"
 
     assert_equal 2, results.size
     assert results[0].error?
@@ -202,7 +202,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
         (new Helper).iridium().casper()
     str
 
-    create_file "test/integration/success.js", <<-test
+    create_file "test/casper/success.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(200, 'Server is up');
       });
@@ -213,14 +213,14 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
     test
 
     assert_raises Iridium::CommandStreamer::ProcessAborted do
-      invoke "test/integration/success.js"
+      invoke "test/casper/success.js"
     end
   end
 
   def test_does_not_report_multiple_failures
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/multiple_assertions.js", <<-test
+    create_file "test/casper/multiple_assertions.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assert(false, "This fails!");
         this.test.assert(false, "This fails! too");
@@ -231,7 +231,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "test/integration/multiple_assertions.js"
+    results, stdout, stderr = invoke "test/casper/multiple_assertions.js"
 
     assert_equal 1, results.size
     result = results.first
@@ -241,7 +241,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_internal_assertion_failure_handling_does_not_bring_down_other_tests
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/failing_assertions.js", <<-test
+    create_file "test/casper/failing_assertions.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assert(false, "This fails!");
         this.test.assert(false, "This fails! too");
@@ -252,7 +252,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    create_file "test/integration/truth.js", <<-test
+    create_file "test/casper/truth.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assert(true, "This passes");
       });
@@ -262,7 +262,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "test/integration/failing_assertions.js", "test/integration/truth.js"
+    results, stdout, stderr = invoke "test/casper/failing_assertions.js", "test/casper/truth.js"
 
     assert_equal 2, results.size
   end
@@ -270,7 +270,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_errors_are_reported_multiple_times
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/failing_assertions.js", <<-test
+    create_file "test/casper/failing_assertions.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assert(false, "This fails!");
         this.test.assert(false, "This fails! too");
@@ -281,7 +281,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    create_file "test/integration/error.js", <<-test
+    create_file "test/casper/error.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assert(foo, "This passes");
       });
@@ -291,7 +291,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "test/integration/failing_assertions.js", "test/integration/error.js"
+    results, stdout, stderr = invoke "test/casper/failing_assertions.js", "test/casper/error.js"
 
     assert_equal 2, results.size
   end
@@ -299,7 +299,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_test_cannot_be_tereminated
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/double_termination.js", <<-test
+    create_file "test/casper/double_termination.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assert(true);
         this.test.done();
@@ -310,7 +310,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "test/integration/double_termination.js"
+    results, stdout, stderr = invoke "test/casper/double_termination.js"
 
     assert_equal 1, results.size
   end
@@ -318,7 +318,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_happy_path_steps_work_correctly
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/multiple_steps.js", <<-test
+    create_file "test/casper/multiple_steps.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assert(true)
       });
@@ -336,7 +336,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "test/integration/multiple_steps.js"
+    results, stdout, stderr = invoke "test/casper/multiple_steps.js"
 
     assert_equal 1, results.size
     result = results.first
@@ -347,7 +347,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_failed_assertions_halt_the_next_step
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/multiple_steps.js", <<-test
+    create_file "test/casper/multiple_steps.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assert(true)
       });
@@ -365,7 +365,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "test/integration/multiple_steps.js"
+    results, stdout, stderr = invoke "test/casper/multiple_steps.js"
 
     assert_equal 1, results.size
     result = results.first
@@ -376,7 +376,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_exceptions_halt_the_next_step
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/multiple_steps.js", <<-test
+    create_file "test/casper/multiple_steps.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assert(true)
       });
@@ -394,7 +394,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "test/integration/multiple_steps.js"
+    results, stdout, stderr = invoke "test/casper/multiple_steps.js"
 
     assert_equal 1, results.size
     result = results.first
@@ -405,7 +405,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_can_dump_json_to_the_console
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/dump.js", <<-test
+    create_file "test/casper/dump.js", <<-test
       casper.start('http://localhost:7776/', function() {
         console.dump({foo: "bar"});
       });
@@ -415,7 +415,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    status, stdout, stderr = invoke "test/integration/dump.js", :debug => true
+    status, stdout, stderr = invoke "test/casper/dump.js", :debug => true
 
     assert_includes stdout, '{"foo":"bar"}'
   end
@@ -423,7 +423,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_step_timeouts_dont_blow_up_tests
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/timeout_test.js", <<-test
+    create_file "test/casper/timeout_test.js", <<-test
       casper.start('http://localhost:7776/', function() {
         casper.waitForSelector("#foo-bar", function() {
           casper.test.assert(false, "This #foo-bar is fake!")
@@ -435,7 +435,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "test/integration/timeout_test.js"
+    results, stdout, stderr = invoke "test/casper/timeout_test.js"
 
     assert_kind_of Array, results
     assert_equal 1, results.size
@@ -446,7 +446,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
   def test_die_counts_as_fail
     create_file "test/helper.coffee", test_helper
 
-    create_file "test/integration/die_test.js", <<-test
+    create_file "test/casper/die_test.js", <<-test
       casper.start('http://localhost:7776/', function() {
         casper.die("EJECT!");
       });
@@ -456,7 +456,7 @@ class IntegrationTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "test/integration/die_test.js"
+    results, stdout, stderr = invoke "test/casper/die_test.js"
 
     assert_kind_of Array, results
     assert_equal 1, results.size

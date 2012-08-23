@@ -49,7 +49,7 @@ namespace :casperjs do
 
   desc "Runs the integration test runner aganist a local test file"
   task :integration => :compile do
-    tests = File.expand_path '../fixtures/integration/google_test.coffee', __FILE__
+    tests = File.expand_path '../fixtures/integration/google_test.js', __FILE__
 
     command = %Q{casperjs "#{runner}" "#{tests}" --index=#{loader} --lib-path=#{iridium_root} --test-path=#{test_root}}
     puts "Running: #{command}"

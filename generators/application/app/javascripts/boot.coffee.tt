@@ -10,3 +10,5 @@
 #   <%= camelized %>.boot()
 #
 # Your boot code begins here...
+
+<%= camelized %>.booted = true
