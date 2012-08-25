@@ -2,7 +2,8 @@ casper.start casper.appURL
 
 injectJsStep = (path) ->
   casper.then ->
-    casper.page.injectJs path
+    if !casper.page.injectJs(path)
+      console.abort "Failed to load #{path}!"
 
 waitForTestStep = (path) ->
   casper.waitFor(

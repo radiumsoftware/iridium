@@ -15,7 +15,8 @@ casper.on 'resource.received', (request) ->
 
 casper.start casper.unitTestLoader, ->
   for test in @unitTests
-    @page.injectJs test
+    if !@page.injectJs(test) 
+      console.abort "Failed to load #{path}!"
 
 casper.then ->
   @evaluate ->
