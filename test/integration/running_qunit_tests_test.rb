@@ -156,18 +156,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert_equal [], results
   end
 
-  def test_debug_mode_prints_to_stdout
-    create_file "test/foo.js", <<-test
-      test('Truth', function() {
-        console.log("This is logged!");
-      });
-    test
-
-    results, stdout, stderr = invoke "test/foo.js", :debug => true
-
-    assert_includes stdout, "This is logged!"
-  end
-
   def test_returns_an_error_if_a_local_script_cannot_be_loaded
     create_file "test/truth.js", <<-test
       test('Truth', function() {
@@ -200,7 +188,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
 
     create_loader # call again to pull in new config
 
-    results, stdout, stderr = invoke "test/truth.js", :debug => true
+    results, stdout, stderr = invoke "test/truth.js"
 
     assert_kind_of Array, results
     assert_equal 1, results.size
@@ -215,7 +203,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
       var baz = foo + bar;
     test
 
-    results, stdout, stderr = invoke "test/undefined.js", :debug => true
+    results, stdout, stderr = invoke "test/undefined.js"
 
     assert_kind_of Array, results
     assert_equal 1, results.size
@@ -236,22 +224,10 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
       foobar();
     test
 
-    results, stdout, stderr = invoke "test/error.js", "test/success.js", :debug => true
+    results, stdout, stderr = invoke "test/error.js", "test/success.js"
 
     assert_kind_of Array, results
     assert_equal 2, results.size
-  end
-
-  def test_can_dump_json_to_the_console
-    create_file "test/dump.js", <<-test
-      test('Console has a dump method', function() {
-        console.dump({foo: "bar"});
-      });
-    test
-
-    status, stdout, stderr = invoke "test/dump.js", :debug => true
-
-    assert_includes stdout, '{"foo":"bar"}'
   end
 
   def test_dom_content_is_not_wiped_out

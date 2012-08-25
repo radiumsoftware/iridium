@@ -334,11 +334,30 @@ class RunningTestsTest < MiniTest::Unit::TestCase
         ok true, "This passes!"
     test
 
-    status, stdout, stderr = invoke "test/integration/failing_test.coffee", "test/integration/truth_test.coffee", "--debug"
+    status, stdout, stderr = invoke "test/integration/failing_test.coffee", "test/integration/truth_test.coffee"
 
     assert_equal 1, status, "Test should fail! Output:\n #{stdout}"
     assert_includes stdout, "2 Test(s)"
     assert_includes stdout, "2 Assertion(s)"
+  end
+
+  def tests_can_dump_json_to_console
+    create_file "test/unit/dump_test.js", <<-test
+      test('Console has a dump method', function() {
+        console.dump({mode: "unit"});
+      });
+    test
+
+    create_file "test/integration/dump_test.js", <<-test
+      test('Console has a dump method', function() {
+        console.dump({mode: "integration"});
+      });
+    test
+
+    status, stdout, stderr = invoke "test/unit/dump_test.js", "test/integration/dump_test.js", "--debug"
+
+    assert_includes stdout, %Q{{"mode":"unit"}}
+    assert_includes stdout, %Q{{"mode":"integration"}}
   end
 
   def invoke(*args)

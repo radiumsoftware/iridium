@@ -80,7 +80,7 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
       });
     test
 
-    results, stdout, stderr = invoke "test/casper/error.js", :debug => true
+    results, stdout, stderr = invoke "test/casper/error.js"
     test_result = results.first
     assert test_result.error?
     assert_equal "ReferenceError: Can't find variable: foobar", test_result.message
