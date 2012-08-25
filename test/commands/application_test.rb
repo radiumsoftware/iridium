@@ -37,6 +37,7 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos', 'test', 'controllers'
     assert_file 'todos', 'test', 'templates'
     assert_file 'todos', 'test', 'support', 'sinon.js'
+    assert_file 'todos', 'test', 'support', 'helper.coffee'
 
     assert_file 'todos', 'site'
 
