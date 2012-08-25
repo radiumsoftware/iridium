@@ -19,10 +19,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     FileUtils.mkdir_p Iridium.application.root.join "test", "support"
 
-    File.open Iridium.application.root.join('test', 'support', 'qunit.js'), "w" do |qunit|
-      qunit.puts File.read(File.expand_path("../../fixtures/qunit.js", __FILE__))
-    end
-
     FileUtils.mkdir_p Iridium.application.root.join "app", "vendor", "javascripts"
 
     File.open Iridium.application.root.join("app", "vendor", "javascripts", "minispade.js"), "w" do |file|
@@ -43,24 +39,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     Iridium.application.root
   end
 
-  def test_helper
-    <<-str
-      class Helper
-        scripts: [
-          'support/qunit'
-          'iridium/qunit_adapter'
-        ]
-
-        iridium: ->
-          _iridium = requireExternal('iridium').create()
-          _iridium.scripts = @scripts
-          _iridium
-
-      exports.casper = (options) ->
-        (new Helper).iridium().casper(options)
-    str
-  end
-
   def test_raises_an_error_if_file_does_not_exist
     status, stdout, stderr = invoke "foo.js"
 
@@ -68,20 +46,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_includes stderr, "foo.js"
   end
 
-  def test_raise_an_error_if_there_is_no_test_helper
-    create_file "test/unit/truth_test.js", <<-test
-      var foo = {}
-    test
-
-    status, stdout, stderr = invoke "test/unit/truth_test.js"
-
-    assert_equal 2, status, "Tests should fail! #{stdout}"
-    assert_includes stderr, "test/helper"
-  end
-
   def test_runs_a_unit_test_in_javascript
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/unit/truth_test.js", <<-test
       test('Truth', function() {
         ok(true, "Passed!")
@@ -95,8 +60,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runs_an_integration_test
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/integration/truth_test.js", <<-test
       test('Truth', function() {
         ok(true, "Passed!")
@@ -110,8 +73,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_pukes_on_invalid_coffee_script_tests
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/unit/invalid_coffeescript.coffee", <<-test
       test 'Truth' ->
         ok true, "Passed!"
@@ -124,29 +85,10 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_includes stderr, "error"
   end
 
-  def test_pukes_on_invalid_coffee_script_in_test_helper
-    create_file "test/helper.coffee", <<-helper
-      thisMethod(), ->
-    helper
-
-    create_file "test/unit/truth_test.coffee", <<-test
-      test 'Truth', ->
-        ok true, "Passed!"
-    test
-
-    status, stdout, stderr = invoke "test/unit/truth_test.coffee"
-
-    assert_equal 2, status, "Tests should fail! #{stdout}"
-    assert_includes stderr, "test/helper.coffee"
-    assert_includes stderr, "error"
-  end
-
   def test_pukes_on_invalid_coffee_script_in_support_files
-    create_file "test/helper.coffee", test_helper
-
-    create_file "test/support/error.coffee", <<-helper
+    create_file "test/support/error.coffee", <<-test
       thisMethod(), ->
-    helper
+    test
 
     create_file "test/unit/truth_test.coffee", <<-test
       test 'Truth', ->
@@ -161,8 +103,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runs_coffee_script_unit_test
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/unit/truth.coffee", <<-test
       test 'Truth', ->
         ok true, "Passed!"
@@ -175,8 +115,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runs_coffee_script_integration_test
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/integration/truth.coffee", <<-test
       test 'Truth', ->
         ok true, "Passed!"
@@ -189,8 +127,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runs_unit_and_integration_tests
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/integration/truth.coffee", <<-test
       test 'Truth', ->
         ok true, "Passed!"
@@ -208,8 +144,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_broken_integration_tests_dont_stop_unit_tests
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/integration/error.coffee", <<-test
       foobar()
     test
@@ -225,8 +159,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_broken_unit_tests_dont_stop_integration_tests
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/integration/truth.coffee", <<-test
       test 'Truth', ->
         ok true, "Passed!"
@@ -242,8 +174,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runner_supports_debug_mode
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/integration/logging.coffee", <<-test
       test 'Truth', ->
         console.log 'integration logging'
@@ -261,8 +191,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runner_returns_successfully_on_dry_run
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/integration/truth.coffee", <<-test
       test 'Truth', ->
         ok true, "passed!"
@@ -280,8 +208,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runner_defaults_to_all_test_files_when_no_arguments
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/integration/truth_test.coffee", <<-test
       test 'Truth', ->
         ok true, "passed!"
@@ -299,8 +225,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runner_pukes_if_passing_a_non_js_or_cs_file
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/unit/truth_test.rb", <<-test
       :D
     test
@@ -311,36 +235,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_includes stderr, "test/unit/truth_test.rb"
   end
 
-  def test_runner_pukes_on_bad_load_files
-    create_file "test/helper.coffee", <<-test_helper
-      class Helper
-        scripts: [
-          'iridium/fooBarBaz'
-        ]
-
-        iridium: ->
-          _iridium = requireExternal('iridium').create()
-          _iridium.scripts = @scripts
-          _iridium
-
-      exports.casper = (options) ->
-        (new Helper).iridium().casper(options)
-    test_helper
-
-    create_file "test/unit/truth_test.coffee", <<-test
-      test 'Truth', ->
-        ok true, "Passed!"
-    test
-
-    status, stdout, stderr = invoke "test/unit/truth_test.coffee"
-
-    assert_equal 2, status
-    assert_includes stderr, "iridium/fooBarBaz"
-  end
-
   def test_runner_parses_directories
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/unit/truth_test.coffee", <<-test
       test 'Truth', ->
         ok true, "Passed!"
@@ -352,8 +247,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_app_module_is_loaded_in_unit_tests
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/app_test.coffee", <<-test
       test 'minispade modules are required', ->
         ok window.AppLoaded, "test_app/app should be required!"
@@ -365,8 +258,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_boot_module_is_loaded_in_integration_tests
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/integration/boot_test.coffee", <<-test
       test "app is booted", ->
         ok window.AppBooted, "App should be booted!"
@@ -378,8 +269,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_uses_custom_unit_test_loader
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/unit_test_runner.html", <<-html
       <!DOCTYPE html>
       <html lang="en">
@@ -402,8 +291,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_uses_custom_unit_test_loader_in_erb
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/unit_test_runner.html.erb", <<-html
       <!DOCTYPE html>
       <html lang="en">
@@ -426,8 +313,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_app_code_is_directly_accessible_in_integration_tests
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/integration/code_access_test.coffee", <<-test
       test "can access the app", ->
         ok window.TestApp, "TestApp should be accessible!"
@@ -439,8 +324,6 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_failing_integration_test_does_not_stop_other_integration_tests
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/integration/failing_test.coffee", <<-test
       test "one test is ran", ->
         ok false, "This should fail!"

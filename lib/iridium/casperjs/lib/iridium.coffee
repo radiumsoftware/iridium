@@ -5,9 +5,6 @@
 #
 # 1. The Iridium load path (core files)
 # 2. The test support load path (app files)
-#
-# This files makes it possible to have a local `test_helper.js`
-# to define your own functionality and set includes
 
 fs = require('fs')
 colorizer = require('colorizer')
@@ -159,12 +156,11 @@ class IridiumCasper extends require('casper').Casper
       @exit()
 
 class Iridium
-  requires: ['iridium/logger', 'iridium/console']
-  scripts: []
+  requires: ['iridium/logger', 'iridium/console', 'iridium/qunit', 'iridium/qunit_adapter']
   casper: (options) ->
     absolutePaths = []
 
-    for path in @requires.concat(@scripts)
+    for path in @requires
       if path.match(/iridium\//)
         basePath = fs.pathJoin(@root, path)
       else
@@ -185,5 +181,5 @@ class Iridium
 
 exports.Iridium = Iridium
 
-exports.create = ->
-  new Iridium
+exports.casper = (options) ->
+  (new Iridium).casper(options)

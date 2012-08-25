@@ -82,10 +82,6 @@ module Iridium
         end
       end
 
-      if Dir[Iridium.application.root.join('test/helper.{js,coffee}')].empty?
-        raise SetupFailed, "You could not find test/helper.js or test/helper.coffee"
-      end
-
       files_to_check = file_names.select { |f| f =~ %r{.coffee$} }
       files_to_check += Dir[Iridium.application.root.join('test', 'support', '**', '*.coffee')]
       files_to_check += Dir[Iridium.application.root.join('test', 'helper.coffee')]

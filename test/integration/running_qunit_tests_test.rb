@@ -33,29 +33,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   def setup
     super
 
-    File.open Iridium.application.root.join('test', 'support', 'qunit.js'), "w" do |qunit|
-      qunit.puts File.read(File.expand_path("../../fixtures/qunit.js", __FILE__))
-    end
-
     create_loader
-  end
-
-  def test_helper
-    <<-str
-      class Helper
-        scripts: [
-          'support/qunit'
-          'iridium/qunit_adapter'
-        ]
-
-        iridium: ->
-          _iridium = requireExternal('iridium').create()
-          _iridium.scripts = @scripts
-          _iridium
-
-      exports.casper = ->
-        (new Helper).iridium().casper()
-    str
   end
 
   def invoke(*files)
@@ -72,8 +50,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_captures_basic_test_information
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/truth_test.js", <<-test
       test('Truth', function() {
         ok(false, "Passed!")
@@ -90,8 +66,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_reports_passes
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/truth_test.js", <<-test
       test('Truth', function() {
         ok(true, "Passed!")
@@ -106,8 +80,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_reports_assertion_errors
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/failed_assertion.js", <<-test
       test('Failed Assertions', function() {
         ok(false, "failed");
@@ -124,8 +96,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_reports_expectation_errors
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/failed_expectation.js", <<-test
       test('Unmet expectation', function() {
         expect(1);
@@ -144,8 +114,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_reports_errors
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/error.js", <<-test
       test('This test has invalid js', function() {
         foobar();
@@ -162,8 +130,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def tests_reports_multiple_tests
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/failed_expectation.js", <<-test
       test('Unmet expectation', function() {
         expect(1);
@@ -191,8 +157,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_debug_mode_prints_to_stdout
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/foo.js", <<-test
       test('Truth', function() {
         console.log("This is logged!");
@@ -205,8 +169,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_returns_an_error_if_a_local_script_cannot_be_loaded
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/truth.js", <<-test
       test('Truth', function() {
         ok(true, "Truth!");
@@ -228,8 +190,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_returns_an_error_if_an_remote_script_cannot_be_loaded
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/truth.js", <<-test
       test('Truth', function() {
         ok(true, "Truth!");
@@ -251,8 +211,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_returns_an_error_when_the_test_file_is_bad
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/undefined.js", <<-test
       var baz = foo + bar;
     test
@@ -268,8 +226,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_one_test_cannot_bring_down_others
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/success.js", <<-test
       test('Truth', function() {
         ok(true, "passed");
@@ -286,36 +242,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert_equal 2, results.size
   end
 
-  def test_raises_an_error_when_js_aborts
-    create_file "test/helper.coffee", <<-str
-      class Helper
-        scripts: [
-          'this_file_doesnt_exist'
-        ]
-
-        iridium: ->
-          _iridium = requireExternal('iridium').create()
-          _iridium.scripts = @scripts
-          _iridium
-
-      exports.casper = ->
-        (new Helper).iridium().casper()
-    str
-
-    create_file "test/success.js", <<-test
-      test('Truth', function() {
-        ok(true, "passed");
-      });
-    test
-
-    assert_raises Iridium::CommandStreamer::ProcessAborted do
-      invoke "test/success.js"
-    end
-  end
-
   def test_can_dump_json_to_the_console
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/dump.js", <<-test
       test('Console has a dump method', function() {
         console.dump({foo: "bar"});
@@ -328,8 +255,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_dom_content_is_not_wiped_out
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/dom_test.js", <<-test
       test("Qunit adapter does not wipe the DOM", function() {
         ok(document.getElementById("place-holder"), "#place-holder should exist!");
@@ -345,8 +270,6 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
   end
 
   def test_qunit_div_is_added
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/dom_test.js", <<-test
       test("qunit div is added", function() {
         ok(document.getElementById("qunit"), "#qunit should exist!");

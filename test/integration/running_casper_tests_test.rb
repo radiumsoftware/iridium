@@ -15,24 +15,7 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
     return results, stdout, stderr
   end
 
-  def test_helper
-    <<-str
-      class Helper
-        scripts: [ ]
-
-        iridium: ->
-          _iridium = requireExternal('iridium').create()
-          _iridium.scripts = @scripts
-          _iridium
-
-      exports.casper = (options) ->
-        (new Helper).iridium().casper(options)
-    str
-  end
-
   def test_reports_basic_information
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/success.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(200, 'Server is up');
@@ -52,8 +35,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_reports_successful_test_correctly
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/success.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(200, 'Server is up');
@@ -70,8 +51,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_reports_a_failure
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/failure.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(500, 'Server should be down!');
@@ -91,8 +70,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_reports_an_error
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/error.js", <<-test
       casper.start('http://localhost:7776/', function() {
         foobar;
@@ -112,8 +89,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_stdout_prints_in_debug_mode
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/error.js", <<-test
       casper.start('http://localhost:7776/', function() {
         console.log('This is logged!');
@@ -129,8 +104,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_dry_return_returns_no_results
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/error.js", <<-test
       casper.start('http://localhost:7776/', function() {
         console.log('This is logged!');
@@ -146,8 +119,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_handles_javascript_errors_in_source_files
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/error.js", <<-test
       foobar();
     test
@@ -163,8 +134,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_does_not_let_one_test_bring_down_others
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/success.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assertHttpStatus(200, 'Server is up');
@@ -186,40 +155,7 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
     assert results[1].passed?
   end
 
-  def test_raises_an_error_when_js_aborts
-    create_file "test/helper.coffee", <<-str
-      class Helper
-        scripts: [
-          'this_file_doesnt_exist'
-        ]
-
-        iridium: ->
-          _iridium = requireExternal('iridium').create()
-          _iridium.scripts = @scripts
-          _iridium
-
-      exports.casper = ->
-        (new Helper).iridium().casper()
-    str
-
-    create_file "test/casper/success.js", <<-test
-      casper.start('http://localhost:7776/', function() {
-        this.test.assertHttpStatus(200, 'Server is up');
-      });
-
-      casper.run(function() {
-        this.test.done();
-      });
-    test
-
-    assert_raises Iridium::CommandStreamer::ProcessAborted do
-      invoke "test/casper/success.js"
-    end
-  end
-
   def test_does_not_report_multiple_failures
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/multiple_assertions.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assert(false, "This fails!");
@@ -239,8 +175,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_internal_assertion_failure_handling_does_not_bring_down_other_tests
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/failing_assertions.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assert(false, "This fails!");
@@ -268,8 +202,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_errors_are_reported_multiple_times
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/failing_assertions.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assert(false, "This fails!");
@@ -297,8 +229,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_test_cannot_be_tereminated
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/double_termination.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assert(true);
@@ -316,8 +246,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_happy_path_steps_work_correctly
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/multiple_steps.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assert(true)
@@ -345,8 +273,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_failed_assertions_halt_the_next_step
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/multiple_steps.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assert(true)
@@ -374,8 +300,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_exceptions_halt_the_next_step
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/multiple_steps.js", <<-test
       casper.start('http://localhost:7776/', function() {
         this.test.assert(true)
@@ -403,8 +327,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_can_dump_json_to_the_console
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/dump.js", <<-test
       casper.start('http://localhost:7776/', function() {
         console.dump({foo: "bar"});
@@ -421,8 +343,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_step_timeouts_dont_blow_up_tests
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/timeout_test.js", <<-test
       casper.start('http://localhost:7776/', function() {
         casper.waitForSelector("#foo-bar", function() {
@@ -444,8 +364,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_die_counts_as_fail
-    create_file "test/helper.coffee", test_helper
-
     create_file "test/casper/die_test.js", <<-test
       casper.start('http://localhost:7776/', function() {
         casper.die("EJECT!");

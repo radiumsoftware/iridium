@@ -55,7 +55,9 @@ for test in testFiles
 unitTestRunner = fs.pathJoin(loadPaths[0], "iridium", "unit_test_runner.coffee")
 integrationTestRunner = fs.pathJoin(loadPaths[0], "iridium", "integration_test_runner.coffee")
 
-casper = requireExternal('helper').casper(exitOnError: false)
+casper = iridium.casper({
+  exitOnError: false
+})
 
 casper.unitTests = unitTests
 casper.integrationTests = integrationTests
