@@ -11,11 +11,7 @@ unless phantom.casperArgs.get('lib-path')
   console.abort("--lib-path is required!")
   phantom.exit()
 
-unless phantom.casperArgs.get('test-path')
-  console.abort("--test-path is required!")
-  phantom.exit()
-
-window.loadPaths = [phantom.casperArgs.get('lib-path'), phantom.casperArgs.get('test-path')]
+window.loadPaths = [phantom.casperArgs.get('lib-path')]
 window.requireExternal = (path) ->
   for directory in loadPaths
     if fs.exists(fs.pathJoin(directory, "#{path}.coffee")) || fs.exists(fs.pathJoin(directory, "#{path}.js")) 
@@ -30,7 +26,12 @@ iridium = requireExternal('iridium')
 # Assign the root and test root to the prototype so all new iridium
 # objects will know where they are
 iridium.Iridium::root = loadPaths[0]
-iridium.Iridium::testRoot = loadPaths[1]
+
+# now assign the support Files
+if phantom.casperArgs.get('support-files')
+  iridium.Iridium::supportFiles = phantom.casperArgs.get('support-files').split(',')
+else
+  iridium.Iridium::supportFiles = []
 
 testFiles = phantom.casperArgs.args
 

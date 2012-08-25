@@ -156,26 +156,16 @@ class IridiumCasper extends require('casper').Casper
       @exit()
 
 class Iridium
-  requires: ['iridium/logger', 'iridium/console', 'iridium/qunit', 'iridium/qunit_adapter']
   casper: (options) ->
     absolutePaths = []
+    absolutePaths.push fs.pathJoin(@root, "iridium", "qunit.js")
 
-    for path in @requires
-      if path.match(/iridium\//)
-        basePath = fs.pathJoin(@root, path)
-      else
-        basePath = fs.pathJoin(@testRoot, path)
-
-      if fs.exists("#{basePath}.coffee")
-        absolutePaths.push "#{basePath}.coffee"
-      else if fs.exists("#{basePath}.js")
-        absolutePaths.push "#{basePath}.js"
-      else
-        console.abort "#{path} is not a valid JS or CS file!"
-        phantom.exit 0
+    for file in ['logger', 'console', 'qunit_adapter']
+      absolutePaths.push fs.pathJoin(@root, "iridium", "#{file}.coffee")
 
     options ||= {}
-    options.clientScripts = absolutePaths
+
+    options.clientScripts = absolutePaths.concat(@supportFiles)
 
     new IridiumCasper(options)
 

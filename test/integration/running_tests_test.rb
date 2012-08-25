@@ -360,6 +360,28 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_includes stdout, %Q{{"mode":"integration"}}
   end
 
+  def tests_support_files_are_included
+    create_file "test/support/helper.coffee", <<-helper
+      window.supportFileLoaded = true
+    helper
+
+    create_file "test/unit/support_test.js", <<-test
+      test('support files are loaded', function() {
+        ok(window.supportFileLoaded, "Support files not loaded!");
+      });
+    test
+
+    create_file "test/integration/support_test.js", <<-test
+      test('support files are loaded', function() {
+        ok(window.supportFileLoaded, "Support files not loaded!");
+      });
+    test
+
+    status, stdout, stderr = invoke "test/unit/support_test.js", "test/integration/support_test.js"
+
+    assert_equal 0, status
+  end
+
   def invoke(*args)
     stdout, stderr, status = nil
 

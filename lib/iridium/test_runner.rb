@@ -15,8 +15,8 @@ module Iridium
 
       command_options = { 
         "lib-path" => Iridium.js_lib_path,
-        "test-path" => app.root.join('test'),
-        "index" => app.site_path.join('unit_test_runner.html')
+        "index" => app.site_path.join('unit_test_runner.html'),
+        "support-files" => Dir[app.root.join('test', 'support', '**', "*.{js,coffee}")].map { |f| %Q{"#{f}"} }.join(',')
       }
 
       switches = command_options.keys.map { |s| %Q{--#{s}="#{command_options[s]}"} }.join(" ")
