@@ -2,7 +2,7 @@
 # This is an example file you can use to add common methods
 # to your test suite. Here's an example
 #
-#   window.chatWindow ->
+#   window.chatWindow = ->
 #     $("#chat-window")
 
 
