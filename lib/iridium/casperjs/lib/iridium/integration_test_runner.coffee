@@ -21,8 +21,10 @@ waitForTestStep = (path) ->
   )
 
 for integrationTest in casper.integrationTests
-  casper.then ->
-    casper.reload()
+
+  if integrationTest != casper.integrationTests[0]
+    casper.then ->
+      casper.reload()
 
   injectJsStep integrationTest
 
