@@ -80,7 +80,6 @@ $ iridium app todos
     create  app/vendor/stylesheets
     create  site
     create  test
-    create  test/helper.coffee
     create  test/integration/navigation_test.coffee
     create  test/unit/truth_test.coffee
     create  test/models
@@ -170,50 +169,7 @@ $ iridium test test/**/*_test.coffee
 $ iridium test test/**/*_test.{coffee,js} # this is the default!
 ```
 
-## The Test Runner
-
-Iridium has an integrated test runner to execute integration and unit
-tests. All tests are executed through CasperJS. Unit tests are written
-using QUnit. Test suite configuration happens through
-`test/helper.coffee`. You can also write this file in Javascript. It's
-job is to create and export a `casper` function. It must return a casper
-object. The casper object is used to execute all the tests.
-
-### The Test Helper
-
-`test/helper.coffee` is the link between your code and requirements and
-Iridium's test runner. Iridium's runner only needs a casper object.
-There is an `Iridium` object that knows how to build a simple casper
-object. It does a bunch of event and low level configuration to make it
-all work. It also bundles the `scripts` to send with each request.
-
-```coffeescript
-class Helper
-  # define the scripts we want to use. They are injected
-  # in the order defined
-  scripts: [
-    'support/qunit,           # points to YOUR_APP/test/support/qunit.{|js|coffee}
-    'iridium/qunit_adapter',  # points to IRIDIUM_JS/iridium/qunit_adapter.{|js|coffee}
-  ]
-
-  # use Iridium's factory with the configuration from this object
-  iridium: ->
-    # requireExternal uses the previously described load path
-    _iridium = requireExternal('iridium').create()
-    _iridium.scripts = @scripts
-    _iridium
-
-# Use the Helper's iridium method to build a proper casper object
-exports.casper = (options) ->
-  (new Helper).iridium().casper(options)
-```
-
-I've added `requireExternal`. This is work around method. CasperJS
-allows you require files using an absolute path. The `requireExternal`
-looks through the Iridium load path and translates successful matches
-into absolute casper requires. You can use this method everywhere.
-
-### Writing Unit Tests
+## Testing
 
 Unit tests are written using QUnit by default. You may use all the
 regular qunit trimmings. All files not in `test/integration` are assumed
@@ -224,8 +180,8 @@ then use an integration test!
 
 Integration tests execute a running app. Your entire stack is loaded and
 served via ruby. Your app is booted then your integration test are ran.
-The page is refreshed before test run. This ensures that every single
-integration tests get's a completely clean start.
+You have direct access to your app code during integration tests. It's
+your responsiblity to setup and teardown each test case.
 
 ```coffeescript
 test "my app says hello", ->
