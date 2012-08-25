@@ -381,4 +381,20 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
     result = results.first
     assert result.failed?
   end
+
+  def test_warn_triggers_an_abort
+    create_file "test/casper/warn_test.js", <<-test
+      casper.start('http://localhost:7776/', function() {
+        casper.warn("EJECT");
+      });
+
+      casper.run(function() {
+        this.test.done();
+      });
+    test
+
+    assert_raises Iridium::CommandStreamer::ProcessAborted do
+      results, stdout, stderr = invoke "test/casper/warn_test.js"
+    end
+  end
 end

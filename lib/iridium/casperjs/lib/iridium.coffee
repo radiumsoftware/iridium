@@ -29,6 +29,12 @@ class IridiumCasper extends require('casper').Casper
 
   appURL: "http://localhost:7777/"
 
+  # Warning should blow up the process.
+  # There is no reason why any code should trigger
+  # a warning
+  warn: (message) ->
+    console.abort message
+
   die: (message, status) ->
     @test.fail message
 
