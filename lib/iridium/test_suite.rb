@@ -84,12 +84,11 @@ module Iridium
 
       files_to_check = file_names.select { |f| f =~ %r{.coffee$} }
       files_to_check += Dir[Iridium.application.root.join('test', 'support', '**', '*.coffee')]
-      files_to_check += Dir[Iridium.application.root.join('test', 'helper.coffee')]
 
       files_to_check.each do |file|
         begin
           CoffeeScript.compile File.read(file)
-        rescue ExecJS::ProgramError => ex
+        rescue ExecJS::Error => ex
           raise SetupFailed, "Could not compile #{file}: #{ex}"
         end
       end
@@ -150,7 +149,7 @@ module Iridium
       start_server
       create_unit_test_loader
       @results.clear
-    rescue ExecJS::ProgramError => ex
+    rescue ExecJS::Error => ex
       raise SetupFailed, ex.to_s
     end
 
