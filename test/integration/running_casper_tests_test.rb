@@ -28,7 +28,10 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
 
     results, stdout, stderr = invoke "test/casper/success.js"
 
+    assert_kind_of Array, results
+    assert_equal 1, results.size
     test_result = results.first
+    assert_equal "test/casper/success.js", test_result.file
     assert_kind_of Fixnum, test_result.time
     assert_equal 1, test_result.assertions
     assert test_result.name
@@ -62,6 +65,8 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
     test
 
     results, stdout, stderr = invoke "test/casper/failure.js"
+    assert_kind_of Array, results
+    assert_equal 1, results.size
     test_result = results.first
     assert test_result.failed?
     assert_includes test_result.message, "Server should be down!"
@@ -81,6 +86,8 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
     test
 
     results, stdout, stderr = invoke "test/casper/error.js"
+    assert_kind_of Array, results
+    assert_equal 1, results.size
     test_result = results.first
     assert test_result.error?
     assert_equal "ReferenceError: Can't find variable: foobar", test_result.message
@@ -125,6 +132,7 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
 
     results, stdout, stderr = invoke "test/casper/error.js"
 
+    assert_kind_of Array, results
     assert_equal 1, results.size
     test_result = results.first
     assert test_result.error?
@@ -150,6 +158,7 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
 
     results, stdout, stderr = invoke "test/casper/error.js", "test/casper/success.js"
 
+    assert_kind_of Array, results
     assert_equal 2, results.size
     assert results[0].error?
     assert results[1].passed?
@@ -198,6 +207,7 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
 
     results, stdout, stderr = invoke "test/casper/failing_assertions.js", "test/casper/truth.js"
 
+    assert_kind_of Array, results
     assert_equal 2, results.size
   end
 
@@ -225,6 +235,7 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
 
     results, stdout, stderr = invoke "test/casper/failing_assertions.js", "test/casper/error.js"
 
+    assert_kind_of Array, results
     assert_equal 2, results.size
   end
 
@@ -242,6 +253,7 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
 
     results, stdout, stderr = invoke "test/casper/double_termination.js"
 
+    assert_kind_of Array, results
     assert_equal 1, results.size
   end
 
@@ -266,6 +278,7 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
 
     results, stdout, stderr = invoke "test/casper/multiple_steps.js"
 
+    assert_kind_of Array, results
     assert_equal 1, results.size
     result = results.first
     assert result.passed?
@@ -293,6 +306,7 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
 
     results, stdout, stderr = invoke "test/casper/multiple_steps.js"
 
+    assert_kind_of Array, results
     assert_equal 1, results.size
     result = results.first
     assert result.failed?

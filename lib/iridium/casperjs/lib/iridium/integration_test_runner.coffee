@@ -1,9 +1,14 @@
-casper.start casper.appURL
-
 injectJsStep = (path) ->
   casper.then ->
     if !casper.page.injectJs(path)
       console.abort "Failed to load #{path}!"
+
+startTestStep = (path) ->
+  casper.then -> 
+    @evaluate((file) ->
+      window.currentTestFileName = file
+      window.startTests()
+    , { file: path})
 
 waitForTestStep = (path) ->
   casper.waitFor(
@@ -21,6 +26,8 @@ waitForTestStep = (path) ->
       casper.logger.message result
   )
 
+casper.start casper.appURL
+
 for integrationTest in casper.integrationTests
 
   if integrationTest != casper.integrationTests[0]
@@ -29,9 +36,7 @@ for integrationTest in casper.integrationTests
 
   injectJsStep integrationTest
 
-  casper.then ->
-    @evaluate ->
-      window.startTests()
+  startTestStep integrationTest
 
   waitForTestStep integrationTest
 

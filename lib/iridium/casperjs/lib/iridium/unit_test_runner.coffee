@@ -13,25 +13,45 @@ casper.on 'resource.received', (request) ->
     logger.message result
     casper.test.done()
 
-casper.start casper.unitTestLoader, ->
-  for test in @unitTests
-    if !@page.injectJs(test) 
+injectJsStep = (path) ->
+  casper.then ->
+    if !casper.page.injectJs(path)
       console.abort "Failed to load #{path}!"
 
-casper.then ->
-  @evaluate ->
-    window.startTests()
+waitForTestStep = (path) ->
+  casper.waitFor(
+    ->
+      casper.evaluate ->
+        window.testsDone == true
+    , -> 
+      # do nothing, the test passed
+      true
+    , ->
+      result = {}
+      result.name = apth
+      result.message = "Test timed out"
+      result.error = true
+      casper.logger.message result
+  )
 
-casper.waitFor(
-  ->
-    casper.evaluate ->
-      window.testsDone == true
-  , -> 
-    casper.test.done()
-  , ->
-    console.log "Test timed out"
-    casper.test.done()
-)
+startTestStep = (path) ->
+  casper.then -> 
+    @evaluate((file) ->
+      window.currentTestFileName = file
+      window.startTests()
+    , { file: path})
+
+casper.start casper.unitTestLoader
+
+for unitTest in casper.unitTests
+  casper.then ->
+    casper.reload()
+
+  injectJsStep unitTest
+
+  startTestStep unitTest
+
+  waitForTestStep unitTest
 
 casper.run ->
   @test.done()

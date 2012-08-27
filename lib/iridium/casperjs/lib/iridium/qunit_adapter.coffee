@@ -3,6 +3,7 @@
 
 QUnit.testStart (context) =>
   @currentTest = {}
+  @currentTest.file = window.currentTestFileName
   @currentTest.name = context.name
   @currentTest.assertions = 0
   @currentTest.backtrace = []
@@ -54,6 +55,7 @@ QUnit.done (context) =>
 QUnit.config.autorun = false
 
 window.startTests = ->
+  window.testsDone = false
   container = document.createElement('div')
   container.setAttribute "id", "qunit"
   document.body.insertBefore container, document.body.firstChild

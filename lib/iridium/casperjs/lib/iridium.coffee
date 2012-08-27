@@ -122,6 +122,7 @@ class IridiumCasper extends require('casper').Casper
       currentTest = {}
       currentTest.assertions = 0
       currentTest.name = testFile
+      currentTest.file = testFile
 
     # This doesn't mean that the entire test passed, but simply one
     # single assertion was correct

@@ -58,8 +58,7 @@ module Iridium
       puts "\n"
 
       results.reject(&:passed?).each do |result|
-        io.puts result.name
-        io.puts "  #{result.file}" if result.file
+        io.puts "#{result.file}: #{result.name}"
         io.puts "  #{result.message}"
 
         if result.error?

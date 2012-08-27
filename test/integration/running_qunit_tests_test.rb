@@ -59,10 +59,12 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     results, stdout, stderr = invoke "test/truth_test.js"
 
     assert_kind_of Array, results
+    assert_equal 1, results.size
     test_result = results.first
     assert_equal "Truth", test_result.name
     assert_kind_of Fixnum, test_result.time
     assert_equal 1, test_result.assertions
+    assert_equal "test/truth_test.js", test_result.file
   end
 
   def test_reports_passes
@@ -73,6 +75,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     test
 
     results, stdout, stderr = invoke "test/truth_test.js"
+    assert_equal 1, results.size
     assert_kind_of Array, results
     test_result = results.first
     assert test_result.passed?
@@ -88,6 +91,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
 
     results, stdout, stderr = invoke "test/failed_assertion.js"
     assert_kind_of Array, results
+    assert_equal 1, results.size
     test_result = results.first
     assert test_result.failed?
     assert_equal "failed", test_result.message
@@ -104,6 +108,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
 
     results, stdout, stderr = invoke "test/failed_expectation.js"
     assert_kind_of Array, results
+    assert_equal 1, results.size
     test_result = results.first
     assert test_result.failed?
     assert_match test_result.message, /expect/i
@@ -122,6 +127,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
 
     results, stdout, stderr = invoke "test/error.js"
     assert_kind_of Array, results
+    assert_equal 1, results.size
     test_result = results.first
     assert test_result.error?
     assert test_result.backtrace
