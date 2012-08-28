@@ -109,7 +109,7 @@ blank canvas.
 
 Files in `vendor/javascripts` are included before your application code.
 All files in this directory are loaded before your app code in
-alphabetical order unless and order is specified. You don't have to
+alphabetical order unless an order is specified. You don't have to
 specify the order for all files. You can declare files that should be
 included before all others and not worry about the others. For example,
 you have 10 files in `app/vendor/javascripts`. You only care that
