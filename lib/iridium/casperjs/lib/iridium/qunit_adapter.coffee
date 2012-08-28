@@ -56,7 +56,13 @@ QUnit.config.autorun = false
 
 window.startTests = ->
   window.testsDone = false
+
   container = document.createElement('div')
   container.setAttribute "id", "qunit"
   document.body.insertBefore container, document.body.firstChild
+
+  fixture = document.createElement('div')
+  container.setAttribute "id", "qunit-fixture"
+  document.body.insertBefore fixture, document.body.firstChild
+
   QUnit.load()

@@ -265,4 +265,19 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     result = results.first
     assert result.passed?
   end
+
+  def test_qunit_fixture_div_is_loaded
+    create_file "test/qunit_fixture_test.js", <<-test
+      test("qunit div is added", function() {
+        ok(document.getElementById("qunit-fixture"), "#qunit-fixture should exist!");
+      })
+    test
+
+    results, stdout, stderr = invoke "test/qunit_fixture_test.js"
+
+    assert_kind_of Array, results
+    assert_equal 1, results.size
+    result = results.first
+    assert result.passed?
+  end
 end
