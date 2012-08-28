@@ -2,7 +2,7 @@ require 'test_helper'
 
 class AssetFileGeneratorTest < GeneratorTestCase
   def command
-    Iridium::Commands::AssetFileGenerator
+    Iridium::Commands::Generate
   end
 
   def test_generator_creates_an_assetfile

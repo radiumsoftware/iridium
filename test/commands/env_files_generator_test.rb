@@ -2,7 +2,7 @@ require 'test_helper'
 
 class EnvFilesGeneratorTest < GeneratorTestCase
   def command
-    Iridium::Commands::EnvFilesGenerator
+    Iridium::Commands::Generate
   end
 
   def test_generator_creates_conf_directories

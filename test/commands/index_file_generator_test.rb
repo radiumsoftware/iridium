@@ -2,7 +2,7 @@ require 'test_helper'
 
 class IndexFileGeneratorTest < GeneratorTestCase
   def command
-    Iridium::Commands::IndexFileGenerator
+    Iridium::Commands::Generate
   end
 
   def test_generator_creates_an_index

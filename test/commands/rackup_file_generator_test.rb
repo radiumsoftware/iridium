@@ -2,7 +2,7 @@ require 'test_helper'
 
 class RackupFileGeneratorTest < GeneratorTestCase
   def command
-    Iridium::Commands::RackupFileGenerator
+    Iridium::Commands::Generate
   end
 
   def test_generator_creates_confg_ru
