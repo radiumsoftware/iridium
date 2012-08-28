@@ -7,8 +7,8 @@ module Iridium
         File.expand_path '../../../../generators/application', __FILE__
       end
 
-      desc "asset_file", "generates an Assetfile equivalent to the stock pipeline"
-      def asset_file
+      desc "assetfile", "generates an Assetfile equivalent to the stock pipeline"
+      def assetfile
         copy_file "Assetfile"
       end
 
