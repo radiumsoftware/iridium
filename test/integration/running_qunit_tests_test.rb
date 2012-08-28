@@ -280,4 +280,44 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     result = results.first
     assert result.passed?
   end
+
+  def test_errors_in_setup_are_handled
+    create_file "test/setup_test.js", <<-test
+      setup(function() {
+        fooBar();
+      });
+
+      test("Truth", function() {
+        ok(true, "True should be true!");
+      })
+    test
+
+    results, stdout, stderr = invoke "test/setup_test.js"
+
+    assert_kind_of Array, results
+    assert_equal 1, results.size
+    result = results.first
+    assert result.error?
+    asert_kind_of Array, result.backtrace
+  end
+
+  def test_errors_in_teardown_are_handled
+    create_file "test/teardown_test.js", <<-test
+      teardown(function() {
+        fooBar();
+      });
+
+      test("Truth", function() {
+        ok(true, "True should be true!");
+      })
+    test
+
+    results, stdout, stderr = invoke "test/teardown_test.js"
+
+    assert_kind_of Array, results
+    assert_equal 1, results.size
+    result = results.first
+    assert result.error?
+    asert_kind_of Array, result.backtrace
+  end
 end
