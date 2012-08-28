@@ -24,6 +24,11 @@ QUnit.log (context) =>
     @currentTest.message = context.source
     stackTrace = context.message
 
+  else if context.message.match(/(Setup|Teardown) failed/)
+    @currentTest.error = true
+    @currentTest.message = context.message
+    stackTrace = context.source
+
   # General Assertion Error
   else if context.message
     @currentTest.assertions++

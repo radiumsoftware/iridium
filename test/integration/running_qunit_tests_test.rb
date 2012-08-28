@@ -283,8 +283,10 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
 
   def test_errors_in_setup_are_handled
     create_file "test/setup_test.js", <<-test
-      setup(function() {
-        fooBar();
+      module("foo", {
+        setup: function() {
+          fooBar();
+        }
       });
 
       test("Truth", function() {
@@ -298,13 +300,16 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert_equal 1, results.size
     result = results.first
     assert result.error?
-    asert_kind_of Array, result.backtrace
+    assert_kind_of Array, result.backtrace
+    assert result.message, /setup/i
   end
 
   def test_errors_in_teardown_are_handled
     create_file "test/teardown_test.js", <<-test
-      teardown(function() {
-        fooBar();
+      module("foo", {
+        teardown: function() {
+          fooBar();
+        }
       });
 
       test("Truth", function() {
@@ -318,6 +323,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     assert_equal 1, results.size
     result = results.first
     assert result.error?
-    asert_kind_of Array, result.backtrace
+    assert_kind_of Array, result.backtrace
+    assert result.message, /teardown/i
   end
 end
