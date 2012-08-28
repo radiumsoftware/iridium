@@ -14,7 +14,7 @@
 #
 # Any ".min" or version numbers are not included in the module name.
 #
-# This file makes all the code available. Your app is iniitliazed in the
+# This file makes all the code available. Your app is initialized in the
 # boot file. Here's an example
 #
 #   require('jquery')
