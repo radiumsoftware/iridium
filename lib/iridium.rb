@@ -27,8 +27,6 @@ require 'iridium/generator'
 
 require 'iridium/dev_server'
 
-require 'iridium/cli'
-
 require 'iridium/command_streamer'
 
 require 'iridium/test_report'
@@ -59,6 +57,8 @@ require 'iridium/commands/application'
 require 'iridium/commands/test'
 require 'iridium/commands/jslint'
 require 'iridium/commands/generate'
+
+require 'iridium/cli'
 
 module Iridium
   class MissingFile < StandardError ; end
