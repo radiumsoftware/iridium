@@ -95,7 +95,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
     test_result = results.first
     assert test_result.failed?
     assert_equal "failed", test_result.message
-    assert test_result.backtrace
+    assert_kind_of Array, test_result.backtrace
     assert_equal 1, test_result.assertions
   end
 
