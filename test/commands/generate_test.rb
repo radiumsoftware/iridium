@@ -21,6 +21,12 @@ class GenerateTest < GeneratorTestCase
     invoke "assetfile"
 
     assert_file 'Assetfile'
+
+    content = read "Assetfile"
+
+    stock_assetfile = File.expand_path "../../../lib/iridium/Assetfile", __FILE__
+
+    assert_equal File.read(stock_assetfile), content
   end
 
   def test_generator_creates_conf_directories
