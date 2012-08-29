@@ -14,7 +14,7 @@ module Rake::Pipeline::Web::Filters
         hash.merge! YAML.load(input.read)
       end
 
-      output.write "I18n.translations = #{JSON.pretty_generate(hash)}"
+      output.write "I18n.translations = #{JSON.pretty_generate(hash)};"
     end
 
     def external_dependencies
