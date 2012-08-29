@@ -34,6 +34,8 @@ class MiniTest::Unit::TestCase
     FileUtils.mkdir_p Iridium.application.root.join("tmp")
     FileUtils.mkdir_p Iridium.application.root.join("test")
     FileUtils.mkdir_p Iridium.application.root.join('test', 'support')
+
+    ENV['IRIDIUM_ENV'] = 'test'
   end
 
   def teardown

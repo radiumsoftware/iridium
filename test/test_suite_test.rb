@@ -16,6 +16,9 @@ class TestSuiteTest < MiniTest::Unit::TestCase
   end
 
   def test_suite_collects_results_from_tests
+    # need to make a file so the site/ builds properly
+    create_file 'app/javascripts/app.js', "foo"
+
     results = start mock_test, mock_test
 
     assert_equal 2, results.size

@@ -25,6 +25,7 @@ module Iridium
     desc "server", "start a development server"
     def server
       Iridum.load!
+      Iridium.application.clean!
       Iridium::DevServer.new.start
     end
 

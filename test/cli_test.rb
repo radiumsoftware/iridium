@@ -5,11 +5,6 @@ class CLITest < GeneratorTestCase
     Pathname.new(File.expand_path('../sandbox', __FILE__))
   end
 
-  def setup
-    super
-    Iridium.application.site_path = destination_root
-  end
-
   def invoke(args)
     stdout, stderr = nil, nil
 
@@ -31,7 +26,7 @@ class CLITest < GeneratorTestCase
 
     invoke %w[compile]
 
-    assert_file "application.js"
+    assert File.exists?(Iridium.application.site_path.join('application.js'))
   end
 
   def test_compile_accepts_an_optional_path_argument
