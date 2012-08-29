@@ -389,7 +389,7 @@ class PipelineTest < MiniTest::Unit::TestCase
       "Vendored code must be loaded before initializers!"
 
     assert content.index("BAR") < content.index("BAZ"), 
-      "Initializers mustbe loaded before app code!"
+      "Initializers must be loaded before app code!"
   end
 
   private
