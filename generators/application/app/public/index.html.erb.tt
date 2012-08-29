@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<% if iridium.production? %>
+
+<%% if app.production? %>
   <html manifest="/cache.manifest">
-<% else %>
+<%% else %>
   <html>
-<% end %>
+<%% end %>
 
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
-
-    <title><%= iridium.class.to_s.classify %></title>
+    <title><%= camelized %></title>
 
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -18,13 +18,14 @@
   </head>
 
   <body>
-    <% iridium.config.scripts.each do |script| %>
-      <script src="<%= script %>"></script>
-    <% end %>
+    <%% app.config.scripts.each do |script| %>
+      <script src="<%%= script %>"></script>
+    <%% end %>
 
     <script src="/application.js"></script>
     <script type="text/javascript">
-      minispade.require("<%= iridium.class.to_s.underscore %>/boot");
+      minispade.require("<%= underscored %>/boot");
     </script>
   </body>
 </html>
+

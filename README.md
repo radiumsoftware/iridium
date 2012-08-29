@@ -269,22 +269,6 @@ $ iridium generate assetfile
     create Assetfile
 ```
 
-### Customizing index.html
-
-`index.html` is an annoying part of web development. You cannot start or
-serve your application without an HTML page to load your JS. Iridium has
-a built in `index.html` which loads your assets and dependencies. This
-will work for most simple applications. You can override this by
-providing your own `index.html` in `public`. You can create the file
-yourself or use a generator. The generator creates a file that does the
-same thing as the bundled `index.html`.
-
-```
-$ cd todos
-$ iridium generate index
-    create app/public/index.html.erb
-```
-
 ### Configuration, Middleware, and Proxying
 
 Your Iridium app is served as a rack app. You can inject your own

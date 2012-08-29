@@ -27,7 +27,6 @@ module Iridium
         end
 
         use Rake::Pipeline::Middleware, Iridium.application.assetfile
-        use Middleware::DefaultIndex, Iridium.application
         run NotFound.new
       end
     end

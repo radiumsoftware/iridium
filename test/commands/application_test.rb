@@ -29,6 +29,7 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos', 'app', 'initializers'
 
     assert_file 'todos', 'app', 'public'
+    assert_file 'todos', 'app', 'public', 'index.html.erb'
 
     assert_file 'todos', 'test', 'integration', 'navigation_test.coffee'
     assert_file 'todos', 'test', 'unit', 'truth_test.coffee'
@@ -57,6 +58,13 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos', 'app', 'vendor', 'javascripts', 'handlebars.js'
     assert_file 'todos', 'app', 'vendor', 'javascripts', 'jquery.js'
     assert_file 'todos', 'app', 'vendor', 'javascripts', 'i18n.js'
+
+    index_path = destination_root.join('todos', 'app', 'public', 'index.html.erb')
+    content = read index_path
+
+    assert_includes content, %Q{<script src="/application.js"></script>}
+    assert_includes content, %Q{<link href="/application.css" rel="stylesheet">}
+    assert_includes content, %Q{minispade.require("todos/boot");}
   end
 
   def test_accepts_a_path
@@ -95,17 +103,5 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos', 'config', 'production.rb'
 
     assert_file 'todos', 'config', 'settings.yml'
-  end
-
-  def test_generated_index_loads_assets
-    invoke 'application', 'todos', :index => true
-
-    assert_file 'todos', 'app', 'public', 'index.html.erb'
-    index_path = destination_root.join('todos', 'app', 'public', 'index.html.erb')
-    content = read index_path
-
-    assert_includes content, %Q{<script src="/application.js"></script>}
-    assert_includes content, %Q{<link href="/application.css" rel="stylesheet">}
-    assert_includes content, %Q{minispade.require("todos/boot");}
   end
 end

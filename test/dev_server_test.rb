@@ -7,12 +7,6 @@ class DevServerTest < MiniTest::Unit::TestCase
     Iridium::DevServer.new.app
   end
 
-  def test_it_should_serve_the_root
-    get '/'
-
-    assert last_response.ok?
-  end
-
   def test_returns_not_found
     get '/foo/bars.js'
 
@@ -27,15 +21,5 @@ class DevServerTest < MiniTest::Unit::TestCase
     assert last_response.ok?
 
     assert_includes last_response.body, "bar"
-  end
-
-  def test_index_file_in_pipeline_overrides_default
-    create_file "app/public/index.html", "bar"
-
-    get '/'
-
-    assert last_response.ok?
-
-    assert_equal "bar", last_response.body.chomp
   end
 end

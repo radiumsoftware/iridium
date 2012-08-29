@@ -1,6 +1,25 @@
 require 'test_helper'
 
 class PipelineTest < MiniTest::Unit::TestCase
+  def index_file_content
+    path = File.expand_path "../../generators/application/app/public/index.html.erb.tt", __FILE__
+
+    ERB.new(File.read(path)).result(binding)
+  end
+
+  # For the template
+  def camelized
+    Iridium.application.class.to_s.camelize
+  end
+
+  def underscored
+    Iridium.application.class.to_s.underscore
+  end
+
+  def create_index
+    create_file "app/public/index.html.erb", index_file_content
+  end
+
   def test_combines_js_into_one_file
     create_file "app/javascripts/main.js", "Main = {};"
     create_file "app/javascripts/secondary.js", "Secondary = {};"
@@ -390,6 +409,42 @@ class PipelineTest < MiniTest::Unit::TestCase
 
     assert content.index("BAR") < content.index("BAZ"), 
       "Initializers must be loaded before app code!"
+  end
+
+  def test_index_boots_the_app
+    create_index
+
+    compile ; assert_file "site/index.html"
+
+    content = read "site/index.html"
+
+    assert_includes content, %q{minispade.require("test_app/boot");}
+  end
+
+  def test_index_contains_scripts
+    create_index
+
+    Iridium.application.config.scripts << "http://jquery.com/jquery.js"
+
+    compile ; assert_file "site/index.html"
+
+    content = read "site/index.html"
+
+    assert_includes content, %q{<script src="http://jquery.com/jquery.js"></script>}
+  end
+
+  def test_includes_a_cache_manifest_in_production
+    ENV['IRIDIUM_ENV'] = 'production'
+
+    create_index
+
+    compile ; assert_file "site/index.html"
+
+    content = read "site/index.html"
+
+    assert_includes content, %q{<html manifest="/cache.manifest">}
+  ensure
+    ENV['IRIDIUM_ENV'] = 'test'
   end
 
   private

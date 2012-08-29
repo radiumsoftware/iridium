@@ -54,29 +54,6 @@ class RackTest < MiniTest::Unit::TestCase
     assert 304, last_response.status
   end
 
-  def test_serves_a_generated_index_file_if_not_present
-    get "/"
-
-    assert last_response.ok?
-  end
-
-  def test_generated_index_can_be_cached
-    get "/"
-
-    assert last_response.ok?
-
-    assert last_response.headers['ETag']
-    assert_equal "max-age=0, private, must-revalidate", last_response.headers['Cache-Control']
-  end
-
-  def test_generated_index_contains_basic_assets
-    get "/"
-
-    assert_includes last_response.body, %Q{<link href="/application.css" rel="stylesheet">}
-    assert_includes last_response.body, %Q{<script src="/application.js"></script>}
-    assert_includes last_response.body, %Q{minispade.require("test_app/boot");}
-  end
-
   def test_returns_compressed_files_when_requested
     create_file "site/application.js.gz", 'gzipped'
 

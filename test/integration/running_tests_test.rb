@@ -2,6 +2,21 @@ require 'test_helper'
 require 'iridium/commands/test'
 
 class RunningTestsTest < MiniTest::Unit::TestCase
+  def index_file_content
+    path = File.expand_path "../../../generators/application/app/public/index.html.erb.tt", __FILE__
+
+    ERB.new(File.read(path)).result(binding)
+  end
+
+  # For the template
+  def camelized
+    Iridium.application.class.to_s.camelize
+  end
+
+  def underscored
+    Iridium.application.class.to_s.underscore
+  end
+
   def setup
     Iridium.application = TestApp.instance
     Iridium.application.config.dependencies.clear
@@ -24,6 +39,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     File.open Iridium.application.root.join("app", "vendor", "javascripts", "minispade.js"), "w" do |file|
       file.puts File.read(File.expand_path('../../fixtures/minispade.js', __FILE__))
     end
+
+    create_file "app/public/index.html.erb", index_file_content
   end
 
   def teardown

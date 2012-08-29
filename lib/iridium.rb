@@ -38,7 +38,6 @@ require 'iridium/middleware/rack_lint_compatibility'
 require 'iridium/middleware/caching'
 require 'iridium/middleware/add_header'
 require 'iridium/middleware/add_cookie'
-require 'iridium/middleware/default_index'
 require 'iridium/middleware/gzip_rewriter'
 
 require 'iridium/config'

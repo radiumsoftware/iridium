@@ -12,11 +12,6 @@ module Iridium
         copy_file "Assetfile"
       end
 
-      desc "index", "generates a file in public/index.html.erb used to boot your app"
-      def index
-        template "index.html.erb.tt", "app/public/index.html.erb"
-      end
-
       desc "envs", "Generate configuration files for development, test, and production enviroments"
       def envs
         directory "config"

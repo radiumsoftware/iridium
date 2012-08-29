@@ -40,10 +40,6 @@ module Iridium
         if options[:envs]
           directory "config"
         end
-
-        if options[:index]
-          template "index.html.erb.tt", "app/public/index.html.erb"
-        end
       end
 
       no_tasks do
