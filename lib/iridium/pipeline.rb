@@ -33,7 +33,14 @@ module Iridium
       Rake::Pipeline::Project.new assetfile
     end
 
+    def clean!
+      FileUtils.rm_rf site_path
+      FileUtils.rm_rf tmp_path
+    end
+
     def compile
+      clean!
+
       Dir.chdir root do
         pipeline.invoke_clean
       end
