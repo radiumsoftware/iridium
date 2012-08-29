@@ -8,7 +8,10 @@ input app.app_path do
   end
 
   match "**/*.{hbs,handlebars}" do
-    handlebars
+    handlebars  :key_name_proc => proc { |input|
+        templates_path = 'javascripts/templates/'
+        input.path.chomp(File.extname(input.path)).gsub(/#{templates_path}/, '')
+    }
   end
 
   match "**/*.coffee" do
