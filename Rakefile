@@ -30,6 +30,12 @@ namespace :test do
     test.libs << 'test'
     test.pattern = 'test/commands/**/*_test.rb'
   end
+
+  desc "Run tests for the pipeline"
+  Rake::TestTask.new(:pipeline => :compile) do |test|
+    test.libs << 'test'
+    test.pattern = 'test/pipeline_test.rb'
+  end
 end
 
 namespace :casperjs do
