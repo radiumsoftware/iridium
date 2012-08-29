@@ -3,18 +3,8 @@ module Iridium
     include Thor::Actions
 
     no_tasks do
-      def require_app
-        begin
-          require "#{Dir.pwd}/application"
-        rescue LoadError
-          $stderr.puts "Could not find application.rb. Are you in your app's root?"
-          abort
-        end
-      end
-
       def app
-        require_app unless Iridium.application
-
+        Iridium.load!
         Iridium.application
       end
 

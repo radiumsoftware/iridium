@@ -27,6 +27,8 @@ require File.expand_path("../app/application", __FILE__)
 class MiniTest::Unit::TestCase
   def setup
     Iridium.application = TestApp.instance
+    Iridium.application.site_path = Iridium.application.root.join("site")
+
     FileUtils.mkdir_p Iridium.application.root.join("app")
     FileUtils.mkdir_p Iridium.application.root.join("site")
     FileUtils.mkdir_p Iridium.application.root.join("tmp")

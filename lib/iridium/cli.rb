@@ -24,27 +24,17 @@ module Iridium
 
     desc "server", "start a development server"
     def server
-      require_app
+      Iridum.load!
       Iridium::DevServer.new.start
     end
 
-    desc "compile", "compile assets for deployment"
+    desc "compile PATH", "compile assets for deployment to an optional PATH"
     method_option :environment, :aliases => '-e', :default => 'production'
-    def compile
-      require_app
+    def compile(path = nil)
+      Iridium.load!
       ENV['IRIDIUM_ENV'] = options[:environment]
+      Iridium.application.site_path = Pathname.new(path) if path
       Iridium.application.compile
-    end
-
-    no_tasks do
-      def require_app
-        begin
-          require "#{Dir.pwd}/application"
-        rescue LoadError
-          $stderr.puts "Could not find application.rb. Are you in your app's root?"
-          abort
-        end
-      end
     end
   end
 end

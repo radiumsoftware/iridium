@@ -76,6 +76,17 @@ module Iridium
     def js_lib_path
       File.expand_path("../iridium/casperjs/lib", __FILE__)
     end
+
+    def load!
+      return if Iridium.application
+
+      begin
+        require "#{Dir.pwd}/application"
+      rescue LoadError
+        $stderr.puts "Could not find application.rb. Are you in your app's root?"
+        abort
+      end
+    end
   end
 
   class Application
