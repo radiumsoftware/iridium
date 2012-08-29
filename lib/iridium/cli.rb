@@ -35,7 +35,12 @@ module Iridium
     def compile(path = nil)
       Iridium.load!
       ENV['IRIDIUM_ENV'] = options[:environment]
-      Iridium.application.site_path = Pathname.new(path) if path
+
+      if path
+        raise "#{path} does not exist!" unless File.directory? path
+        Iridium.application.site_path = Pathname.new path
+      end
+
       Iridium.application.compile
     end
   end

@@ -34,8 +34,22 @@ class CLITest < GeneratorTestCase
 
     output_root = destination_root.join 'foo'
 
-    invoke ['compile', output_root.to_s]
+    FileUtils.mkdir_p output_root
 
+    stdout, stderr = invoke ['compile', output_root.to_s]
+
+    assert_empty stderr
     assert_file "foo/application.js"
+  end
+
+  def test_compile_blows_up_when_passed_an_invalid_path
+    create_file "app/javascripts/app.js", "FOO"
+
+    assert_raises RuntimeError do
+      stdout, stderr = invoke ['compile', '/foo/bar/baz/qux']
+
+      assert_includes stderr, "/foo/bar/baz/qux"
+      assert_match stderr, /exist/
+    end
   end
 end
