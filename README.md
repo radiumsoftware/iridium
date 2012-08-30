@@ -62,33 +62,42 @@ the built in generator to create the structure:
 
 ```
 $ iridium app todos
-    create  app
-    create  app/images
-    create  app/javascripts/app.coffee
-    create  app/javascripts/models
-    create  app/javascripts/views
-    create  app/javascripts/controllers
-    create  app/javascripts/templates
-    create  app/locales/en.yml
-    create  app/public
-    create  app/stylesheets/app.scss
-    create  app/vendor/javascripts
-    create  app/vendor/javscripts/handlebars.js
-    create  app/vendor/javscripts/jquery.js
-    create  app/vendor/javscripts/minispade.js
-    create  app/vendor/javscripts/i81n.js
-    create  app/vendor/stylesheets
-    create  site
-    create  test
-    create  test/integration/navigation_test.coffee
-    create  test/unit/truth_test.coffee
-    create  test/models
-    create  test/views
-    create  test/controllerss
-    create  test/templates
-    create  test/support/qunit.js
-    create  test/support/sinon.js
-    create  application.rb
+      create  app
+      create  app/config
+      create  app/config/development.coffee
+      create  app/config/initializers
+      create  app/config/production.coffee
+      create  app/config/test.coffee
+      create  app/images
+      create  app/javascripts/app.coffee
+      create  app/javascripts/boot.coffee
+      create  app/javascripts/controllers
+      create  app/javascripts/models
+      create  app/javascripts/templates
+      create  app/javascripts/views
+      create  app/locales/en.yml
+      create  app/public
+      create  app/public/index.html.erb
+      create  app/stylesheets/app.scss
+      create  app/vendor/javascripts
+      create  app/vendor/javascripts/handlebars.js
+      create  app/vendor/javascripts/i18n.js
+      create  app/vendor/javascripts/jquery.js
+      create  app/vendor/javascripts/minispade.js
+      create  app/vendor/stylesheets
+      create  site
+      create  test
+      create  test/controllers
+      create  test/integration/navigation_test.coffee
+      create  test/models
+      create  test/support/helper.coffee
+      create  test/support/sinon.js
+      create  test/templates
+      create  test/unit/truth_test.coffee
+      create  test/views
+      create  application.rb
+      create  readme.md
+      create  .gitignore
 ```
 
 Now your pipeline is ready. You can use the built in development server
