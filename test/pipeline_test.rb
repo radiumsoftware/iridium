@@ -482,6 +482,36 @@ class PipelineTest < MiniTest::Unit::TestCase
     ENV['IRIDIUM_ENV'] = 'test'
   end
 
+  def test_pipeline_includes_env_specific_js_code
+    ENV['IRIDIUM_ENV'] = 'foo'
+
+    create_file "app/config/test.js", "test"
+    create_file "app/config/foo.js", "foo"
+
+    compile ; assert_file "site/application.js"
+
+    content = read 'site/application.js'
+
+    assert_includes content, "foo"
+    refute_includes content, "test"
+  ensure
+    ENV['IRIDIUM_ENV'] = 'test'
+  end
+
+  def test_pipeline_wraps_env_code_in_an_iife
+    ENV['IRIDIUM_ENV'] = 'foo'
+
+    create_file "app/config/foo.js", "foo"
+
+    compile ; assert_file "site/application.js"
+
+    content = read 'site/application.js'
+
+    assert_equal "(function() {\nfoo\n})();", content.chomp
+  ensure
+    ENV['IRIDIUM_ENV'] = 'test'
+  end
+
   private
   def compile
     TestApp.compile
