@@ -16,6 +16,8 @@ require 'rake-pipeline'
 require 'rake-pipeline/middleware'
 require 'rake-pipeline-web-filters'
 require 'rake-pipeline-web-filters/iife_filter'
+require 'rake-pipeline-web-filters/handlebars_script_tag_filter'
+require 'rake-pipeline-web-filters/insert_script_tag_filter'
 require 'rake-pipeline-web-filters/ordered_contact_helper'
 require 'rake-pipeline-web-filters/erb_filter'
 require 'rake-pipeline-web-filters/concat_css_filter'
@@ -59,6 +61,8 @@ require 'iridium/commands/jslint'
 require 'iridium/commands/generate'
 
 require 'iridium/cli'
+
+require 'iridium/handlebars_compiler'
 
 module Iridium
   class MissingFile < StandardError ; end

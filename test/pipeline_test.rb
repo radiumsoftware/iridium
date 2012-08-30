@@ -146,49 +146,26 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes content, %Q{color: #4d926f;}
   end
 
-  def tests_compiles_handle_bars_into_js_file
-    create_file "app/javascripts/templates/home.handlebars", "{{#name}}"
+  def tests_compiles_handlebars_into_js_file
+    create_file "app/public/index.html", index_file_content
+    create_file "app/templates/home.handlebars", "{{name}}"
 
-    compile ; assert_file "site/application.js"
+    compile ; assert_file "site/index.html"
 
-    content = read "site/application.js"
+    content = read "site/index.html"
 
-    assert_includes content, "{{#name}}"
-    assert_includes content, "Ember.TEMPLATES['home']"
+    assert_includes content, %Q{<script type="text/x-handlebars" data-template-name="home">}
   end
 
-  def tests_compiles_hbs_into_js_file
-    create_file "app/javascripts/templates/home.hbs", "{{#name}}"
+  def tests_maps_path_handlebars_template_name
+    create_file "app/public/index.html", index_file_content
+    create_file "app/templates/dashboard/feed/header.handlebars", "{{name}}"
 
-    compile ; assert_file "site/application.js"
+    compile ; assert_file "site/index.html"
 
-    content = read "site/application.js"
+    content = read "site/index.html"
 
-    assert_includes content, "{{#name}}"
-    assert_includes content, "Ember.TEMPLATES['home']"
-  end
-
-  def tests_compiles_handle_bars_into_js_file_including_subfolder
-    create_file "app/javascripts/templates/subfolder/home.handlebars", "{{#name}}"
-
-    compile ; assert_file "site/application.js"
-
-    content = read "site/application.js"
-
-    assert_includes content, "{{#name}}"
-    assert_includes content, "Ember.TEMPLATES['subfolder/home']"
-  end
-
-
-  def tests_compiles_handle_bars_into_js_file_including_multiple_subfolders
-    create_file "app/javascripts/templates/multiple/subfolders/home.handlebars", "{{#name}}"
-
-    compile ; assert_file "site/application.js"
-
-    content = read "site/application.js"
-
-    assert_includes content, "{{#name}}"
-    assert_includes content, "Ember.TEMPLATES['multiple/subfolders/home']"
+    assert_includes content, %Q{<script type="text/x-handlebars" data-template-name="dashboard/feed/header">}
   end
 
   def test_concats_vendor_css_before_app_css

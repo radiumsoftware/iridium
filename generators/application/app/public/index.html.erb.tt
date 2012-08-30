@@ -23,6 +23,7 @@
     <%% end %>
 
     <script src="/application.js"></script>
+
     <script type="text/javascript">
       minispade.require("<%= underscored %>/boot");
     </script>
