@@ -436,6 +436,16 @@ class PipelineTest < MiniTest::Unit::TestCase
       "Initializers must be loaded before app code!"
   end
 
+  def test_initializers_are_wrapped_in_iifes
+    create_file "app/initializers/foo.js", "FOO"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_equal "(function() {\nFOO\n})();", content.chomp
+  end
+
   def test_index_boots_the_app
     create_index
 

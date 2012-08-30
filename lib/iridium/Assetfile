@@ -28,8 +28,8 @@ input app.app_path do
 
   # Compile all initializers into a single init.js to be concatentated
   # later
-
   match "initializers/**/*.js" do
+    iife
     concat "build/init.js"
   end
 
