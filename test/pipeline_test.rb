@@ -407,7 +407,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_intializers_are_compiles
-    create_file "app/initializers/bar.js", "INIT"
+    create_file "app/config/initializers/bar.js", "INIT"
 
     compile ; assert_file "site/application.js"
 
@@ -416,28 +416,8 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "INIT"
   end
 
-  def test_initializers_are_loaded_after_vendored_code_and_before_app_code
-    create_file "app/vendor/javascripts/foo.js", "FOO"
-    create_file "app/initializers/bar.js", "BAR"
-    create_file "app/javascripts/app.js", "BAZ"
-
-    compile ; assert_file "site/application.js"
-
-    content = read "site/application.js"
-
-    assert_includes content, "FOO", "Vendored code not loaded!"
-    assert_includes content, "BAR", "Init code not loaded!"
-    assert_includes content, "BAZ", "App code not loaded!"
-
-    assert content.index("FOO") < content.index("BAR"), 
-      "Vendored code must be loaded before initializers!"
-
-    assert content.index("BAR") < content.index("BAZ"), 
-      "Initializers must be loaded before app code!"
-  end
-
   def test_initializers_are_wrapped_in_iifes
-    create_file "app/initializers/foo.js", "FOO"
+    create_file "app/config/initializers/foo.js", "FOO"
 
     compile ; assert_file "site/application.js"
 
@@ -510,6 +490,31 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_equal "(function() {\nfoo\n})();", content.chomp
   ensure
     ENV['IRIDIUM_ENV'] = 'test'
+  end
+
+  def test_build_order
+    create_file "app/vendor/javascripts/foo.js", "VENDOR"
+    create_file "app/config/initializers/bar.js", "INITIALIZER"
+    create_file "app/config/test.js", "ENV"
+    create_file "app/javascripts/app.js", "APP"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "VENDOR", "Vendored code not loaded!"
+    assert_includes content, "INITIALIZER", "Init code not loaded!"
+    assert_includes content, "ENV", "Env code not loaded!"
+    assert_includes content, "APP", "App code not loaded!"
+
+    assert content.index("VENDOR") < content.index("ENV"), 
+      "Vendored code must be loaded before environment initialization!"
+
+    assert content.index("ENV") < content.index("INITIALIZER"), 
+      "Environment must be prepared for initialization!"
+
+    assert content.index("INITIALIZER") < content.index("APP"), 
+      "App code must be loaded after initialization"
   end
 
   private
