@@ -146,28 +146,6 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes content, %Q{color: #4d926f;}
   end
 
-  def tests_compiles_handle_bars_into_js_file_not_in_templates_folder
-    create_file "app/javascripts/home.handlebars", "{{#name}}"
-
-    compile ; assert_file "site/application.js"
-
-    content = read "site/application.js"
-
-    assert_includes content, "{{#name}}"
-    assert_includes content, "Ember.TEMPLATES['home']"
-  end
-
-  def tests_compiles_hbs_into_js_file_not_in_templates_folder
-    create_file "app/javascripts/home.hbs", "{{#name}}"
-
-    compile ; assert_file "site/application.js"
-
-    content = read "site/application.js"
-
-    assert_includes content, "{{#name}}"
-    assert_includes content, "Ember.TEMPLATES['home']"
-  end
-
   def tests_compiles_handle_bars_into_js_file
     create_file "app/javascripts/templates/home.handlebars", "{{#name}}"
 
@@ -201,31 +179,9 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "Ember.TEMPLATES['subfolder/home']"
   end
 
-  def tests_compiles_hbs_into_js_file_including_subfolder
-    create_file "app/javascripts/templates/subfolder/home.hbs", "{{#name}}"
-
-    compile ; assert_file "site/application.js"
-
-    content = read "site/application.js"
-
-    assert_includes content, "{{#name}}"
-    assert_includes content, "Ember.TEMPLATES['subfolder/home']"
-  end
-
 
   def tests_compiles_handle_bars_into_js_file_including_multiple_subfolders
     create_file "app/javascripts/templates/multiple/subfolders/home.handlebars", "{{#name}}"
-
-    compile ; assert_file "site/application.js"
-
-    content = read "site/application.js"
-
-    assert_includes content, "{{#name}}"
-    assert_includes content, "Ember.TEMPLATES['multiple/subfolders/home']"
-  end
-
-  def tests_compiles_hbs_into_js_file_including_mulitple_subfolders
-    create_file "app/javascripts/templates/multiple/subfolders/home.hbs", "{{#name}}"
 
     compile ; assert_file "site/application.js"
 
