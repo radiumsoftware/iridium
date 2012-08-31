@@ -33,6 +33,7 @@ class MiniTest::Unit::TestCase
     FileUtils.mkdir_p Iridium.application.root.join("site")
     FileUtils.mkdir_p Iridium.application.root.join("tmp")
     FileUtils.mkdir_p Iridium.application.root.join("test")
+    FileUtils.mkdir_p Iridium.application.root.join("vendor")
     FileUtils.mkdir_p Iridium.application.root.join('test', 'support')
 
     ENV['IRIDIUM_ENV'] = 'test'
@@ -46,7 +47,8 @@ class MiniTest::Unit::TestCase
       FileUtils.rm_rf Iridium.application.root.join("Assetfile") if File.exists?(Iridium.application.root.join('Assetfile'))
       FileUtils.rm_rf Iridium.application.root.join("site")
       FileUtils.rm_rf Iridium.application.root.join("tmp")
-      FileUtils.rm_rf Iridium.application.root.join("test")
+      FileUtils.rm_rf Iridium.application.root.join("vendor")
+      FileUtils.rm_rf Iridium.application.root.join("site")
     end
     Iridium.application = nil
   end

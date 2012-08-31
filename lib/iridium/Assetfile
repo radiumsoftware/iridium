@@ -11,10 +11,6 @@ input app.app_path do
     coffee_script
   end
 
-  match "**/*.less" do
-    less
-  end
-
   # Put environment specific files in the pipeline
   match "config/#{app.env}.js" do
     iife

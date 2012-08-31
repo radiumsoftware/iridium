@@ -2,7 +2,7 @@ require 'test_helper'
 
 class PipelineTest < MiniTest::Unit::TestCase
   def index_file_content
-    path = File.expand_path "../../generators/application/app/public/index.html.erb.tt", __FILE__
+    path = File.expand_path "../../generators/application/app/index.html.erb.tt", __FILE__
 
     ERB.new(File.read(path)).result(binding)
   end
@@ -17,7 +17,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def create_index
-    create_file "app/public/index.html.erb", index_file_content
+    create_file "app/index.html.erb", index_file_content
   end
 
   def test_combines_js_into_one_file
@@ -128,26 +128,8 @@ class PipelineTest < MiniTest::Unit::TestCase
     refute_includes content, %Q{#partial}
   end
 
-  def tests_compiles_less
-    less_css = <<-LESS
-    @color: #4D926F;
-
-    #header {
-      color: @color;
-    }
-    LESS
-
-    create_file "app/stylesheets/app.less", less_css
-
-    compile ; assert_file "site/application.css"
-
-    content = read "site/application.css"
-
-    assert_includes content, %Q{color: #4d926f;}
-  end
-
   def tests_compiles_handlebars_into_js_file
-    create_file "app/public/index.html", index_file_content
+    create_file "app/index.html", index_file_content
     create_file "app/templates/home.handlebars", "{{name}}"
 
     compile ; assert_file "site/index.html"
@@ -164,7 +146,7 @@ class PipelineTest < MiniTest::Unit::TestCase
 
     refute_empty existing_head_tag
 
-    create_file "app/public/index.html", index_file_content
+    create_file "app/index.html", index_file_content
     create_file "app/templates/home.handlebars", "{{name}}"
 
     compile ; assert_file "site/index.html"
@@ -176,7 +158,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def tests_maps_path_handlebars_template_name
-    create_file "app/public/index.html", index_file_content
+    create_file "app/index.html", index_file_content
     create_file "app/templates/dashboard/feed/header.handlebars", "{{name}}"
 
     compile ; assert_file "site/index.html"
@@ -235,7 +217,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def tests_provides_the_server_for_erb_templates
-    create_file "app/public/index.html.erb", <<-str
+    create_file "app/index.html.erb", <<-str
     <%= app.config %>
     str
 
