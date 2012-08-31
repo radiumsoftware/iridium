@@ -91,23 +91,23 @@ input app.root do
     end
   end
 
-  # copy the index html
-  match "app/index.html" do
-    copy do |input|
-      input.sub(/app\//, '')
-    end
-  end
-
   # Now prepare the handlebars templates by transforming them
   # into script tags which can be injected to index.html
   match "app/templates/**/*.{handlebars,hbs}" do
     handlebars_script_tag :template_name => proc { |input|
-      input.sub("templates/", '').sub(File.extname(input), '')
+      input.sub("app/templates/", '').sub(File.extname(input), '')
     }
   end
 
   inject "app/templates/**/*.{handlebars,hbs}" do
-    insert_script_tag "index.html"
+    insert_script_tag "app/index.html"
+  end
+
+  # copy the index html
+  match "app/index.html" do
+    copy do |input|
+      input.sub "app/", ""
+    end
   end
 
   # All images are moved int
