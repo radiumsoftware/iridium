@@ -180,30 +180,6 @@ class PipelineTest < MiniTest::Unit::TestCase
       "#first-selector should come before #second-selector in compiled css file"
   end
 
-  def test_concats_vendor_css_ordered_by_name
-    create_file "app/stylesheets/vendor/z_file.css", "#second-selector"
-    create_file "app/stylesheets/vendor/a_file.css", "#first-selector"
-
-    compile ; assert_file "site/application.css"
-
-    content = read "site/application.css"
-
-    assert content.index("#first-selector") < content.index("#second-selector"),
-      "#first-selector should come before #second-selector in compiled css file"
-  end
-
-  def test_concats_css_ordered_by_name
-    create_file "app/stylesheets/z_file.css", "#second-selector"
-    create_file "app/stylesheets/a_file.css", "#first-selector"
-
-    compile ; assert_file "site/application.css"
-
-    content = read "site/application.css"
-
-    assert content.index("#first-selector") < content.index("#second-selector"),
-      "#first-selector should come before #second-selector in compiled css file"
-  end
-
   def tests_copies_assets
     create_file "app/assets/faye.min.js", "window.faye = {}"
 
