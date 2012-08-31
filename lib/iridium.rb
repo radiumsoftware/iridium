@@ -14,6 +14,10 @@ require 'execjs'
 require 'rack/rewrite'
 require 'rake-pipeline'
 require 'rake-pipeline/middleware'
+require 'rake-pipeline/injection_matcher'
+require 'rake-pipeline/injection_filter'
+require 'rake-pipeline/iridium_helper'
+
 require 'rake-pipeline-web-filters'
 require 'rake-pipeline-web-filters/iife_filter'
 require 'rake-pipeline-web-filters/handlebars_script_tag_filter'
@@ -22,7 +26,6 @@ require 'rake-pipeline-web-filters/ordered_contact_helper'
 require 'rake-pipeline-web-filters/erb_filter'
 require 'rake-pipeline-web-filters/concat_css_filter'
 require 'rake-pipeline-web-filters/i18n_filter'
-require 'rake-pipeline-web-filters/iridium_dsl_helper'
 
 require 'iridium/reverse_proxy'
 
