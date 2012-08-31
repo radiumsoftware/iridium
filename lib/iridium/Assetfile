@@ -78,10 +78,10 @@ input app.app_path do
 
   # All files in app/public are simpliy copied into the output directory.
   # Example:
-  # app/public/index.html -> site/index.html
-  match "public/**/*" do
+  # app/assets/images/logo.png -> site/images/logo.png
+  match "assets/**/*" do
     copy do |input|
-      input.sub(/public\//, '')
+      input.sub(/assets\//, '')
     end
   end
 

@@ -204,14 +204,14 @@ class PipelineTest < MiniTest::Unit::TestCase
       "#first-selector should come before #second-selector in compiled css file"
   end
 
-  def tests_copies_public_files_into_public
-    create_file "app/public/faye.min.js", "window.faye = {}"
+  def tests_copies_assets
+    create_file "app/assets/faye.min.js", "window.faye = {}"
 
     compile ; assert_file "site/faye.min.js"
   end
 
-  def tests_copies_image_files_into_public
-    create_file "app/images/logo.png", "png-content"
+  def test_asset_directory_is_preserved
+    create_file "app/assets/images/logo.png", "png content"
 
     compile ; assert_file "site/images/logo.png"
   end
