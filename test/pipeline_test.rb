@@ -170,7 +170,7 @@ class PipelineTest < MiniTest::Unit::TestCase
 
   def test_concats_vendor_css_before_app_css
     create_file "app/stylesheets/home.css", "#second-selector"
-    create_file "app/stylesheets/vendor/bootstrap.css", "#first-selector"
+    create_file "vendor/bootstrap.css", "#first-selector"
 
     compile ; assert_file "site/application.css"
 
@@ -201,8 +201,8 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_compiles_vendor_javascripts_when_nothing_is_specified
-    create_file "app/vendor/javascripts/file1.js", "var file1 = {};"
-    create_file "app/vendor/javascripts/file2.js", "var file2 = {};"
+    create_file "vendor/javascripts/file1.js", "var file1 = {};"
+    create_file "vendor/javascripts/file2.js", "var file2 = {};"
 
     compile ; assert_file "site/application.js"
 
@@ -213,8 +213,8 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_specified_vendor_dependencies_come_before_unspecified_dependencies
-    create_file "app/vendor/javascripts/file1.js", "var file1 = {};"
-    create_file "app/vendor/javascripts/file2.js", "var file2 = {};"
+    create_file "vendor/javascripts/file1.js", "var file1 = {};"
+    create_file "vendor/javascripts/file2.js", "var file2 = {};"
 
     Iridium.application.config.load :file2
 
@@ -229,9 +229,9 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_unspecifed_dependencies_come_after_specified_dependencies
-    create_file "app/vendor/javascripts/jquery.js", "var jquery = {};"
-    create_file "app/vendor/javascripts/jquery_ui.js", "var jqui = {};"
-    create_file "app/vendor/javascripts/underscore.js", "var underscore = {};"
+    create_file "vendor/javascripts/jquery.js", "var jquery = {};"
+    create_file "vendor/javascripts/jquery_ui.js", "var jqui = {};"
+    create_file "vendor/javascripts/underscore.js", "var underscore = {};"
 
     Iridium.application.config.load :jquery
     Iridium.application.config.load :jquery_ui
@@ -251,7 +251,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_vendored_code_comes_before_app_code
-    create_file "app/vendor/javascripts/jquery.js", "var jquery = {};"
+    create_file "vendor/javascripts/jquery.js", "var jquery = {};"
     create_file "app/javascripts/app.js", "var MyApp = {};"
 
     compile ; assert_file "site/application.js"
@@ -277,14 +277,18 @@ class PipelineTest < MiniTest::Unit::TestCase
     create_file "app/foos/index.html", "bar"
 
     compile ; assert_file "site/index.html"
+
+    assert_equal "bar", read("site/index.html").chomp
   end
 
   def test_compiles_in_production_env
     ENV['IRIDIUM_ENV'] = 'production'
 
-    create_file "app/vendor/javascripts/jquery.js", "var jquery = {};"
+    create_file "vendor/javascripts/jquery.js", "var jquery = {};"
     create_file "app/javascripts/app.js", "var MyApp = {};"
+
     create_file "app/stylesheets/app.csss", "#foo { color: black; }"
+    create_file "vendor/stylesheets/app.csss", "#foo { color: black; }"
 
     compile ; assert_file "site/application.js"
   ensure
@@ -308,7 +312,7 @@ class PipelineTest < MiniTest::Unit::TestCase
     ENV['IRIDIUM_ENV'] = 'production'
 
     create_file "app/javascripts/app.js", "var MyApp = {};"
-    create_file "app/images/logo.png", "image content"
+    create_file "app/assets/images/logo.png", "image content"
 
     compile ; assert_file "site/cache.manifest"
 
@@ -446,7 +450,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_build_order
-    create_file "app/vendor/javascripts/foo.js", "VENDOR"
+    create_file "vendor/javascripts/foo.js", "VENDOR"
     create_file "app/config/initializers/bar.js", "INITIALIZER"
     create_file "app/config/test.js", "ENV"
     create_file "app/javascripts/app.js", "APP"
