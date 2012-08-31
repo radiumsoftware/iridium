@@ -43,6 +43,7 @@ class MiniTest::Unit::TestCase
     if Iridium.application
       Iridium.application.config.scripts.clear
       Iridium.application.config.dependencies.clear
+
       FileUtils.rm_rf Iridium.application.app_path
       FileUtils.rm_rf Iridium.application.site_path
       FileUtils.rm_rf Iridium.application.tmp_path

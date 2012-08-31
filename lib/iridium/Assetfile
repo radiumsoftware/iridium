@@ -48,21 +48,13 @@ input app.root do
   # app/javascripts/boot.js -> require('app_name/boot');
   # app/javascripts/views/main.js -> require('app_name/views/main');
   match "app/javascripts/**/*.js" do
-    minispade :rewrite_requires => true, :module_id_generator => proc { |input|
-      input.path.gsub("app/javascripts/", "#{app.class.to_s.demodulize.underscore}/").gsub(/\.js$/, '')
-    }
+    minispade :rewrite_requires => true, 
+      :string => (app.config.minispade.module_format == :string),
+      :module_id_generator => proc { |input|
+        input.path.gsub("app/javascripts/", "#{app.class.to_s.demodulize.underscore}/").gsub(/\.js$/, '')
+      }
 
     concat "build/lib.js"
-  end
-
-  # compile all SCSS files into equivalent css file.
-  # SCSS partials are not included in compiled output.
-  match /app\/stylesheets\/(?:.+\/)?[^_].+\.s[ca]ss/ do
-    sass
-  end
-
-  match "app/stylesheets/**/*.css" do
-    concat "build/lib.css"
   end
 
   # minify and contact lib.js and vendor.js into a single
@@ -73,6 +65,16 @@ input app.root do
     if app.config.minify
       uglify { |path| path }
     end
+  end
+
+  # compile all SCSS files into equivalent css file.
+  # SCSS partials are not included in compiled output.
+  match /app\/stylesheets\/(?:.+\/)?[^_].+\.s[ca]ss/ do
+    sass
+  end
+
+  match "app/stylesheets/**/*.css" do
+    concat "build/lib.css"
   end
 
   # select all stylesheets in the project

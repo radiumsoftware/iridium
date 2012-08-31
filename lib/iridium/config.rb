@@ -7,7 +7,8 @@ module Iridium
     attr_accessor :proxies
     attr_accessor :dependencies
     attr_accessor :scripts
-    attr_accessor :handlebars
+    attr_reader :handlebars
+    attr_reader :minispade
 
     def initialize
       @middleware_stack = MiddlewareStack.new
@@ -15,6 +16,7 @@ module Iridium
       @dependencies = []
       @scripts = []
       @handlebars = ActiveSupport::OrderedOptions.new
+      @minispade = ActiveSupport::OrderedOptions.new
     end
 
     def middleware

@@ -1,4 +1,5 @@
 <%= camelized %>.configure do
   config.minify = false
   config.handlebars.precompile = false
+  config.minispade.module_format = :string
 end

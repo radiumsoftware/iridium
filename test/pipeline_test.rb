@@ -1,6 +1,16 @@
 require 'test_helper'
 
 class PipelineTest < MiniTest::Unit::TestCase
+  def teardown
+    Iridium.application.config.minispade.clear
+    Iridium.application.config.handlebars.clear
+    Iridium.application.config.gzip = false
+    Iridium.application.config.minify = false
+    Iridium.application.config.manifest = false
+
+    super
+  end
+
   def index_file_content
     path = File.expand_path "../../generators/application/app/index.html.erb.tt", __FILE__
 
@@ -48,6 +58,30 @@ class PipelineTest < MiniTest::Unit::TestCase
     content = read "site/application.js"
 
     assert_includes content, %Q{minispade.register('test_app/main'}
+  end
+
+  def tests_compiles_app_js_into_string_minispade_modules
+    Iridium.application.config.minispade.module_format = :string
+
+    create_file "app/javascripts/main.js", "Main = {};"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, %Q{sourceURL=test_app/main}
+  end
+
+  def tests_compiles_app_js_into_modules
+    Iridium.application.config.minispade.module_format = :function
+
+    create_file "app/javascripts/main.js", "FOO"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_match content, /function\(\)\s*{FOO\s*}/m
   end
 
   def test_rewrites_requrires_to_use_minispade
@@ -313,8 +347,6 @@ class PipelineTest < MiniTest::Unit::TestCase
     refute_includes content, "\n"
     assert content.index("VENDOR") < content.index("APP"),
       "Vendor JS must be loaded before app JS!"
-  ensure
-    Iridium.application.config.minify = false
   end
 
   def test_minifies_css
@@ -341,8 +373,6 @@ class PipelineTest < MiniTest::Unit::TestCase
     refute_includes content, "\n"
     assert content.index("VENDOR") < content.index("APP"),
       "Vendor JS must be loaded before app JS!"
-  ensure
-    Iridium.application.config.minify = false
   end
 
   def test_generates_gzip_versions
@@ -354,8 +384,6 @@ class PipelineTest < MiniTest::Unit::TestCase
 
     assert_file "site/application.js"
     assert_file "site/application.js.gz"
-  ensure
-    Iridium.application.config.gzip = false
   end
 
   def test_generates_a_cache_manifest
@@ -370,8 +398,6 @@ class PipelineTest < MiniTest::Unit::TestCase
 
     assert_includes content, "application.js"
     assert_includes content, "images/logo.png"
-  ensure
-    Iridium.application.config.manifest = false
   end
 
   def test_includes_a_cache_manifest
@@ -384,8 +410,6 @@ class PipelineTest < MiniTest::Unit::TestCase
     content = read "site/index.html"
 
     assert_includes content, %q{<html manifest="/cache.manifest">}
-  ensure
-    Iridium.application.config.manifest = false
   end
 
   def test_compiles_yml_files_into_i18n_translations
