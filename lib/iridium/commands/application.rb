@@ -24,6 +24,8 @@ module Iridium
         directory "app"
         directory "site"
         directory "test"
+        directory "vendor"
+
         template "application.rb.tt"
         template "readme.md.tt"
 

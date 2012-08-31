@@ -11,18 +11,20 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos'
 
     assert_file 'todos', 'app'
-    assert_file 'todos', 'app', 'images'
-    assert_file 'todos', 'app', 'stylesheets'
+    assert_file 'todos', 'app', 'assets', 'images'
+    assert_file 'todos', 'app', 'assets', 'stylesheets'
+
     assert_file 'todos', 'app', 'javascripts', 'app.coffee'
     assert_file 'todos', 'app', 'javascripts', 'boot.coffee'
 
     assert_file 'todos', 'app', 'javascripts', 'models'
     assert_file 'todos', 'app', 'javascripts', 'views'
     assert_file 'todos', 'app', 'javascripts', 'controllers'
-    assert_file 'todos', 'app', 'javascripts', 'templates'
 
-    assert_file 'todos', 'app', 'vendor', 'javascripts'
-    assert_file 'todos', 'app', 'vendor', 'stylesheets'
+    assert_file 'todos', 'app', 'templates'
+
+    assert_file 'todos', 'vendor', 'javascripts'
+    assert_file 'todos', 'vendor', 'stylesheets'
 
     assert_file 'todos', 'app', 'locales', 'en.yml'
 
@@ -31,8 +33,7 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos', 'app', 'config', 'test.coffee'
     assert_file 'todos', 'app', 'config', 'initializers'
 
-    assert_file 'todos', 'app', 'public'
-    assert_file 'todos', 'app', 'public', 'index.html.erb'
+    assert_file 'todos', 'app', 'index.html.erb'
 
     assert_file 'todos', 'test', 'integration', 'navigation_test.coffee'
     assert_file 'todos', 'test', 'unit', 'truth_test.coffee'
@@ -56,13 +57,13 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_includes content, 'Todos < Iridium::Application'
 
     assert_includes content, %Q{config.load :minispade}
-    assert_file 'todos', 'app', 'vendor', 'javascripts', 'minispade.js'
+    assert_file 'todos', 'vendor', 'javascripts', 'minispade.js'
 
-    assert_file 'todos', 'app', 'vendor', 'javascripts', 'handlebars.js'
-    assert_file 'todos', 'app', 'vendor', 'javascripts', 'jquery.js'
-    assert_file 'todos', 'app', 'vendor', 'javascripts', 'i18n.js'
+    assert_file 'todos', 'vendor', 'javascripts', 'handlebars.js'
+    assert_file 'todos', 'vendor', 'javascripts', 'jquery.js'
+    assert_file 'todos', 'vendor', 'javascripts', 'i18n.js'
 
-    index_path = destination_root.join('todos', 'app', 'public', 'index.html.erb')
+    index_path = destination_root.join('todos', 'app', 'index.html.erb')
     content = read index_path
 
     assert_includes content, %Q{<script src="/application.js"></script>}
