@@ -59,7 +59,7 @@ input app.app_path do
   # Use the specified vendor order to create a vendor.js file
   match "vendor/javascripts/*.js" do
     ordered_files = app.config.dependencies.collect { |f| "vendor/javascripts/#{f}.js" }
-    ordered_concat ordered_files, "build/vendor.js"
+    concat ordered_files, "build/vendor.js"
   end
 
   # minify and contact lib.js and vendor.js into a single
@@ -67,7 +67,7 @@ input app.app_path do
   match "build/*.js" do
     uglify if app.production?
 
-    ordered_concat ["build/vendor.js", "build/env.js", "build/init.js", "build/lib.js"] , "application.js"
+    concat ["build/vendor.js", "build/env.js", "build/init.js", "build/lib.js"] , "application.js"
   end
 
   # compile all SCSS files into equivalent css file.
