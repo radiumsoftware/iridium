@@ -31,16 +31,14 @@ module Iridium
 
         copy_file "gitignore", ".gitignore"
 
+        directory "config"
+
         if options[:assetfile]
           copy_file "Assetfile"
         end
 
         if options[:deployable]
           template "config.ru.tt"
-        end
-
-        if options[:envs]
-          directory "config"
         end
       end
 

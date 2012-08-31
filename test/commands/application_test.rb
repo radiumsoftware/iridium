@@ -53,6 +53,12 @@ class ApplicationCommandTest < GeneratorTestCase
 
     assert_file 'todos', 'readme.md'
 
+    assert_file 'todos', 'config', 'development.rb'
+    assert_file 'todos', 'config', 'test.rb'
+    assert_file 'todos', 'config', 'production.rb'
+
+    assert_file 'todos', 'config', 'settings.yml'
+
     content = read destination_root.join('todos', 'application.rb')
 
     assert_includes content, 'Todos < Iridium::Application'
