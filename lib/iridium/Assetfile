@@ -69,17 +69,20 @@ input app.root do
   # minify and contact lib.js and vendor.js into a single
   # application.js
   match "build/*.js" do
-    uglify if app.config.minify
+    concat ["build/vendor.js", "build/env.js", "build/init.js", "build/lib.js"] , "application.js"
 
-    ordered_concat ["build/vendor.js", "build/env.js", "build/init.js", "build/lib.js"] , "application.js"
+    if app.config.minify
+      uglify { |path| path }
+    end
   end
 
   # select all stylesheets in the project
   match "build/*.css" do
-    # minifiy CSS when compiling assets for production
-    yui_css if app.config.minifiy
-
     concat ["build/vendor.css", "build/lib.css"], "application.css"
+
+    if app.config.minify
+      yui_css { |path| path }
+    end
   end
 
   # All files in app/public are simpliy copied into the output directory.

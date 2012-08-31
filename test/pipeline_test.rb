@@ -289,16 +289,58 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_equal "bar", read("site/index.html").chomp
   end
 
-  def test_compiles_minifies
+  def test_minifies_js
     Iridium.application.config.minify = true
 
-    create_file "vendor/javascripts/jquery.js", "var jquery = {};"
-    create_file "app/javascripts/app.js", "var MyApp = {};"
+    create_file "app/javascripts/app.js", <<-js
+      var App = function() {
+        console.log("APP");
+      };
+    js
 
-    create_file "app/stylesheets/app.csss", "#foo { color: black; }"
-    create_file "vendor/stylesheets/app.csss", "#foo { color: black; }"
+    create_file "vendor/javascripts/vendor.js", <<-js
+      var vendor = function() {
+        console.log("VENDOR");
+      };
+    js
 
     compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "APP"
+    assert_includes content, "VENDOR"
+    refute_includes content, "\n"
+    assert content.index("VENDOR") < content.index("APP"),
+      "Vendor JS must be loaded before app JS!"
+  ensure
+    Iridium.application.config.minify = false
+  end
+
+  def test_minifies_css
+    Iridium.application.config.minify = true
+
+    create_file "app/stylesheets/app.css", <<-js
+      #APP {
+       new-lines: everywhere;
+      };
+    js
+
+    create_file "vendor/stylesheets/vendor.css", <<-js
+      #VENDOR {
+       new-lines: everywhere;
+      };
+    js
+
+    compile ; assert_file "site/application.css"
+
+    content = read "site/application.css"
+
+    assert_includes content, "APP"
+    assert_includes content, "VENDOR"
+    refute_includes content, "\n"
+    assert content.index("VENDOR") < content.index("APP"),
+      "Vendor JS must be loaded before app JS!"
   ensure
     Iridium.application.config.minify = false
   end
