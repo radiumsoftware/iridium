@@ -20,6 +20,12 @@ class PipelineTest < MiniTest::Unit::TestCase
     create_file "app/index.html.erb", index_file_content
   end
 
+  def test_index_is_copied_over_correctly
+    create_index
+
+    compile ; assert_file "site/index.html"
+  end
+
   def test_combines_js_into_one_file
     create_file "app/javascripts/main.js", "Main = {};"
     create_file "app/javascripts/secondary.js", "Secondary = {};"
@@ -169,15 +175,17 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_concats_vendor_css_before_app_css
-    create_file "app/stylesheets/home.css", "#second-selector"
-    create_file "vendor/bootstrap.css", "#first-selector"
+    create_file "app/stylesheets/home.css", "app"
+    create_file "vendor/stylesheets/bootstrap.css", "vendor"
 
     compile ; assert_file "site/application.css"
 
     content = read "site/application.css"
 
-    assert content.index("#first-selector") < content.index("#second-selector"),
-      "#first-selector should come before #second-selector in compiled css file"
+    assert_includes content, "app"
+    assert_includes content, "vendor"
+    assert content.index("vendor") < content.index("app"),
+      "vendor css should come before app css!"
   end
 
   def tests_copies_assets
@@ -353,7 +361,7 @@ class PipelineTest < MiniTest::Unit::TestCase
         hello: Hallo!
     DE
 
-    create_file "app/vendor/javascripts/i18n.js", "I18n = {};"
+    create_file "vendor/javascripts/i18n.js", "I18n = {};"
 
     compile ; assert_file "site/application.js"
 

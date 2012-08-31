@@ -1,6 +1,6 @@
 output app.site_path
 
-input app.app_path do
+input app.root do
   # compile all erb templates. You can access "app" 
   # inside your templates like this: <% app.config %>
   match "**/*.erb" do
@@ -11,20 +11,30 @@ input app.app_path do
     coffee_script
   end
 
+  # Use the specified vendor order to create a vendor.js file
+  match "vendor/javascripts/*.js" do
+    ordered_files = app.config.dependencies.collect { |f| "vendor/javascripts/#{f}.js" }
+    concat ordered_files, "build/vendor.js"
+  end
+
+  match "vendor/stylesheets/*.css" do
+    concat "build/vendor.css"
+  end
+
   # Put environment specific files in the pipeline
-  match "config/#{app.env}.js" do
+  match "app/config/#{app.env}.js" do
     iife
     concat "build/env.js"
   end
 
   # Compile all the translations into a single dictionary
-  match "locales/**/*.yml" do
-    i18n "config/initializers/i18n_dictionaries.js"
+  match "app/locales/**/*.yml" do
+    i18n "app/config/initializers/i18n_dictionaries.js"
   end
 
   # Compile all initializers into a single init.js to be concatentated
   # later
-  match "config/initializers/**/*.js" do
+  match "app/config/initializers/**/*.js" do
     iife
     concat "build/init.js"
   end
@@ -38,18 +48,22 @@ input app.app_path do
   # app/vendor/javascripts/jquery.min.js -> minispade.require('jquery');
   # app/javascripts/boot.js -> minispade.require('app_name/boot');
   # app/javascripts/views/main.js -> minispade.require('app_name/views/main');
-  match "javascripts/**/*.js" do
+  match "app/javascripts/**/*.js" do
     minispade :rewrite_requires => true, :module_id_generator => proc { |input|
-      input.path.gsub(/javascripts\//, "#{app.class.to_s.demodulize.underscore}/").gsub(/\.js$/, '')
+      input.path.gsub("app/javascripts/", "#{app.class.to_s.demodulize.underscore}/").gsub(/\.js$/, '')
     }
 
     concat "build/lib.js"
   end
 
-  # Use the specified vendor order to create a vendor.js file
-  match "vendor/javascripts/*.js" do
-    ordered_files = app.config.dependencies.collect { |f| "vendor/javascripts/#{f}.js" }
-    ordered_concat ordered_files, "build/vendor.js"
+  # compile all SCSS files into equivalent css file.
+  # SCSS partials are not included in compiled output.
+  match /app\/stylesheets\/(?:.+\/)?[^_].+\.s[ca]ss/ do
+    sass
+  end
+
+  match "app/stylesheets/**/*.css" do
+    concat "build/lib.css"
   end
 
   # minify and contact lib.js and vendor.js into a single
@@ -60,46 +74,45 @@ input app.app_path do
     ordered_concat ["build/vendor.js", "build/env.js", "build/init.js", "build/lib.js"] , "application.js"
   end
 
-  # compile all SCSS files into equivalent css file.
-  # SCSS partials are not included in compiled output.
-  match /stylesheets\/(?:.+\/)?[^_].+\.s[ca]ss/ do
-    sass
-  end
-
   # select all stylesheets in the project
-  match "{vendor/stylesheets,stylesheets}/**/*.css" do
+  match "build/*.css" do
     # minifiy CSS when compiling assets for production
     yui_css if app.production?
 
-    # finally concatenate all stylesheets into a single
-    # application.css file.
-    concat_css "application.css"
+    concat ["build/vendor.css", "build/lib.css"], "application.css"
   end
 
   # All files in app/public are simpliy copied into the output directory.
   # Example:
   # app/assets/images/logo.png -> site/images/logo.png
-  match "assets/**/*" do
+  match "app/assets/**/*" do
     copy do |input|
-      input.sub(/assets\//, '')
+      input.sub "app/assets/", ""
     end
   end
 
-  # All images are moved int
-  match "images/**/*" do
-    copy
+  # copy the index html
+  match "app/index.html" do
+    copy do |input|
+      input.sub(/app\//, '')
+    end
   end
 
   # Now prepare the handlebars templates by transforming them
   # into script tags which can be injected to index.html
-  match "templates/**/*.{handlebars,hbs}" do
+  match "app/templates/**/*.{handlebars,hbs}" do
     handlebars_script_tag :template_name => proc { |input|
       input.sub("templates/", '').sub(File.extname(input), '')
     }
   end
 
-  inject "templates/**/*.{handlebars,hbs}" do
+  inject "app/templates/**/*.{handlebars,hbs}" do
     insert_script_tag "index.html"
+  end
+
+  # All images are moved int
+  match "app/assets/**/*" do
+    copy { |path| path.sub("assets/", "") }
   end
 
   if app.production?
