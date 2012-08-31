@@ -2,7 +2,7 @@ require 'test_helper'
 
 class PipelineTest < MiniTest::Unit::TestCase
   def index_file_content
-    path = File.expand_path "../../generators/application/app/public/index.html.erb.tt", __FILE__
+    path = File.expand_path "../../generators/application/app/index.html.erb.tt", __FILE__
 
     ERB.new(File.read(path)).result(binding)
   end
@@ -17,7 +17,13 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def create_index
-    create_file "app/public/index.html.erb", index_file_content
+    create_file "app/index.html.erb", index_file_content
+  end
+
+  def test_index_is_copied_over_correctly
+    create_index
+
+    compile ; assert_file "site/index.html"
   end
 
   def test_combines_js_into_one_file
@@ -128,119 +134,74 @@ class PipelineTest < MiniTest::Unit::TestCase
     refute_includes content, %Q{#partial}
   end
 
-  def tests_compiles_less
-    less_css = <<-LESS
-    @color: #4D926F;
+  def tests_compiles_handlebars_into_js_file
+    create_file "app/index.html", index_file_content
+    create_file "app/templates/home.handlebars", "{{name}}"
 
-    #header {
-      color: @color;
-    }
-    LESS
+    compile ; assert_file "site/index.html"
 
-    create_file "app/stylesheets/app.less", less_css
+    content = read "site/index.html"
 
-    compile ; assert_file "site/application.css"
-
-    content = read "site/application.css"
-
-    assert_includes content, %Q{color: #4d926f;}
+    assert_match content, /<head>(.+)<\/head>/m, "<head> tag incorrect!"
+    assert_equal 1, content.scan("<html>").size, "HTML double appended!"
+    assert_includes content, %Q{<script type="text/x-handlebars" data-template-name="home">}
   end
 
-  def tests_compiles_handle_bars_into_js_file
-    create_file "app/javascripts/templates/home.handlebars", "{{#name}}"
+  def test_compiling_handle_bars_does_not_erase_existing_head_content
+    existing_head_tag = index_file_content.match(/<head>(.+)<\/head>/m)[1]
 
-    compile ; assert_file "site/application.js"
+    refute_empty existing_head_tag
 
-    content = read "site/application.js"
+    create_file "app/index.html", index_file_content
+    create_file "app/templates/home.handlebars", "{{name}}"
 
-    assert_includes content, "{{#name}}"
-    assert_includes content, "Ember.TEMPLATES['home']"
+    compile ; assert_file "site/index.html"
+
+    content = read "site/index.html"
+
+    assert_includes content, existing_head_tag, "Existing content was erased!"
+    assert_includes content, %Q{<script type="text/x-handlebars" data-template-name="home">}
   end
 
-  def tests_compiles_hbs_into_js_file
-    create_file "app/javascripts/templates/home.hbs", "{{#name}}"
+  def tests_maps_path_handlebars_template_name
+    create_file "app/index.html", index_file_content
+    create_file "app/templates/dashboard/feed/header.handlebars", "{{name}}"
 
-    compile ; assert_file "site/application.js"
+    compile ; assert_file "site/index.html"
 
-    content = read "site/application.js"
+    content = read "site/index.html"
 
-    assert_includes content, "{{#name}}"
-    assert_includes content, "Ember.TEMPLATES['home']"
-  end
-
-  def tests_compiles_handle_bars_into_js_file_including_subfolder
-    create_file "app/javascripts/templates/subfolder/home.handlebars", "{{#name}}"
-
-    compile ; assert_file "site/application.js"
-
-    content = read "site/application.js"
-
-    assert_includes content, "{{#name}}"
-    assert_includes content, "Ember.TEMPLATES['subfolder/home']"
-  end
-
-
-  def tests_compiles_handle_bars_into_js_file_including_multiple_subfolders
-    create_file "app/javascripts/templates/multiple/subfolders/home.handlebars", "{{#name}}"
-
-    compile ; assert_file "site/application.js"
-
-    content = read "site/application.js"
-
-    assert_includes content, "{{#name}}"
-    assert_includes content, "Ember.TEMPLATES['multiple/subfolders/home']"
+    assert_includes content, %Q{<script type="text/x-handlebars" data-template-name="dashboard/feed/header">}
   end
 
   def test_concats_vendor_css_before_app_css
-    create_file "app/stylesheets/home.css", "#second-selector"
-    create_file "app/stylesheets/vendor/bootstrap.css", "#first-selector"
+    create_file "app/stylesheets/home.css", "app"
+    create_file "vendor/stylesheets/bootstrap.css", "vendor"
 
     compile ; assert_file "site/application.css"
 
     content = read "site/application.css"
 
-    assert content.index("#first-selector") < content.index("#second-selector"),
-      "#first-selector should come before #second-selector in compiled css file"
+    assert_includes content, "app"
+    assert_includes content, "vendor"
+    assert content.index("vendor") < content.index("app"),
+      "vendor css should come before app css!"
   end
 
-  def test_concats_vendor_css_ordered_by_name
-    create_file "app/stylesheets/vendor/z_file.css", "#second-selector"
-    create_file "app/stylesheets/vendor/a_file.css", "#first-selector"
-
-    compile ; assert_file "site/application.css"
-
-    content = read "site/application.css"
-
-    assert content.index("#first-selector") < content.index("#second-selector"),
-      "#first-selector should come before #second-selector in compiled css file"
-  end
-
-  def test_concats_css_ordered_by_name
-    create_file "app/stylesheets/z_file.css", "#second-selector"
-    create_file "app/stylesheets/a_file.css", "#first-selector"
-
-    compile ; assert_file "site/application.css"
-
-    content = read "site/application.css"
-
-    assert content.index("#first-selector") < content.index("#second-selector"),
-      "#first-selector should come before #second-selector in compiled css file"
-  end
-
-  def tests_copies_public_files_into_public
-    create_file "app/public/faye.min.js", "window.faye = {}"
+  def tests_copies_assets
+    create_file "app/assets/faye.min.js", "window.faye = {}"
 
     compile ; assert_file "site/faye.min.js"
   end
 
-  def tests_copies_image_files_into_public
-    create_file "app/images/logo.png", "png-content"
+  def test_asset_directory_is_preserved
+    create_file "app/assets/images/logo.png", "png content"
 
     compile ; assert_file "site/images/logo.png"
   end
 
   def tests_provides_the_server_for_erb_templates
-    create_file "app/public/index.html.erb", <<-str
+    create_file "app/index.html.erb", <<-str
     <%= app.config %>
     str
 
@@ -248,8 +209,8 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_compiles_vendor_javascripts_when_nothing_is_specified
-    create_file "app/vendor/javascripts/file1.js", "var file1 = {};"
-    create_file "app/vendor/javascripts/file2.js", "var file2 = {};"
+    create_file "vendor/javascripts/file1.js", "var file1 = {};"
+    create_file "vendor/javascripts/file2.js", "var file2 = {};"
 
     compile ; assert_file "site/application.js"
 
@@ -260,8 +221,8 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_specified_vendor_dependencies_come_before_unspecified_dependencies
-    create_file "app/vendor/javascripts/file1.js", "var file1 = {};"
-    create_file "app/vendor/javascripts/file2.js", "var file2 = {};"
+    create_file "vendor/javascripts/file1.js", "var file1 = {};"
+    create_file "vendor/javascripts/file2.js", "var file2 = {};"
 
     Iridium.application.config.load :file2
 
@@ -276,9 +237,9 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_unspecifed_dependencies_come_after_specified_dependencies
-    create_file "app/vendor/javascripts/jquery.js", "var jquery = {};"
-    create_file "app/vendor/javascripts/jquery_ui.js", "var jqui = {};"
-    create_file "app/vendor/javascripts/underscore.js", "var underscore = {};"
+    create_file "vendor/javascripts/jquery.js", "var jquery = {};"
+    create_file "vendor/javascripts/jquery_ui.js", "var jqui = {};"
+    create_file "vendor/javascripts/underscore.js", "var underscore = {};"
 
     Iridium.application.config.load :jquery
     Iridium.application.config.load :jquery_ui
@@ -298,7 +259,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_vendored_code_comes_before_app_code
-    create_file "app/vendor/javascripts/jquery.js", "var jquery = {};"
+    create_file "vendor/javascripts/jquery.js", "var jquery = {};"
     create_file "app/javascripts/app.js", "var MyApp = {};"
 
     compile ; assert_file "site/application.js"
@@ -324,22 +285,68 @@ class PipelineTest < MiniTest::Unit::TestCase
     create_file "app/foos/index.html", "bar"
 
     compile ; assert_file "site/index.html"
+
+    assert_equal "bar", read("site/index.html").chomp
   end
 
-  def test_compiles_in_production_env
-    ENV['IRIDIUM_ENV'] = 'production'
+  def test_minifies_js
+    Iridium.application.config.minify = true
 
-    create_file "app/vendor/javascripts/jquery.js", "var jquery = {};"
-    create_file "app/javascripts/app.js", "var MyApp = {};"
-    create_file "app/stylesheets/app.csss", "#foo { color: black; }"
+    create_file "app/javascripts/app.js", <<-js
+      var App = function() {
+        console.log("APP");
+      };
+    js
+
+    create_file "vendor/javascripts/vendor.js", <<-js
+      var vendor = function() {
+        console.log("VENDOR");
+      };
+    js
 
     compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "APP"
+    assert_includes content, "VENDOR"
+    refute_includes content, "\n"
+    assert content.index("VENDOR") < content.index("APP"),
+      "Vendor JS must be loaded before app JS!"
   ensure
-    ENV['IRIDIUM_ENV'] = 'test'
+    Iridium.application.config.minify = false
   end
 
-  def test_generates_gzip_versions_in_production
-    ENV['IRIDIUM_ENV'] = 'production'
+  def test_minifies_css
+    Iridium.application.config.minify = true
+
+    create_file "app/stylesheets/app.css", <<-js
+      #APP {
+       new-lines: everywhere;
+      };
+    js
+
+    create_file "vendor/stylesheets/vendor.css", <<-js
+      #VENDOR {
+       new-lines: everywhere;
+      };
+    js
+
+    compile ; assert_file "site/application.css"
+
+    content = read "site/application.css"
+
+    assert_includes content, "APP"
+    assert_includes content, "VENDOR"
+    refute_includes content, "\n"
+    assert content.index("VENDOR") < content.index("APP"),
+      "Vendor JS must be loaded before app JS!"
+  ensure
+    Iridium.application.config.minify = false
+  end
+
+  def test_generates_gzip_versions
+    Iridium.application.config.gzip = true
 
     create_file "app/javascripts/app.js", "var fooBar = {};"
 
@@ -348,14 +355,14 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_file "site/application.js"
     assert_file "site/application.js.gz"
   ensure
-    ENV['IRIDIUM_ENV'] = 'test'
+    Iridium.application.config.gzip = false
   end
 
   def test_generates_a_cache_manifest
-    ENV['IRIDIUM_ENV'] = 'production'
+    Iridium.application.config.manifest = true
 
     create_file "app/javascripts/app.js", "var MyApp = {};"
-    create_file "app/images/logo.png", "image content"
+    create_file "app/assets/images/logo.png", "image content"
 
     compile ; assert_file "site/cache.manifest"
 
@@ -364,7 +371,21 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "application.js"
     assert_includes content, "images/logo.png"
   ensure
-    ENV['IRIDIUM_ENV'] = 'test'
+    Iridium.application.config.manifest = false
+  end
+
+  def test_includes_a_cache_manifest
+    Iridium.application.config.manifest = true
+
+    create_index
+
+    compile ; assert_file "site/index.html"
+
+    content = read "site/index.html"
+
+    assert_includes content, %q{<html manifest="/cache.manifest">}
+  ensure
+    Iridium.application.config.manifest = false
   end
 
   def test_compiles_yml_files_into_i18n_translations
@@ -396,7 +417,7 @@ class PipelineTest < MiniTest::Unit::TestCase
         hello: Hallo!
     DE
 
-    create_file "app/vendor/javascripts/i18n.js", "I18n = {};"
+    create_file "vendor/javascripts/i18n.js", "I18n = {};"
 
     compile ; assert_file "site/application.js"
 
@@ -448,19 +469,6 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes content, %q{<script src="http://jquery.com/jquery.js"></script>}
   end
 
-  def test_includes_a_cache_manifest_in_production
-    ENV['IRIDIUM_ENV'] = 'production'
-
-    create_index
-
-    compile ; assert_file "site/index.html"
-
-    content = read "site/index.html"
-
-    assert_includes content, %q{<html manifest="/cache.manifest">}
-  ensure
-    ENV['IRIDIUM_ENV'] = 'test'
-  end
 
   def test_pipeline_includes_env_specific_js_code
     ENV['IRIDIUM_ENV'] = 'foo'
@@ -493,7 +501,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_build_order
-    create_file "app/vendor/javascripts/foo.js", "VENDOR"
+    create_file "vendor/javascripts/foo.js", "VENDOR"
     create_file "app/config/initializers/bar.js", "INITIALIZER"
     create_file "app/config/test.js", "ENV"
     create_file "app/javascripts/app.js", "APP"

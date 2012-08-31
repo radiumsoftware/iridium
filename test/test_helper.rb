@@ -29,10 +29,11 @@ class MiniTest::Unit::TestCase
     Iridium.application = TestApp.instance
     Iridium.application.site_path = Iridium.application.root.join("site")
 
-    FileUtils.mkdir_p Iridium.application.root.join("app")
-    FileUtils.mkdir_p Iridium.application.root.join("site")
-    FileUtils.mkdir_p Iridium.application.root.join("tmp")
-    FileUtils.mkdir_p Iridium.application.root.join("test")
+    FileUtils.mkdir_p Iridium.application.app_path
+    FileUtils.mkdir_p Iridium.application.site_path
+    FileUtils.mkdir_p Iridium.application.tmp_path
+    FileUtils.mkdir_p Iridium.application.vendor_path.join("javascripts")
+    FileUtils.mkdir_p Iridium.application.vendor_path.join("stylesheets")
     FileUtils.mkdir_p Iridium.application.root.join('test', 'support')
 
     ENV['IRIDIUM_ENV'] = 'test'
@@ -42,11 +43,12 @@ class MiniTest::Unit::TestCase
     if Iridium.application
       Iridium.application.config.scripts.clear
       Iridium.application.config.dependencies.clear
-      FileUtils.rm_rf Iridium.application.root.join("app")
-      FileUtils.rm_rf Iridium.application.root.join("Assetfile") if File.exists?(Iridium.application.root.join('Assetfile'))
-      FileUtils.rm_rf Iridium.application.root.join("site")
-      FileUtils.rm_rf Iridium.application.root.join("tmp")
+      FileUtils.rm_rf Iridium.application.app_path
+      FileUtils.rm_rf Iridium.application.site_path
+      FileUtils.rm_rf Iridium.application.tmp_path
+      FileUtils.rm_rf Iridium.application.vendor_path
       FileUtils.rm_rf Iridium.application.root.join("test")
+      FileUtils.rm_rf Iridium.application.root.join("Assetfile") if File.exists?(Iridium.application.root.join('Assetfile'))
     end
     Iridium.application = nil
   end

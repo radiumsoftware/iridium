@@ -14,13 +14,18 @@ require 'execjs'
 require 'rack/rewrite'
 require 'rake-pipeline'
 require 'rake-pipeline/middleware'
+require 'rake-pipeline/injection_matcher'
+require 'rake-pipeline/injection_filter'
+require 'rake-pipeline/iridium_helper'
+
 require 'rake-pipeline-web-filters'
 require 'rake-pipeline-web-filters/iife_filter'
+require 'rake-pipeline-web-filters/handlebars_script_tag_filter'
+require 'rake-pipeline-web-filters/insert_script_tag_filter'
 require 'rake-pipeline-web-filters/ordered_contact_helper'
 require 'rake-pipeline-web-filters/erb_filter'
 require 'rake-pipeline-web-filters/concat_css_filter'
 require 'rake-pipeline-web-filters/i18n_filter'
-require 'rake-pipeline-web-filters/iridium_dsl_helper'
 
 require 'iridium/reverse_proxy'
 
@@ -60,6 +65,8 @@ require 'iridium/commands/generate'
 
 require 'iridium/cli'
 
+require 'iridium/handlebars_compiler'
+
 module Iridium
   class MissingFile < StandardError ; end
   class MissingTestHelper < StandardError ; end
@@ -76,6 +83,10 @@ module Iridium
 
     def js_lib_path
       File.expand_path("../iridium/casperjs/lib", __FILE__)
+    end
+
+    def vendor_path
+      Pathname.new(File.expand_path("../../vendor", __FILE__))
     end
 
     def load!

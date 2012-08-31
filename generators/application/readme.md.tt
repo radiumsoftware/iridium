@@ -12,47 +12,51 @@ Default directory structure:
 
 ```
 ├── app
+│   ├── assets
+│   │   └── images
 │   ├── config
 │   │   ├── development.coffee
 │   │   ├── initializers
 │   │   ├── production.coffee
 │   │   └── test.coffee
-│   ├── images
+│   ├── index.html.erb
 │   ├── javascripts
 │   │   ├── app.coffee
 │   │   ├── boot.coffee
 │   │   ├── controllers
 │   │   ├── models
-│   │   ├── templates
 │   │   └── views
 │   ├── locales
 │   │   └── en.yml
-│   ├── public
-│   │   └── index.html.erb
 │   ├── stylesheets
 │   │   └── app.scss
-│   └── vendor
-│       ├── javascripts
-│       │   ├── handlebars.js
-│       │   ├── i18n.js
-│       │   ├── jquery.js
-│       │   └── minispade.js
-│       └── stylesheets
+│   └── templates
 ├── application.rb
+├── config
+│   ├── development.rb
+│   ├── production.rb
+│   ├── settings.yml
+│   └── test.rb
 ├── readme.md
-├── site
-└── test
-    ├── controllers
-    ├── integration
-    │   └── navigation_test.coffee
-    ├── models
-    ├── support
-    │   ├── helper.coffee
-    │   └── sinon.js
-    ├── templates
-    ├── unit
-    │   └── truth_test.coffee
-    └── views
+├── test
+│   ├── controllers
+│   ├── integration
+│   │   └── navigation_test.coffee
+│   ├── models
+│   ├── support
+│   │   ├── helper.coffee
+│   │   └── sinon.js
+│   ├── templates
+│   ├── unit
+│   │   └── truth_test.coffee
+│   └── views
+└── vendor
+    ├── javascripts
+    │   ├── handlebars.js
+    │   ├── i18n.js
+    │   ├── jquery.js
+    │   └── minispade.js
+    └── stylesheets
 ```
 
 ## Up and Running
@@ -81,9 +85,9 @@ modules. All the source files needed to build your application live in `app`.
 
 * `app/stylesheets`: all individual SCSS files.
 
-* `app/public`: all files are copied into the generated `site` folder
+* `app/assets`: all files are copied into the generated `site` folder
 
-* `app/images`: all files are copied into the generated `site` folder
+* `app/templates`: Handlebars templates live here.
 
 * `vendor/javascripts`: Javascript or Coffeescript files that you want to include
   in your pipeline. These files are accessible via `requie`

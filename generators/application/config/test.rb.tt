@@ -1,3 +1,4 @@
 <%= camelized %>.configure do
-
+  config.minify = false
+  config.handlebars.precompile = false
 end

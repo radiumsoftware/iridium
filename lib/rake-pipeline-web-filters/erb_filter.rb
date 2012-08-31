@@ -2,15 +2,15 @@ module Rake::Pipeline::Web::Filters
   class ErbFilter < Rake::Pipeline::Filter
     include Rake::Pipeline::Web::Filters::FilterWithDependencies
 
-    def initialize(options = {}, &block)
+    def initialize(binding, &block)
+      @binding = binding
       block ||= proc { |input| input.gsub(/\.erb$/, '') }
       super(&block)
-      @options = options
     end
 
     def generate_output(inputs, output)
       inputs.each do |input|
-        output.write ERB.new(input.read).result(@options[:binding])
+        output.write ERB.new(input.read).result(@binding)
       end
     end
 

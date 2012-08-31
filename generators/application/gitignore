@@ -1,3 +1,4 @@
 .sass-cache/
 tmp/
 site/
+config/settings.yml

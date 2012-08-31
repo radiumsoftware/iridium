@@ -24,10 +24,14 @@ module Iridium
         directory "app"
         directory "site"
         directory "test"
+        directory "vendor"
+
         template "application.rb.tt"
         template "readme.md.tt"
 
         copy_file "gitignore", ".gitignore"
+
+        directory "config"
 
         if options[:assetfile]
           copy_file "Assetfile"
@@ -35,10 +39,6 @@ module Iridium
 
         if options[:deployable]
           template "config.ru.tt"
-        end
-
-        if options[:envs]
-          directory "config"
         end
       end
 
