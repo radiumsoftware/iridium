@@ -1,5 +1,16 @@
 <%= camelized %>.configure do
-  config.minify = true
-  config.handlebars.precompile = true
-  config.minispade.module_format = :function
+  # Minify JS and CSS
+  config.minify = false
+
+  # Generate GZip version of files along with regular version
+  config.gzip = true
+
+  # Generate an HTML5 Cache Manifest for offline support
+  config.manifest = true
+
+  # Precompile handlebars templates
+  config.handlebars.precompile = false
+
+  # Module format for minispade: :string or :function
+  config.minispade.module_format = :string
 end
