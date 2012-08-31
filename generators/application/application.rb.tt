@@ -1,3 +1,21 @@
 class <%= camelized %> < Iridium::Application
+  # Specify vendor load order. Files will be concatenated in the
+  # declared order. Undeclared files will be concatentated after
+  # all declared files
   config.load :minispade
+
+  # Enable a proxy to an API. You can use this to get around CORS
+  # or use it for authentication hidding.
+  #
+  # config.proxy '/api', 'http://my.api.com'
+
+  # You can customize the middleware chain. It follows the Rack::Builder
+  # api.
+  #
+  # config.middleware.use MyCustomMiddleware
+
+  # You can add a middleware that adds a cookie to all request. This
+  # is especially useful when the cookie is set by an external service
+  #
+  # config.add_cookie 'user-api-token', 'foo-bar'
 end
