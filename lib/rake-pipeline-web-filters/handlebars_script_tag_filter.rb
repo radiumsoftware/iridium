@@ -11,9 +11,9 @@ module Rake::Pipeline::Web::Filters
     def generate_output(inputs, output)
       inputs.each do |input|
         name = @options[:template_name].call input.path
-        output.write %Q{<script type="text/x-handlebars" data-template-name="#{name}">}
+        output.write %Q{<script type="text/x-handlebars" data-template-name="#{name}">\n}
         output.write input.read
-        output.write "</script>"
+        output.write "</script>\n"
       end
     end
   end

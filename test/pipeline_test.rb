@@ -154,6 +154,24 @@ class PipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/index.html"
 
+    assert_match content, /<head>(.+)<\/head>/m, "<head> tag incorrect!"
+    assert_equal 1, content.scan("<html>").size, "HTML double appended!"
+    assert_includes content, %Q{<script type="text/x-handlebars" data-template-name="home">}
+  end
+
+  def test_compiling_handle_bars_does_not_erase_existing_head_content
+    existing_head_tag = index_file_content.match(/<head>(.+)<\/head>/m)[1]
+
+    refute_empty existing_head_tag
+
+    create_file "app/public/index.html", index_file_content
+    create_file "app/templates/home.handlebars", "{{name}}"
+
+    compile ; assert_file "site/index.html"
+
+    content = read "site/index.html"
+
+    assert_includes content, existing_head_tag, "Existing content was erased!"
     assert_includes content, %Q{<script type="text/x-handlebars" data-template-name="home">}
   end
 

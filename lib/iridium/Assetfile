@@ -4,9 +4,8 @@ input app.app_path do
   # compile all erb templates. You can access "app" 
   # inside your templates like this: <% app.config %>
   match "**/*.erb" do
-    erb :binding => binding
+    erb binding
   end
-
 
   match "**/*.coffee" do
     coffee_script
