@@ -1,17 +1,19 @@
 module Rake::Pipeline::Web::Filters
   class InjectionMatcher < Rake::Pipeline::Matcher
-    def target=(value)
-      @target = value
+    # Allow every file
+    def eligible_input_files
+      input_files
     end
 
-    def eligible_input_files
+    # Filters will use instead to connect inputs
+    def globbed_files
       input_files.select do |file|
-        file.path =~ @pattern || file.path == @target
+        file.path =~ @pattern
       end
     end
   end
 
-  class InsertScriptTagFilter < Rake::Pipeline::Filter
+  class InjectionFilter < Rake::Pipeline::Filter
     def initialize(target, &block)
       @target = target
       block = proc { target }
@@ -19,7 +21,14 @@ module Rake::Pipeline::Web::Filters
     end
 
     def generate_output(inputs, output)
+      # Since everything goes through here we need to asset
+      # that we actually have files to work with
+      return if inputs_to_inject(inputs).empty?
+
+      # Same thing as here. The target may have only been built
+      # by a previous filter that was no invoked in this build.
       target = target_from_inputs(inputs)
+      return unless target
 
       original_content = target_from_inputs(inputs).read
 
@@ -30,13 +39,17 @@ module Rake::Pipeline::Web::Filters
         # will contain the input file
       end
 
-      script_tags = inputs_to_inject(inputs).map(&:read).join("\n")
+      inject inputs, original_content, output
+    end
 
-      output.write original_content.gsub(%r{<head>(.+)</head>}m, "<head>\\1#{script_tags}</head>")
+    def inject(inputs, content, output)
+      output.write content
     end
 
     def inputs_to_inject(inputs)
-      inputs.reject { |input| input.path == @target }
+      globbed_files = pipeline.globbed_files.map(&:path)
+
+      inputs.select { |input| globbed_files.find input.path }
     end
 
     def target_from_inputs(inputs)
@@ -44,16 +57,24 @@ module Rake::Pipeline::Web::Filters
     end
   end
 
-  module PipelineHelpers
-    def insert_script_tag(glob, target)
-      matcher = pipeline.copy Rake::Pipeline::Web::Filters::InjectionMatcher do
-        filter Rake::Pipeline::Web::Filters::InsertScriptTagFilter, target
-      end
+  class InsertScriptTagFilter < InjectionFilter
+    def inject(inputs, source, output)
+      script_tags = inputs_to_inject(inputs).map(&:read).join("\n")
 
+      output.write source.gsub(%r{<head>(.+)</head>}m, "<head>\\1#{script_tags}</head>")
+    end
+  end
+
+  module PipelineHelpers
+    def inject(glob, &block)
+      matcher = pipeline.copy InjectionMatcher, &block
       matcher.glob = glob
-      matcher.target = target
       pipeline.add_filter matcher
       matcher
+    end
+
+    def insert_script_tag(target)
+      filter Rake::Pipeline::Web::Filters::InsertScriptTagFilter, target
     end
   end
 end

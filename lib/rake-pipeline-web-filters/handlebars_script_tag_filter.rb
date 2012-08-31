@@ -2,8 +2,8 @@ module Rake::Pipeline::Web::Filters
   class HandlebarsScriptTagFilter < Rake::Pipeline::Filter
     def initialize(options={}, &block)
       # Convert .handlebars file extensions to .js
-      block ||= proc { |input| "#{input}.script_tag" }
-      options[:template_name] ||= proc { |input| input.sub(/handlebars|hbs/, '') }
+      block ||= proc { |input| input }
+      options[:template_name] ||= proc { |input| input.sub(File.extname(input.path), '') }
       super(&block)
       @options = options
     end

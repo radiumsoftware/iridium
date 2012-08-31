@@ -102,7 +102,9 @@ input app.app_path do
     }
   end
 
-  insert_script_tag "**/*.script_tag", "index.html"
+  inject "templates/**/*.{handlebars,hbs}" do
+    insert_script_tag "index.html"
+  end
 
   if app.production?
     match "**/*" do
