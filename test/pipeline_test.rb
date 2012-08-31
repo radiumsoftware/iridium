@@ -44,6 +44,30 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes content, %Q{minispade.register('test_app/main'}
   end
 
+  def tests_compiles_app_js_into_string_minispade_modules
+    create_file "app/javascripts/main.js", "Main = {};"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, %Q{sourceURL=test_app/main}
+  end
+
+  def tests_compiles_app_js_into_function_minispade_modules_when_in_production
+    ENV['IRIDIUM_ENV'] = 'production'
+
+    create_file "app/javascripts/main.js", "Main = {};"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, %Q{function(){Main={}}}
+  ensure
+    ENV['IRIDIUM_ENV'] = 'test'
+  end
+
   def test_rewrites_requrires_to_use_minispade
     create_file "app/javascripts/main.js", "require('foo');"
 
