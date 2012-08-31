@@ -45,9 +45,8 @@ input app.root do
   # becomes modules inside your application namespace.
   #
   # Examples:
-  # app/vendor/javascripts/jquery.min.js -> minispade.require('jquery');
-  # app/javascripts/boot.js -> minispade.require('app_name/boot');
-  # app/javascripts/views/main.js -> minispade.require('app_name/views/main');
+  # app/javascripts/boot.js -> require('app_name/boot');
+  # app/javascripts/views/main.js -> require('app_name/views/main');
   match "app/javascripts/**/*.js" do
     minispade :rewrite_requires => true, :module_id_generator => proc { |input|
       input.path.gsub("app/javascripts/", "#{app.class.to_s.demodulize.underscore}/").gsub(/\.js$/, '')
