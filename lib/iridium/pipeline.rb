@@ -13,12 +13,13 @@ module Iridium
       end
     end
 
-    attr_accessor :app_path, :site_path, :tmp_path
+    attr_accessor :app_path, :site_path, :tmp_path, :vendor_path
 
     def initialize
       @app_path = root.join 'app'
       @site_path = root.join 'site'
       @tmp_path = root.join 'tmp'
+      @vendor_path = root.join 'vendor'
     end
 
     def assetfile

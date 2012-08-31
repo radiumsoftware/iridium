@@ -85,6 +85,10 @@ module Iridium
       File.expand_path("../iridium/casperjs/lib", __FILE__)
     end
 
+    def vendor_path
+      Pathname.new(File.expand_path("../../vendor", __FILE__))
+    end
+
     def load!
       return if Iridium.application
 

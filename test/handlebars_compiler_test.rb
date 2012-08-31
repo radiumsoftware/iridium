@@ -3,7 +3,7 @@ require 'stringio'
 
 class HandlebarsCompilerTest < MiniTest::Unit::TestCase
   def handlebars_path
-    File.expand_path '../fixtures/handlebars.js', __FILE__
+    Iridium.vendor_path.join('handlebars.js')
   end
 
   def source

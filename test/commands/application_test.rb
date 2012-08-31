@@ -12,7 +12,8 @@ class ApplicationCommandTest < GeneratorTestCase
 
     assert_file 'todos', 'app'
     assert_file 'todos', 'app', 'assets', 'images'
-    assert_file 'todos', 'app', 'assets', 'stylesheets'
+
+    assert_file 'todos', 'app', 'stylesheets', 'app.scss'
 
     assert_file 'todos', 'app', 'javascripts', 'app.coffee'
     assert_file 'todos', 'app', 'javascripts', 'boot.coffee'

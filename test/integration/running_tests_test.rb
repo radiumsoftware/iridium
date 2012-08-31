@@ -3,7 +3,7 @@ require 'iridium/commands/test'
 
 class RunningTestsTest < MiniTest::Unit::TestCase
   def index_file_content
-    path = File.expand_path "../../../generators/application/app/public/index.html.erb.tt", __FILE__
+    path = File.expand_path "../../../generators/application/app/index.html.erb.tt", __FILE__
 
     ERB.new(File.read(path)).result(binding)
   end
@@ -18,8 +18,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def setup
-    Iridium.application = TestApp.instance
-    Iridium.application.config.dependencies.clear
+    super
+
     Iridium.application.config.load :minispade
 
     create_file "app/javascripts/boot.js", <<-file
@@ -32,24 +32,11 @@ class RunningTestsTest < MiniTest::Unit::TestCase
       window.AppLoaded = true;
     file
 
-    FileUtils.mkdir_p Iridium.application.root.join "test", "support"
-
-    FileUtils.mkdir_p Iridium.application.root.join "app", "vendor", "javascripts"
-
-    File.open Iridium.application.root.join("app", "vendor", "javascripts", "minispade.js"), "w" do |file|
-      file.puts File.read(File.expand_path('../../fixtures/minispade.js', __FILE__))
+    File.open Iridium.application.vendor_path.join("javascripts", "minispade.js"), "w" do |file|
+      file.puts File.read(Iridium.vendor_path.join("minispade.js"))
     end
 
-    create_file "app/public/index.html.erb", index_file_content
-  end
-
-  def teardown
-    Iridium.application.config.dependencies.clear
-    FileUtils.rm_rf Iridium.application.root.join("app")
-    FileUtils.rm_rf Iridium.application.root.join("site")
-    FileUtils.rm_rf Iridium.application.root.join("tmp")
-    FileUtils.rm_rf Iridium.application.root.join("test")
-    Iridium.application = nil
+    create_file "app/index.html.erb", index_file_content
   end
 
   def working_directory
