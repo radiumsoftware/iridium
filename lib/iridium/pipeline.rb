@@ -46,7 +46,7 @@ module Iridium
         pipeline.invoke_clean
       end
 
-      generate_cache_manifest if production?
+      generate_cache_manifest if config.manifest
     end
 
     def generate_cache_manifest

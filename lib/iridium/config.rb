@@ -1,16 +1,20 @@
+require 'active_support/ordered_options'
+
 module Iridium
-  class Config
+  class Config < ActiveSupport::OrderedOptions
     attr_accessor :settings
     attr_accessor :root
     attr_accessor :proxies
     attr_accessor :dependencies
     attr_accessor :scripts
+    attr_accessor :handlebars
 
     def initialize
       @middleware_stack = MiddlewareStack.new
       @proxies = {}
       @dependencies = []
       @scripts = []
+      @handlebars = ActiveSupport::OrderedOptions.new
     end
 
     def middleware

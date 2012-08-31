@@ -24,10 +24,13 @@ class NewAppTest < MiniTest::Unit::TestCase
       # have to explicitly declare test files because default ARGV
       test_files = Dir['test/**/*_test.{coffee,js}']
 
+      result = nil
+
       stdout, stderr = capture_io do
         result = Iridium::Commands::Test.start test_files
-        assert_equal 0, result, "RELEASE BLOCKER: Tests failed for some reason!"
       end
+
+      assert_equal 0, result, "RELEASE BLOCKER: Tests failed for some reason!\n#{stdout}"
 
       assert_empty stderr
       assert_includes stdout, "2 Test(s)"

@@ -289,8 +289,8 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_equal "bar", read("site/index.html").chomp
   end
 
-  def test_compiles_in_production_env
-    ENV['IRIDIUM_ENV'] = 'production'
+  def test_compiles_minifies
+    Iridium.application.config.minify = true
 
     create_file "vendor/javascripts/jquery.js", "var jquery = {};"
     create_file "app/javascripts/app.js", "var MyApp = {};"
@@ -300,11 +300,11 @@ class PipelineTest < MiniTest::Unit::TestCase
 
     compile ; assert_file "site/application.js"
   ensure
-    ENV['IRIDIUM_ENV'] = 'test'
+    Iridium.application.config.minify = false
   end
 
-  def test_generates_gzip_versions_in_production
-    ENV['IRIDIUM_ENV'] = 'production'
+  def test_generates_gzip_versions
+    Iridium.application.config.gzip = true
 
     create_file "app/javascripts/app.js", "var fooBar = {};"
 
@@ -313,11 +313,11 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_file "site/application.js"
     assert_file "site/application.js.gz"
   ensure
-    ENV['IRIDIUM_ENV'] = 'test'
+    Iridium.application.config.gzip = false
   end
 
   def test_generates_a_cache_manifest
-    ENV['IRIDIUM_ENV'] = 'production'
+    Iridium.application.config.manifest = true
 
     create_file "app/javascripts/app.js", "var MyApp = {};"
     create_file "app/assets/images/logo.png", "image content"
@@ -329,7 +329,21 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "application.js"
     assert_includes content, "images/logo.png"
   ensure
-    ENV['IRIDIUM_ENV'] = 'test'
+    Iridium.application.config.manifest = false
+  end
+
+  def test_includes_a_cache_manifest
+    Iridium.application.config.manifest = true
+
+    create_index
+
+    compile ; assert_file "site/index.html"
+
+    content = read "site/index.html"
+
+    assert_includes content, %q{<html manifest="/cache.manifest">}
+  ensure
+    Iridium.application.config.manifest = false
   end
 
   def test_compiles_yml_files_into_i18n_translations
@@ -413,19 +427,6 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes content, %q{<script src="http://jquery.com/jquery.js"></script>}
   end
 
-  def test_includes_a_cache_manifest_in_production
-    ENV['IRIDIUM_ENV'] = 'production'
-
-    create_index
-
-    compile ; assert_file "site/index.html"
-
-    content = read "site/index.html"
-
-    assert_includes content, %q{<html manifest="/cache.manifest">}
-  ensure
-    ENV['IRIDIUM_ENV'] = 'test'
-  end
 
   def test_pipeline_includes_env_specific_js_code
     ENV['IRIDIUM_ENV'] = 'foo'

@@ -69,7 +69,7 @@ input app.root do
   # minify and contact lib.js and vendor.js into a single
   # application.js
   match "build/*.js" do
-    uglify if app.production?
+    uglify if app.config.minify
 
     ordered_concat ["build/vendor.js", "build/env.js", "build/init.js", "build/lib.js"] , "application.js"
   end
@@ -77,7 +77,7 @@ input app.root do
   # select all stylesheets in the project
   match "build/*.css" do
     # minifiy CSS when compiling assets for production
-    yui_css if app.production?
+    yui_css if app.config.minifiy
 
     concat ["build/vendor.css", "build/lib.css"], "application.css"
   end
@@ -115,7 +115,7 @@ input app.root do
     copy { |path| path.sub("assets/", "") }
   end
 
-  if app.production?
+  if app.config.gzip
     match "**/*" do
       copy { |name| [name, "#{name}.gz"] }
     end
