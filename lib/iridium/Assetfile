@@ -57,10 +57,21 @@ input app.root do
     concat "build/lib.js"
   end
 
+  # Now prepare the handlebars templates by transforming them
+  match "app/templates/**/*.{handlebars,hbs}" do
+    handlebars :target => (app.config.handlebars.target || "#{app.class.to_s.camelize}.TEMPLATES"),
+      :wrapper_proc => (app.config.handlebars.compiler || proc { |source| "Handlehars.compile(#{source}))" }),
+      :key_name_proc => proc { |input|
+      input.path.sub("app/templates/", '').sub(File.extname(input.path), '')
+    }
+
+    concat "build/templates.js"
+  end
+
   # minify and contact lib.js and vendor.js into a single
   # application.js
   match "build/*.js" do
-    concat ["build/vendor.js", "build/env.js", "build/init.js", "build/lib.js"] , "application.js"
+    concat ["build/vendor.js", "build/env.js", "build/init.js", "build/lib.js", "build/templates.js"] , "application.js"
 
     if app.config.minify
       uglify { |path| path }
@@ -93,18 +104,6 @@ input app.root do
     copy do |input|
       input.sub "app/assets/", ""
     end
-  end
-
-  # Now prepare the handlebars templates by transforming them
-  # into script tags which can be injected to index.html
-  match "app/templates/**/*.{handlebars,hbs}" do
-    handlebars_script_tag :template_name => proc { |input|
-      input.sub("app/templates/", '').sub(File.extname(input), '')
-    }
-  end
-
-  inject "app/templates/**/*.{handlebars,hbs}" do
-    insert_script_tag "app/index.html"
   end
 
   # copy the index html

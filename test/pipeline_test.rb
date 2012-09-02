@@ -169,43 +169,52 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def tests_compiles_handlebars_into_js_file
-    create_file "app/index.html", index_file_content
     create_file "app/templates/home.handlebars", "{{name}}"
 
-    compile ; assert_file "site/index.html"
+    compile ; assert_file "site/application.js"
 
-    content = read "site/index.html"
+    content = read "site/application.js"
 
-    assert_match content, /<head>(.+)<\/head>/m, "<head> tag incorrect!"
-    assert_equal 1, content.scan("<html>").size, "HTML double appended!"
-    assert_includes content, %Q{<script type="text/x-handlebars" data-template-name="home">}
-  end
-
-  def test_compiling_handle_bars_does_not_erase_existing_head_content
-    existing_head_tag = index_file_content.match(/<head>(.+)<\/head>/m)[1]
-
-    refute_empty existing_head_tag
-
-    create_file "app/index.html", index_file_content
-    create_file "app/templates/home.handlebars", "{{name}}"
-
-    compile ; assert_file "site/index.html"
-
-    content = read "site/index.html"
-
-    assert_includes content, existing_head_tag, "Existing content was erased!"
-    assert_includes content, %Q{<script type="text/x-handlebars" data-template-name="home">}
+    assert_includes content, "TestApp.TEMPLATES['home']="
+    assert_includes content, "{{name}}"
   end
 
   def tests_maps_path_handlebars_template_name
-    create_file "app/index.html", index_file_content
     create_file "app/templates/dashboard/feed/header.handlebars", "{{name}}"
 
-    compile ; assert_file "site/index.html"
+    compile ; assert_file "site/application.js"
 
-    content = read "site/index.html"
+    content = read "site/application.js"
 
-    assert_includes content, %Q{<script type="text/x-handlebars" data-template-name="dashboard/feed/header">}
+    assert_includes content, "TestApp.TEMPLATES['dashboard/feed/header']="
+    assert_includes content, "{{name}}"
+  end
+
+  def test_handlebars_destination_is_configurbale
+    Iridium.application.config.handlebars.target = "FOO"
+
+    create_file "app/templates/home.handlebars", "{{name}}"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "FOO['home']="
+    assert_includes content, "{{name}}"
+  end
+
+  def test_handlebars_wrapper_is_configurable
+    Iridium.application.config.handlebars.compiler = proc { |source| 
+      "Pizza.compile(#{source});"
+    }
+
+    create_file "app/templates/home.handlebars", "{{name}}"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "Pizza.compile"
   end
 
   def test_concats_vendor_css_before_app_css
