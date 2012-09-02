@@ -26,7 +26,7 @@ module Rake
           # will contain the input file
         end
 
-        inject inputs, original_content, output
+        inject inputs_to_inject(inputs), original_content, output
       end
 
       def inject(inputs, content, output)
