@@ -177,6 +177,7 @@ class PipelineTest < MiniTest::Unit::TestCase
 
     assert_includes content, "TestApp.TEMPLATES['home']="
     assert_includes content, "{{name}}"
+    assert_includes content, "Handlebars.compile"
   end
 
   def tests_maps_path_handlebars_template_name
@@ -187,7 +188,6 @@ class PipelineTest < MiniTest::Unit::TestCase
     content = read "site/application.js"
 
     assert_includes content, "TestApp.TEMPLATES['dashboard/feed/header']="
-    assert_includes content, "{{name}}"
   end
 
   def test_handlebars_destination_is_configurbale
@@ -200,7 +200,6 @@ class PipelineTest < MiniTest::Unit::TestCase
     content = read "site/application.js"
 
     assert_includes content, "FOO['home']="
-    assert_includes content, "{{name}}"
   end
 
   def test_handlebars_wrapper_is_configurable
