@@ -34,9 +34,9 @@ module Rake
       end
 
       def inputs_to_inject(inputs)
-        globbed_files = pipeline.globbed_files.map(&:path)
-
-        inputs.select { |input| globbed_files.find input.path }
+        inputs.select do |input| 
+          pipeline.globbed_files.find { |i| i.path == input.path }
+        end
       end
 
       def target_from_inputs(inputs)
