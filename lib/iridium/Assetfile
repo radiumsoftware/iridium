@@ -119,6 +119,8 @@ input app.root do
     copy { |path| path.sub("assets/", "") }
   end
 
+  manifest if app.config.manifest
+
   if app.config.gzip
     match "**/*" do
       copy { |name| [name, "#{name}.gz"] }

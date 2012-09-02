@@ -24,6 +24,7 @@ require 'rake-pipeline-web-filters/handlebars_script_tag_filter'
 require 'rake-pipeline-web-filters/insert_script_tag_filter'
 require 'rake-pipeline-web-filters/erb_filter'
 require 'rake-pipeline-web-filters/i18n_filter'
+require 'rake-pipeline-web-filters/manifest_filter'
 
 require 'iridium/reverse_proxy'
 

@@ -392,7 +392,11 @@ class PipelineTest < MiniTest::Unit::TestCase
     create_file "app/javascripts/app.js", "var MyApp = {};"
     create_file "app/assets/images/logo.png", "image content"
 
-    compile ; assert_file "site/cache.manifest"
+    compile 
+
+    assert_file "site/cache.manifest"
+    assert_file "site/images/logo.png"
+    assert_file "site/application.js"
 
     content = read "site/cache.manifest"
 
