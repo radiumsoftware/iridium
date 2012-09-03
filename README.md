@@ -130,9 +130,9 @@ files will be included after those.
 Todos.configure do
   # load minispade, jquery, jquery_ui, then all other vendored files
   # Note, the symbol referes to the file name without extension. 
-  # example: :minispade => app/vendor/javascripts/minispade.js
+  # example: :minispade => vendor/javascripts/minispade.js
 
-  config.load :minispade, :jquery, :jquery_ui
+  config.dependencies.load :minispade, :jquery, :jquery_ui
 end
 ```
 
@@ -145,7 +145,7 @@ them inside your application. Configured scripts are written in as
 ```ruby
 # application.rb
 Todos.configure do
-  config.script "http://www.mycdn.com/script.js"
+  config.scripts.load "http://www.mycdn.com/script.js"
 end
 ```
 
@@ -369,46 +369,6 @@ Or if you don't care about that, you can run the generator:
 ```
 $ cd my_app
 $ iridium generate rackup
-```
-
-### Customization per Environment
-
-More complicated applications need to support different environment.
-Common envrioments are: development, test, and production. Each
-environment may have their own dependencies or tweaks. Usually this is a
-pain. Customizations happen at the server level. You **code** should not
-be environment specific! Use the generator to create the file structure.
-
-```
-$ cd todos
-$ iridium generate envs
-    create  config/development.rb
-    create  config/test.rb
-    create  config/production.rb
-```
-
-Iridium also parses `config/settings.yml` is present. Setting for the
-current environment are added to `config.settings`. Here's an example:
-
-```yml
-# config/settings.yml
-development:
-  server: http://localhost:3000/
-
-test:
-  server: http://test.mydomain.com/
-
-production:
-  server: http://production.mydomain.com
-```
-
-Now in your configuration files:
-
-```ruby
-# application.rb or any file in config/
-MyApp.configure do
-  config.proxy '/api', settings.server
-end
 ```
 
 ## Contributing
