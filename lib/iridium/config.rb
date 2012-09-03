@@ -1,5 +1,3 @@
-require 'active_support/ordered_options'
-
 module Iridium
   class Config < ActiveSupport::OrderedOptions
     attr_accessor :settings

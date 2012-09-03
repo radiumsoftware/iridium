@@ -1,5 +1,3 @@
-require 'pathname'
-
 module Iridium
   module Configuration
     extend ActiveSupport::Concern
@@ -25,10 +23,6 @@ module Iridium
 
       def configure(&block)
         class_eval &block
-      end
-
-      def middleware
-        config.middleware
       end
 
       def settings
