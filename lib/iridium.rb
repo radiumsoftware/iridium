@@ -65,9 +65,10 @@ require 'iridium/cli'
 require 'iridium/handlebars_compiler'
 
 module Iridium
-  class MissingFile < StandardError ; end
-  class MissingTestHelper < StandardError ; end
-  class IncorrectLoadPath < StandardError ; end
+  class Error < StandardError ; end
+  class MissingFile < Error ; end
+  class MissingTestHelper < Error ; end
+  class IncorrectLoadPath < Error ; end
 
   class << self
     def application
