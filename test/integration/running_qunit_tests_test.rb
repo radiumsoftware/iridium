@@ -169,7 +169,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    Iridium.application.config.script "unknown_file.js"
+    Iridium.application.config.scripts.load "unknown_file.js"
 
     create_loader # call again to pull in new config
 
@@ -190,7 +190,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
       });
     test
 
-    Iridium.application.config.script "http://www.google.com/plop/jquery-2348917.js"
+    Iridium.application.config.scripts.load "http://www.google.com/plop/jquery-2348917.js"
 
     create_loader # call again to pull in new config
 

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<%% if app.config.manifest %>
+<%% if app.config.pipeline.manifest %>
   <html manifest="/cache.manifest">
 <%% else %>
   <html>

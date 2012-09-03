@@ -4,10 +4,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   def teardown
     Iridium.application.config.minispade.clear
     Iridium.application.config.handlebars.clear
-    Iridium.application.config.gzip = false
-    Iridium.application.config.minify = false
-    Iridium.application.config.manifest = false
-
+    Iridium.application.config.pipeline.clear
     super
   end
 
@@ -266,7 +263,7 @@ class PipelineTest < MiniTest::Unit::TestCase
     create_file "vendor/javascripts/file1.js", "var file1 = {};"
     create_file "vendor/javascripts/file2.js", "var file2 = {};"
 
-    Iridium.application.config.load :file2
+    Iridium.application.config.dependencies.load :file2
 
     compile ; assert_file "site/application.js"
 
@@ -283,8 +280,8 @@ class PipelineTest < MiniTest::Unit::TestCase
     create_file "vendor/javascripts/jquery_ui.js", "var jqui = {};"
     create_file "vendor/javascripts/underscore.js", "var underscore = {};"
 
-    Iridium.application.config.load :jquery
-    Iridium.application.config.load :jquery_ui
+    Iridium.application.config.dependencies.load :jquery
+    Iridium.application.config.dependencies.load :jquery_ui
 
     compile ; assert_file "site/application.js"
 
@@ -332,7 +329,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_minifies_js
-    Iridium.application.config.minify = true
+    Iridium.application.config.pipeline.minify = true
 
     create_file "app/javascripts/app.js", <<-js
       var App = function() {
@@ -358,7 +355,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_minifies_css
-    Iridium.application.config.minify = true
+    Iridium.application.config.pipeline.minify = true
 
     create_file "app/stylesheets/app.css", <<-js
       #APP {
@@ -384,7 +381,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_generates_gzip_versions
-    Iridium.application.config.gzip = true
+    Iridium.application.config.pipeline.gzip = true
 
     create_file "app/javascripts/app.js", "var fooBar = {};"
 
@@ -395,7 +392,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_generates_a_cache_manifest
-    Iridium.application.config.manifest = true
+    Iridium.application.config.pipeline.manifest = true
 
     create_file "app/javascripts/app.js", "var MyApp = {};"
     create_file "app/assets/images/logo.png", "image content"
@@ -413,7 +410,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_includes_a_cache_manifest
-    Iridium.application.config.manifest = true
+    Iridium.application.config.pipeline.manifest = true
 
     create_index
 

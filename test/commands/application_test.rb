@@ -63,7 +63,7 @@ class ApplicationCommandTest < GeneratorTestCase
 
     assert_includes content, 'Todos < Iridium::Application'
 
-    assert_includes content, %Q{config.load :minispade}
+    assert_includes content, %Q{config.dependencies.load :minispade}
     assert_file 'todos', 'vendor', 'javascripts', 'minispade.js'
 
     assert_file 'todos', 'vendor', 'javascripts', 'handlebars.js'

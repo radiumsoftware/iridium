@@ -1,6 +1,6 @@
 <%= camelized %>.configure do
   # Minify JS and CSS
-  config.minify = false
+  config.pipeline.minify = false
 
   # Precompile handlebars templates
   config.handlebars.precompile = false

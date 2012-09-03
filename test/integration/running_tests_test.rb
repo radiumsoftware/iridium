@@ -20,7 +20,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   def setup
     super
 
-    Iridium.application.config.load :minispade
+    Iridium.application.config.dependencies.load :minispade
 
     create_file "app/javascripts/boot.js", <<-file
       require('test_app/app');
