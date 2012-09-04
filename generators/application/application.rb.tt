@@ -22,7 +22,7 @@ class <%= camelized %> < Iridium::Application
   # 
   # Example for Ember:
   #
-  # config.handlebars.compiler = proc { |source| "Ember.Handlebars.compile('#{source}');" }
+  # config.handlebars.compiler = proc { |source| "Ember.Handlebars.compile(#{source});" }
 
   # Enable a proxy to an API. You can use this to get around CORS
   # or use it for authentication hidding.
