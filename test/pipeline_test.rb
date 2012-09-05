@@ -139,6 +139,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   def test_does_not_compile_scss_partials
     create_file "app/stylesheets/app.scss", "#this-selector { color: black; }"
     create_file "app/stylesheets/_partial.scss", "#partial { color: black; }"
+    create_file "app/stylesheets/subdir/_partial.scss", "#partial { color: black; }"
 
     compile ; assert_file "site/application.css"
 
@@ -154,7 +155,12 @@ class PipelineTest < MiniTest::Unit::TestCase
     sass
 
     create_file "app/stylesheets/_partial.sass", <<-sass
-#partial 
+#partial
+  color: black
+    sass
+
+    create_file "app/stylesheets/subdir/_partial.sass", <<-sass
+#partial
   color: black
     sass
 
@@ -200,7 +206,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_handlebars_wrapper_is_configurable
-    Iridium.application.config.handlebars.compiler = proc { |source| 
+    Iridium.application.config.handlebars.compiler = proc { |source|
       "Pizza.compile(#{source});"
     }
 
@@ -271,7 +277,7 @@ class PipelineTest < MiniTest::Unit::TestCase
 
     assert_includes content, "file1"
     assert_includes content, "file2"
-    assert content.index("file2") < content.index("file1"), 
+    assert content.index("file2") < content.index("file1"),
       "File2 should be included before file1"
   end
 
@@ -290,10 +296,10 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "jquery"
     assert_includes content, "jqui"
     assert_includes content, "underscore"
-    assert content.index("jquery") < content.index("jqui"), 
+    assert content.index("jquery") < content.index("jqui"),
       "jquery should be included before jquery_ui"
 
-    assert content.index("jqui") < content.index("underscore"), 
+    assert content.index("jqui") < content.index("underscore"),
       "jquery_ui should be included before underscore"
   end
 
@@ -305,7 +311,7 @@ class PipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert content.index("jquery") < content.index("MyApp"), 
+    assert content.index("jquery") < content.index("MyApp"),
       "jquery should be included before MyApp"
   end
 
@@ -397,7 +403,7 @@ class PipelineTest < MiniTest::Unit::TestCase
     create_file "app/javascripts/app.js", "var MyApp = {};"
     create_file "app/assets/images/logo.png", "image content"
 
-    compile 
+    compile
 
     assert_file "site/cache.manifest"
     assert_file "site/images/logo.png"
@@ -456,7 +462,7 @@ class PipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert content.index("I18n = {};") < content.index("I18n.translations = "), 
+    assert content.index("I18n = {};") < content.index("I18n.translations = "),
       "Translations dictionary must be loaded after I18n"
   end
 
@@ -548,13 +554,13 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "ENV", "Env code not loaded!"
     assert_includes content, "APP", "App code not loaded!"
 
-    assert content.index("VENDOR") < content.index("ENV"), 
+    assert content.index("VENDOR") < content.index("ENV"),
       "Vendored code must be loaded before environment initialization!"
 
-    assert content.index("ENV") < content.index("INITIALIZER"), 
+    assert content.index("ENV") < content.index("INITIALIZER"),
       "Environment must be prepared for initialization!"
 
-    assert content.index("INITIALIZER") < content.index("APP"), 
+    assert content.index("INITIALIZER") < content.index("APP"),
       "App code must be loaded after initialization"
   end
 
