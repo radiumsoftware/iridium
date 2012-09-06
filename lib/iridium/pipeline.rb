@@ -41,6 +41,7 @@ module Iridium
 
     def compile
       clean!
+      configure_compass
 
       Dir.chdir root do
         pipeline.invoke_clean
@@ -49,6 +50,12 @@ module Iridium
 
     def manifest_template
       File.read(File.expand_path("../templates/cache.manifest.erb", __FILE__))
+    end
+
+    def configure_compass
+      Compass.reset_configuration!
+      configuration = CompassConfiguration.new self
+      Compass.add_configuration configuration
     end
   end
 end

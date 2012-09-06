@@ -558,6 +558,60 @@ class PipelineTest < MiniTest::Unit::TestCase
       "App code must be loaded after initialization"
   end
 
+  def test_sprites_are_compiled
+    sprite_path = Iridium.application.app_path.join("assets", "images", "sprites")
+
+    FileUtils.mkdir_p sprite_path.join("icons")
+
+    FileUtils.cp fixtures_path.join("images", "icon1.png"), sprite_path.join("icons", "icon1.png")
+    FileUtils.cp fixtures_path.join("images", "icon1.png"), sprite_path.join("icons", "icon2.png")
+
+    create_file "app/stylesheets/app.scss", <<-scss
+      @import "icons/*.png";
+      @include all-icons-sprites;
+    scss
+
+    compile
+
+    assert_file "site/application.css"
+
+    content = read "site/application.css"
+
+    assert_match content, %r{/images/icons-\w+.png}, "Compiled CSS does not point to the correct image"
+
+    assert_file "site/images/icons-s0d4ab78e54.png"
+
+    refute_file "site/images/sprites/icons/icon1.png"
+  end
+
+  def test_stylesheets_can_import_stylesheets_from_the_same_directory
+    create_file "app/stylesheets/mixins.scss", <<-scss
+      #foo { } 
+    scss
+
+    create_file "app/stylesheets/app.scss", <<-scss
+      @import "mixins"
+    scss
+
+    compile
+
+    assert_file "site/application.css"
+  end
+
+  def test_stylesheets_can_import_stylesheets_from_vendor
+    create_file "vendor/stylesheets/mixins.scss", <<-scss
+      #foo { } 
+    scss
+
+    create_file "app/stylesheets/app.scss", <<-scss
+      @import "mixins"
+    scss
+
+    compile
+
+    assert_file "site/application.css"
+  end
+
   private
   def compile
     TestApp.compile

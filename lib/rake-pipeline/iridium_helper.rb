@@ -5,13 +5,6 @@ module Rake
         raise "Cannot use the Iridium specific pipeline without declaring an application!" unless Iridium.application
         Iridium.application
       end
-
-      def inject(glob, &block)
-        matcher = pipeline.copy Rake::Pipeline::InjectionMatcher, &block
-        matcher.glob = glob
-        pipeline.add_filter matcher
-        matcher
-      end
     end
   end
 end
@@ -21,6 +14,14 @@ module Rake
     module DSL
       class PipelineDSL
         include IridiumHelper
+
+        def drop(pattern)
+          matcher = pipeline.copy(DropMatcher)
+          matcher.glob = pattern
+          pipeline.add_filter matcher
+          matcher
+        end
+        alias :skip :drop
       end
 
       class ProjectDSL

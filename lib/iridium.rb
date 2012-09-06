@@ -12,10 +12,12 @@ require 'json'
 require 'yaml'
 require 'erb'
 require 'execjs'
+require 'compass'
 
 require 'rack/rewrite'
 require 'rake-pipeline'
 require 'rake-pipeline/middleware'
+require 'rake-pipeline/drop_matcher'
 require 'rake-pipeline/iridium_helper'
 
 require 'rake-pipeline-web-filters'
@@ -63,6 +65,8 @@ require 'iridium/commands/generate'
 require 'iridium/cli'
 
 require 'iridium/handlebars_compiler'
+
+require 'iridium/compass_configuration'
 
 module Iridium
   class Error < StandardError ; end
