@@ -3,7 +3,7 @@ output app.site_path
 input app.root do
   skip "app/assets/images/sprites/**/*"
 
-  # compile all erb templates. You can access "app" 
+  # compile all erb templates. You can access "app"
   # inside your templates like this: <% app.config %>
   match "**/*.erb" do
     erb binding
@@ -50,7 +50,7 @@ input app.root do
   # app/javascripts/boot.js -> require('app_name/boot');
   # app/javascripts/views/main.js -> require('app_name/views/main');
   match "app/javascripts/**/*.js" do
-    minispade :rewrite_requires => true, 
+    minispade :rewrite_requires => true,
       :string => (app.config.minispade.module_format == :string),
       :module_id_generator => proc { |input|
         input.path.gsub("app/javascripts/", "#{app.class.to_s.demodulize.underscore}/").gsub(/\.js$/, '')
@@ -82,7 +82,7 @@ input app.root do
 
   # compile all SCSS files into equivalent css file.
   # SCSS partials are not included in compiled output.
-  match /app\/stylesheets\/(?:.+\/)?[^_].+\.s[ca]ss/ do
+  match /app\/stylesheets\/(?:.+\/)?[^_]+\.s[ca]ss/ do
     sass
   end
 
