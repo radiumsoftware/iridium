@@ -9,6 +9,12 @@ module Iridium
       end
     end
 
+    class DirectoryServer < Rack::Directory
+      def initialize(app, root)
+        super root, app
+      end
+    end
+
     def app
       Rack::Builder.new do
         use Middleware::RackLintCompatibility
@@ -27,6 +33,7 @@ module Iridium
         end
 
         use Rake::Pipeline::Middleware, Iridium.application.assetfile
+        use DirectoryServer, Iridium.application.site_path
         run NotFound.new
       end
     end

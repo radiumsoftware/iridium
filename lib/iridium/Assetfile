@@ -1,6 +1,8 @@
 output app.site_path
 
 input app.root do
+  skip "app/assets/images/sprites/**/*"
+
   # compile all erb templates. You can access "app"
   # inside your templates like this: <% app.config %>
   match "**/*.erb" do
@@ -97,15 +99,6 @@ input app.root do
     end
   end
 
-  # All files in app/public are simpliy copied into the output directory.
-  # Example:
-  # app/assets/images/logo.png -> site/images/logo.png
-  match "app/assets/**/*" do
-    copy do |input|
-      input.sub "app/assets/", ""
-    end
-  end
-
   # copy the index html
   match "app/index.html" do
     copy do |input|
@@ -115,7 +108,7 @@ input app.root do
 
   # All images are moved int
   match "app/assets/**/*" do
-    copy { |path| path.sub("assets/", "") }
+    copy { |path| path.sub("app/assets/", "") }
   end
 
   manifest if app.config.pipeline.manifest

@@ -22,4 +22,12 @@ class DevServerTest < MiniTest::Unit::TestCase
 
     assert_includes last_response.body, "bar"
   end
+
+  def test_files_outside_the_pipeline_are_accessible
+    create_file "site/images/sprite.png", "png"
+
+    get '/images/sprite.png'
+
+    assert last_response.ok?
+  end
 end

@@ -12,6 +12,7 @@ class ApplicationCommandTest < GeneratorTestCase
 
     assert_file 'todos', 'app'
     assert_file 'todos', 'app', 'assets', 'images'
+    assert_file 'todos', 'app', 'assets', 'images', 'sprites'
 
     assert_file 'todos', 'app', 'stylesheets', 'app.scss'
 

@@ -71,6 +71,20 @@ class MiniTest::Unit::TestCase
       "#{full_path} should be a file. Current Files: #{Dir[Iridium.application.root.join("**", "*").inspect]}"
   end
 
+  def refute_file(path)
+    full_path = Iridium.application.root.join path
+
+    refute File.exists?(full_path), "#{full_path} should not be a file."
+  end
+
+  def fixtures_path
+    Pathname.new(File.expand_path "../fixtures", __FILE__)
+  end
+
+  def fixture(*path)
+    File.read fixtures_path.join(*path)
+  end
+
   def read(*path)
     File.read Iridium.application.root.join(*path)
   end
