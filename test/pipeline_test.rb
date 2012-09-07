@@ -139,7 +139,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   def test_does_not_compile_scss_partials
     create_file "app/stylesheets/app.scss", "#this-selector { color: black; }"
     create_file "app/stylesheets/_partial.scss", "#partial { color: black; }"
-    create_file "app/stylesheets/subdir/_partial.scss", "#partial { color: black; }"
+    create_file "app/stylesheets/partials/_partial.scss", "#partial { color: black; }"
 
     compile ; assert_file "site/application.css"
 
@@ -159,7 +159,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   color: black
     sass
 
-    create_file "app/stylesheets/subdir/_partial.sass", <<-sass
+    create_file "app/stylesheets/partials/_partial.sass", <<-sass
 #partial
   color: black
     sass
@@ -592,7 +592,7 @@ class PipelineTest < MiniTest::Unit::TestCase
 
   def test_stylesheets_can_import_stylesheets_from_the_same_directory
     create_file "app/stylesheets/mixins.scss", <<-scss
-      #foo { } 
+      #foo { }
     scss
 
     create_file "app/stylesheets/app.scss", <<-scss
@@ -606,7 +606,7 @@ class PipelineTest < MiniTest::Unit::TestCase
 
   def test_stylesheets_can_import_stylesheets_from_vendor
     create_file "vendor/stylesheets/mixins.scss", <<-scss
-      #foo { } 
+      #foo { }
     scss
 
     create_file "app/stylesheets/app.scss", <<-scss
