@@ -62,7 +62,7 @@ input app.root do
   # Now prepare the handlebars templates by transforming them
   match "app/templates/**/*.{handlebars,hbs}" do
     handlebars :target => (app.config.handlebars.target || "#{app.class.to_s.camelize}.TEMPLATES"),
-      :wrapper_proc => (app.config.handlebars.compiler || proc { |source| "Handlebars.compile(#{source}))" }),
+      :wrapper_proc => (app.config.handlebars.compiler || proc { |source| "Handlebars.compile(#{source});" }),
       :key_name_proc => proc { |input|
       input.path.sub("app/templates/", '').sub(File.extname(input.path), '')
     }
