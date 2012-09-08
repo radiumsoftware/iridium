@@ -391,6 +391,17 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_file "site/application.js.gz"
   end
 
+  def test_gzip_ignores_project_files
+    Iridium.application.config.pipeline.gzip = true
+
+    create_file "readme.md", "This is my readme.md"
+
+    compile
+
+    refute_file "site/readme.md"
+    refute_file "site/readme.md.gz"
+  end
+
   def test_generates_a_cache_manifest
     Iridium.application.config.pipeline.manifest = true
 
