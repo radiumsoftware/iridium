@@ -73,7 +73,7 @@ input app.root do
   # minify and contact lib.js and vendor.js into a single
   # application.js
   match "build/*.js" do
-    concat ["build/vendor.js", "build/env.js", "build/init.js", "build/lib.js", "build/templates.js"] , "application.js"
+    concat ["build/vendor.js", "build/env.js", "build/init.js", "build/lib.js", "build/templates.js"] , "build/application.js"
 
     if app.config.pipeline.minify
       uglify { |path| path }
@@ -92,7 +92,7 @@ input app.root do
 
   # select all stylesheets in the project
   match "build/*.css" do
-    concat ["build/vendor.css", "build/lib.css"], "application.css"
+    concat ["build/vendor.css", "build/lib.css"], "build/application.css"
 
     if app.config.pipeline.minify
       yui_css { |path| path }
@@ -102,24 +102,28 @@ input app.root do
   # copy the index html
   match "app/index.html" do
     copy do |input|
-      input.sub "app/", ""
+      input.sub "app/", "build/"
     end
   end
 
   # All images are moved int
   match "app/assets/**/*" do
-    copy { |path| path.sub("app/assets/", "") }
+    copy { |path| path.sub("app/assets/", "build/") }
   end
 
   manifest if app.config.pipeline.manifest
 
   if app.config.pipeline.gzip
-    match "**/*{.js,.css,.jpg,.png,.html}" do
+    match "build/**/*.*" do
       copy { |name| [name, "#{name}.gz"] }
     end
 
-    match "**/*.gz" do
+    match "build/**/*.gz" do
       gzip { |input| input }
     end
+  end
+
+  match "build/**/*.*" do
+    copy { |path| path.sub("build/", "") } 
   end
 end
