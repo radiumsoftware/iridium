@@ -114,7 +114,7 @@ input app.root do
   manifest if app.config.pipeline.manifest
 
   if app.config.pipeline.gzip
-    match "**/*" do
+    match "**/*{.js,.css,.jpg,.png,.html}" do
       copy { |name| [name, "#{name}.gz"] }
     end
 
