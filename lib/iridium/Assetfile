@@ -24,7 +24,7 @@ input app.root do
   end
 
   # Put environment specific files in the pipeline
-  match "app/config/#{app.env}.js" do
+  match "app/config/#{Iridium.env}.js" do
     iife
     concat "build/env.js"
   end

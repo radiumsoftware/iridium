@@ -101,6 +101,10 @@ module Iridium
         abort
       end
     end
+
+    def env
+      ENV['IRIDIUM_ENV'] || ENV['RACK_ENV'] || 'development'
+    end
   end
 
   class Application
@@ -119,18 +123,6 @@ module Iridium
       end
     end
 
-    def production?
-      env == 'production'
-    end
-
-    def development?
-      env == 'development'
-    end
-
-    def env
-      ENV['IRIDIUM_ENV'] || ENV['RACK_ENV'] || 'development'
-    end
-
     def initialize
       boot!
       super
@@ -142,7 +134,7 @@ module Iridium
       settings_file = root.join("config", "settings.yml").to_s
 
       if File.exists? settings_file
-        config.settings = OpenStruct.new(YAML.load(ERB.new(File.read(settings_file)).result)[env])
+        config.settings = OpenStruct.new(YAML.load(ERB.new(File.read(settings_file)).result)[Iridium.env])
       end
 
       begin
@@ -150,7 +142,7 @@ module Iridium
       rescue LoadError ; end
 
       begin
-        require "#{root}/config/#{env}.rb"
+        require "#{root}/config/#{Iridium.env}.rb"
       rescue LoadError
       end
     end
