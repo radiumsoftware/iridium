@@ -65,6 +65,16 @@ class RackTest < MiniTest::Unit::TestCase
     assert_equal "gzipped", last_response.body.chomp
   end
 
+  def test_gzipped_files_have_correct_content_type
+    create_file "site/application.js.gz", 'gzipped'
+
+    get '/application.js', {}, 'HTTP_ACCEPT_ENCODING' => 'gzip'
+
+    assert last_response.ok?
+
+    assert_equal "application/javascript", last_response.headers['Content-Type']
+  end
+
   def test_serves_the_cache_manifest_correctly
     create_file "site/cache.manifest", "manifest"
 

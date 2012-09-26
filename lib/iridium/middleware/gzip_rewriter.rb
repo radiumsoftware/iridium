@@ -1,4 +1,5 @@
 require 'rack/request'
+require 'rack/mime'
 
 module Iridium
   module Middleware
@@ -9,10 +10,13 @@ module Iridium
 
       def call(env)
         if wants_gzipped?(env) && gzipped?(env)
+          content_type = ::Rack::Mime.mime_type(File.extname(env['PATH_INFO']))
+
           env['PATH_INFO'] += ".gz"
           status, headers, body = @app.call env
 
           headers['Content-Encoding'] = 'gzip'
+          headers['Content-Type'] = content_type
 
           [status, headers, body]
         else
