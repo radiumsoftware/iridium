@@ -1,5 +1,9 @@
 require 'iridium'
 
+if defined?(Bundler) 
+  Bundler.require :default, Iridium.env
+end
+
 class <%= camelized %> < Iridium::Application
   # Specify vendor load order. Files will be concatenated in the
   # declared order. Undeclared files will be concatentated after
