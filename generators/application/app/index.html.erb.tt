@@ -18,6 +18,8 @@
   </head>
 
   <body>
+    <div id="application"></div>
+
     <%% app.config.scripts.each do |script| %>
       <script src="<%%= script %>"></script>
     <%% end %>
