@@ -48,10 +48,6 @@ module Iridium
       end
     end
 
-    def manifest_template
-      File.read(File.expand_path("../templates/cache.manifest.erb", __FILE__))
-    end
-
     def configure_compass
       Compass.reset_configuration!
       configuration = CompassConfiguration.new self
