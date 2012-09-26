@@ -111,7 +111,11 @@ input app.root do
     copy { |path| path.sub("app/assets/", "build/") }
   end
 
-  manifest if app.config.pipeline.manifest
+  if app.config.pipeline.manifest
+    match "build/**/*" do
+      manifest { |asset| asset.gsub("build/", "") }
+    end
+  end
 
   if app.config.pipeline.gzip
     match "build/**/*.*" do

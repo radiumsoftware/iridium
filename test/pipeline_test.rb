@@ -416,8 +416,8 @@ class PipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/cache.manifest"
 
-    assert_includes content, "application.js"
-    assert_includes content, "images/logo.png"
+    assert_match content, /^application\.js$/
+    assert_match content, /^images\/logo\.png$/
   end
 
   def test_includes_a_cache_manifest

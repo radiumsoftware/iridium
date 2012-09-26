@@ -2,13 +2,23 @@ module Rake::Pipeline::Web::Filters
   class ManifestFilter < Rake::Pipeline::Filter
     include Rake::Pipeline::Web::Filters::FilterWithDependencies
 
-    def initialize(name = 'cache.manifest', &block)
-      block ||= proc { |input| name }
+    def initialize(name = 'cache.manifest', &asset_name)
+      @asset_name = asset_name
+      block = proc { |input| name }
       super(&block)
     end
 
     def generate_output(inputs, output)
-      assets = inputs.map { |i| i.path.gsub('manifest/', '') }.join("\n")
+      assets = inputs.collect do |i| 
+        path = i.path.gsub('manifest/', '')
+
+        if @asset_name
+          @asset_name.call path
+        else
+          path
+        end
+
+      end.join("\n")
 
       output.write ERB.new(template).result(binding)
     end
