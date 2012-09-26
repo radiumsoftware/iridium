@@ -5,11 +5,11 @@ input app.root do
 
   # compile all erb templates. You can access "app" 
   # inside your templates like this: <% app.config %>
-  match "**/*.erb" do
+  match "app/**/*.erb" do
     erb binding
   end
 
-  match "**/*.coffee" do
+  match "app/**/*.coffee" do
     coffee_script
   end
 
