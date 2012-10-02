@@ -1,5 +1,7 @@
 module Hydrogen
   class Application < Component
+    include Singleton
+
     class << self
       def configure(&block)
         class_eval &block
