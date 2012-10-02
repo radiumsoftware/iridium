@@ -75,6 +75,9 @@ module Iridium
   class MissingTestHelper < Error ; end
   class IncorrectLoadPath < Error ; end
 
+  # Provide a namespace for all our stuff
+  class Component < Hydrogen::Component ; end
+
   class << self
     def application
       @application
