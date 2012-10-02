@@ -40,6 +40,7 @@ module Hydrogen
           end
         end.flatten.uniq
       end
+      alias to_a expanded
 
       def directories
         expanded.select { |f| File.directory? f }
