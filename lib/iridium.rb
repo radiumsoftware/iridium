@@ -1,4 +1,5 @@
 require 'iridium/version'
+require 'hydrogen'
 
 require 'active_support/concern'
 require 'active_support/core_ext/module/delegation'
