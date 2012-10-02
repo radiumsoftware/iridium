@@ -109,11 +109,6 @@ module Iridium
   end
 
   class Application
-    include Configuration
-    include Pipeline
-    include Rack
-    include Singleton
-
     class << self
       def inherited(base)
         raise "You cannot have more than one Iridium::Application" if Iridium.application
@@ -146,6 +141,10 @@ module Iridium
         require "#{root}/config/#{Iridium.env}.rb"
       rescue LoadError
       end
+    end
+
+    def settings
+      config.settings
     end
   end
 end
