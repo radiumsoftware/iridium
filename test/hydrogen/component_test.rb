@@ -52,4 +52,16 @@ class Hydrogen::ComponentTest < MiniTest::Unit::TestCase
 
     assert asset_component.paths
   end
+
+  def test_multiple_components_dont_share_path_objects
+    component1 = Class.new Hydrogen::Component do
+      paths[:images].add "foo"
+    end
+
+    component2 = Class.new Hydrogen::Component do
+      paths[:css].add "css"
+    end
+
+    refute_equal component1.paths, component2.paths
+  end
 end

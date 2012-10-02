@@ -19,9 +19,7 @@ class ComponentTest < MiniTest::Unit::TestCase
 
   def test_components_can_configure_vendor_paths
     asset_component = Class.new Iridium::Component do
-      vendor[:css].add "vendor/css"
+      vendor_paths[:css].add "vendor/css"
     end
-
-    assert_equal "foo", asset_component.paths
   end
 end
