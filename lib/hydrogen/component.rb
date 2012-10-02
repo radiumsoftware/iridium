@@ -57,12 +57,25 @@ module Hydrogen
         @loaded ||= []
       end
 
+      def called_from
+        @called_from
+      end
+
+      def called_from=(path)
+        @called_from = path
+      end
+
       def inherited(base)
         loaded << base
+        base.called_from = File.dirname(caller.map { |p| p.sub(%r{:\d+.*}, '') }.first)
       end
 
       def config
         instance.config
+      end
+
+      def instance
+        @instance ||= new
       end
 
       def command(klass, name)
@@ -77,8 +90,8 @@ module Hydrogen
         instance.app
       end
 
-      def instance
-        @instance ||= new
+      def paths
+        instance.paths
       end
     end
 
@@ -88,6 +101,10 @@ module Hydrogen
 
     def app
       @app ||= AppProxy.new
+    end
+
+    def paths
+      @paths ||= PathSet.new self.class.called_from
     end
   end
 end
