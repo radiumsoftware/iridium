@@ -40,3 +40,17 @@ $ ruby ./cli hello Adam
 
 Now any number of external or internal libraries can augment your main
 CLI. All CLI classes inherit from Thor so everything is available.
+
+# Adding Paths
+
+Components may also specify paths for use in other components. These
+paths don't mean anything initially. The API is abstract. You should use
+it as a low layer to build upon.
+
+```
+class AutoLoader < Hydrogen::Component
+  # The key presents the purpose
+  paths[:images].add "lib/images" # add a directory
+  paths[:images].add "icons", :glob => "*.png" # add files
+end
+```
