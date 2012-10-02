@@ -47,6 +47,8 @@ class MiniTest::Unit::TestCase
   def setup
     super
 
+    FileUtils.mkdir_p sandbox_path
+
     Iridium.application = TestApp.instance
     Iridium.application.site_path = Iridium.application.root.join("site")
 
@@ -72,7 +74,10 @@ class MiniTest::Unit::TestCase
       FileUtils.rm_rf Iridium.application.root.join("test")
       FileUtils.rm_rf Iridium.application.root.join("Assetfile") if File.exists?(Iridium.application.root.join('Assetfile'))
     end
+
     Iridium.application = nil
+
+    FileUtils.rm_rf sandbox_path
   end
 
   def create_file(path, content)
@@ -108,5 +113,9 @@ class MiniTest::Unit::TestCase
 
   def read(*path)
     File.read Iridium.application.root.join(*path)
+  end
+
+  def sandbox_path
+    Pathname.new(File.expand_path('../sandbox', __FILE__))
   end
 end

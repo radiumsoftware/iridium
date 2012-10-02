@@ -25,6 +25,6 @@ class GeneratorTestCase < MiniTest::Unit::TestCase
   end
 
   def destination_root
-    Pathname.new(File.expand_path('../../sandbox', __FILE__))
+    sandbox_path
   end
 end
