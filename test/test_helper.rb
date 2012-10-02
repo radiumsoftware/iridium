@@ -24,8 +24,29 @@ end
 # Require the test app which lives in a separate directory
 require File.expand_path("../app/application", __FILE__)
 
+# FIXME: clean this up
+module Hydrogen
+  class Component
+    class Configuration
+      def clear
+        @@options.clear
+      end
+    end
+  end
+
+  module TestCase
+    def setup
+      Hydrogen::Component.config.clear
+    end
+  end
+end
+
 class MiniTest::Unit::TestCase
+  include Hydrogen::TestCase
+
   def setup
+    super
+
     Iridium.application = TestApp.instance
     Iridium.application.site_path = Iridium.application.root.join("site")
 

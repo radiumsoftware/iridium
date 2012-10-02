@@ -37,7 +37,22 @@ module Hydrogen
 
       def inherited(base)
         subclasses << base
-        base.extend Hydrogen::Configurable
+      end
+
+      def config
+        instance.config
+      end
+
+      def command(klass, name)
+        commands << { :class => klass, :name => name }
+      end
+
+      def commands
+        config.commands
+      end
+
+      def instance
+        @instance ||= new
       end
     end
 
