@@ -10,10 +10,18 @@ module Iridium
       def middleware
         config.middleware
       end
+
+      def vendor_paths
+        instance.vendor_paths
+      end
     end
 
     def config
       @config ||= Configuration.new
+    end
+
+    def vendor_paths
+      @vendor_paths ||= Hydrogen::PathSet.new self.class.called_from
     end
   end
 end
