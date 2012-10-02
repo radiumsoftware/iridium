@@ -3,6 +3,11 @@ module Hydrogen
     class Configuration
       def initialize
         @@options ||= {}
+        @@options[:commands] ||= []
+      end
+
+      def commands
+        @@options[:commands]
       end
 
       def respond_to?(name)
@@ -10,6 +15,10 @@ module Hydrogen
       end
 
       private
+      def options
+        @@options
+      end
+
       def method_missing(name, *args, &blk)
         if name.to_s =~ /=$/
           @@options[$`.to_sym] = args.first

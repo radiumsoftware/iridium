@@ -19,4 +19,21 @@ class Hydrogen::ComponentTest < MiniTest::Unit::TestCase
 
     assert_includes Hydrogen::Component.subclasses, header
   end
+
+  def test_components_can_register_commands
+    receive_mail = Class.new Hydrogen::Command do
+      description "Receives incoming mail"
+    end
+
+    deliver_mail = Class.new Hydrogen::Command do
+      description "Delivers mails"
+    end
+
+    post_office = Class.new Hydrogen::Component do
+      command receive_mail, :receive
+      command deliver_mail, :deliver
+    end
+
+    assert_equal 2, post_office.commands.size
+  end
 end
