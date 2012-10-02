@@ -22,8 +22,6 @@ class Hydrogen::PathSetTest < MiniTest::Unit::TestCase
     create_file "logo.png"
 
     set = Hydrogen::PathSet.new sandbox_path
-    set.add :images
-
     set[:images].add "images", :glob => "*"
 
     directories = set[:images].directories
@@ -37,8 +35,6 @@ class Hydrogen::PathSetTest < MiniTest::Unit::TestCase
     create_directory "images/sprites"
 
     set = Hydrogen::PathSet.new sandbox_path
-    set.add :images
-
     set[:images].add "images", :glob => "*.png"
 
     files = set[:images].files

@@ -8,8 +8,13 @@ module Hydrogen
       super()
     end
 
-    def add(key)
-      self[key] = Path.new @root
+    def [](key)
+      if key? key
+        fetch key
+      else
+        self.store key, Path.new(@root)
+        fetch key
+      end
     end
 
     class Path < ::Array
