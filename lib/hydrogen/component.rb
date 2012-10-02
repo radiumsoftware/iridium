@@ -67,7 +67,7 @@ module Hydrogen
 
       def inherited(base)
         loaded << base
-        base.called_from = File.dirname(caller.map { |p| p.sub(%r{:\d+.*}, '') }.first)
+        base.called_from = File.dirname(caller.first.sub(%r{:\d+.*}, ''))
       end
 
       def config
