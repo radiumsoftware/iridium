@@ -32,7 +32,6 @@ module Iridium
           builder.proxy url, to
         end
 
-
         builder.run ::Rack::Directory.new server.site_path
 
         builder.to_app
