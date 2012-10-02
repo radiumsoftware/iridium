@@ -16,4 +16,12 @@ class ComponentTest < MiniTest::Unit::TestCase
 
     assert_equal component1.middleware, component2.middleware
   end
+
+  def test_components_can_configure_vendor_paths
+    asset_component = Class.new Iridium::Component do
+      vendor[:css].add "vendor/css"
+    end
+
+    assert_equal "foo", asset_component.paths
+  end
 end

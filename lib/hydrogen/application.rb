@@ -27,6 +27,8 @@ module Hydrogen
             base.send :include, inclusion
           end
         end
+
+        super
       end
     end
 
