@@ -15,4 +15,12 @@ class Hydrogen::CommandTest < MiniTest::Unit::TestCase
 
     assert_includes stdout, "Adam"
   end
+
+  def test_commands_have_a_description
+    command = Class.new Hydrogen::Command do
+      description "This is what I do!"
+    end
+
+    assert_equal "This is what I do!", command.description_banner
+  end
 end
