@@ -36,6 +36,12 @@ namespace :test do
     test.libs << 'test'
     test.pattern = 'test/pipeline_test.rb'
   end
+
+  desc "Run tests for hydrogen"
+  Rake::TestTask.new(:hydrogen) do |test|
+    test.libs << 'test'
+    test.pattern = 'test/hydrogen/**/*_test.rb'
+  end
 end
 
 namespace :casperjs do
