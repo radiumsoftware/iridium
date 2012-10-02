@@ -42,4 +42,13 @@ class Hydrogen::PathSetTest < MiniTest::Unit::TestCase
     assert_equal 1, files.length
     assert_includes files, sandbox_path.join("images/logo.png").to_s
   end
+
+  def test_paths_used_expanded_for_array
+    create_file "images/logo.png"
+
+    set = Hydrogen::PathSet.new sandbox_path
+    set[:images].add "images", :glob => "*.png"
+
+    assert_equal set[:images].expanded, set[:images].to_a
+  end
 end
