@@ -17,6 +17,11 @@ class Hydrogen::PathSetTest < MiniTest::Unit::TestCase
     end
   end
 
+  def test_accessing_a_new_key_returns_a_new_set
+    set = Hydrogen::PathSet.new sandbox_path
+    assert set[:images]
+  end
+
   def test_paths_can_return_directories
     create_directory "images/sprites"
     create_file "logo.png"
