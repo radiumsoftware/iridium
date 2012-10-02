@@ -30,13 +30,35 @@ module Hydrogen
       end
     end
 
+    class AppProxy
+      def initialize
+        @extensions, @includes = [], []
+      end
+
+      def extend(klass)
+        @extensions << klass
+      end
+
+      def include(klass)
+        @includes << klass
+      end
+
+      def extensions
+        @extensions
+      end
+
+      def includes
+        @includes
+      end
+    end
+
     class << self
-      def subclasses
-        @subclasses ||= []
+      def loaded
+        @loaded ||= []
       end
 
       def inherited(base)
-        subclasses << base
+        loaded << base
       end
 
       def config
@@ -51,6 +73,10 @@ module Hydrogen
         config.commands
       end
 
+      def app
+        instance.app
+      end
+
       def instance
         @instance ||= new
       end
@@ -58,6 +84,10 @@ module Hydrogen
 
     def config
       @config ||= Configuration.new
+    end
+
+    def app
+      @app ||= AppProxy.new
     end
   end
 end

@@ -23,4 +23,34 @@ class Hydrogen::ApplicationTest < MiniTest::Unit::TestCase
 
     assert_equal :bar, app.config.foo
   end
+
+  def test_componenent_extensions_are_loaded
+    vanilla = Module.new do
+      def vanilla?
+        true
+      end
+    end
+
+    Class.new Hydrogen::Component do
+      app.extend vanilla
+    end
+
+    app = Class.new Hydrogen::Application
+    assert app.vanilla?
+  end
+
+  def test_component_modules_are_loaded
+    vanilla = Module.new do
+      def vanilla?
+        true
+      end
+    end
+
+    Class.new Hydrogen::Component do
+      app.include vanilla
+    end
+
+    app = Class.new Hydrogen::Application
+    assert app.new.vanilla?
+  end
 end

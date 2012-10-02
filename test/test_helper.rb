@@ -36,7 +36,11 @@ module Hydrogen
 
   module TestCase
     def setup
+    end
+
+    def teardown
       Hydrogen::Component.config.clear
+      Hydrogen::Component.loaded.clear
     end
   end
 end
@@ -63,6 +67,8 @@ class MiniTest::Unit::TestCase
   end
 
   def teardown
+    super
+
     if Iridium.application
       Iridium.application.config.scripts.clear
       Iridium.application.config.dependencies.clear

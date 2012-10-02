@@ -16,6 +16,18 @@ module Hydrogen
           @root = value
         end
       end
+
+      def inherited(base)
+        Component.loaded.each do |component|
+          component.app.extensions.each do |extension|
+            base.send :extend, extension
+          end
+
+          component.app.includes.each do |inclusion|
+            base.send :include, inclusion
+          end
+        end
+      end
     end
 
     def root

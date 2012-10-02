@@ -17,7 +17,7 @@ class Hydrogen::ComponentTest < MiniTest::Unit::TestCase
   def test_inheriting_from_a_components_records_it
     header = Class.new Hydrogen::Component
 
-    assert_includes Hydrogen::Component.subclasses, header
+    assert_includes Hydrogen::Component.loaded, header
   end
 
   def test_components_can_register_commands
@@ -35,5 +35,13 @@ class Hydrogen::ComponentTest < MiniTest::Unit::TestCase
     end
 
     assert_equal 2, post_office.commands.size
+  end
+
+  def test_components_can_extend_the_application
+    vanilla = Module.new
+
+    latte = Class.new Hydrogen::Component do
+      app.extend vanilla
+    end
   end
 end
