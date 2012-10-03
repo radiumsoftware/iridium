@@ -4,6 +4,7 @@ module Hydrogen
       def initialize
         @@options ||= {}
         @@options[:commands] ||= []
+        @@options[:callbacks] ||= {}
       end
 
       def commands
@@ -102,6 +103,16 @@ module Hydrogen
 
       def paths
         instance.paths
+      end
+
+      def callbacks
+        instance.callbacks
+      end
+
+      def callback(name, &block)
+        key = name.to_sym
+        callbacks[name] ||= []
+        callbacks[name].push block
       end
     end
 

@@ -64,4 +64,18 @@ class Hydrogen::ComponentTest < MiniTest::Unit::TestCase
 
     refute_equal component1.paths, component2.paths
   end
+
+  def test_components_have_callbacks
+    callback_component = Class.new Hydrogen::Component do
+      callback :foo do 
+        puts "Callback called!"
+      end
+    end
+
+    stdout, stdio = capture_io do
+      callback_component.new.run_callbacks :foo
+    end
+
+    assert_includes stdout, "Callback called!"
+  end
 end
