@@ -1,7 +1,6 @@
-require 'fileutils'
-require 'zlib'
-require 'stringio'
-require 'erb'
+require 'iridium/pipeline/compass_configuration'
+require 'iridium/pipeline/dependency_array'
+require 'iridium/pipeline/handlebars_compiler'
 
 module Iridium
   module Pipeline
@@ -27,7 +26,7 @@ module Iridium
         if File.exists? root.join('Assetfile')
           root.join('Assetfile').to_s
         else
-          File.expand_path "../Assetfile", __FILE__
+          File.expand_path "../pipeline/Assetfile", __FILE__
         end
       end
 
@@ -42,21 +41,16 @@ module Iridium
 
       def compile
         clean!
-        configure_compass
 
         Dir.chdir root do
           pipeline.invoke_clean
         end
       end
-
-      def configure_compass
-        Compass.reset_configuration!
-        configuration = CompassConfiguration.new self
-        Compass.add_configuration configuration
-      end
     end
 
     class Component < Iridium::Component
+      app.extend PipelineSupport
+
       config.pipeline = ActiveSupport::OrderedOptions.new
       config.pipeline.handlebars = ActiveSupport::OrderedOptions.new
       config.pipeline.minispade = ActiveSupport::OrderedOptions.new

@@ -31,6 +31,7 @@ require 'iridium/component'
 
 require 'iridium/rack'
 require 'iridium/pipeline'
+require 'iridium/compass'
 require 'iridium/testing'
 require 'iridium/jslint'
 
