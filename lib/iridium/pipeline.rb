@@ -1,4 +1,4 @@
-require 'iridium/pipeline/compass_configuration'
+require 'iridium/pipeline/component_helper'
 require 'iridium/pipeline/dependency_array'
 require 'iridium/pipeline/handlebars_compiler'
 
