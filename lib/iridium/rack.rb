@@ -1,3 +1,17 @@
+require 'iridium/rack/builder'
+require 'iridium/rack/dev_server'
+require 'iridium/rack/reverse_proxy'
+
+require 'iridium/rack/middleware/add_cookie'
+require 'iridium/rack/middleware/add_header'
+require 'iridium/rack/middleware/caching'
+require 'iridium/rack/middleware/gzip_rewriter'
+require 'iridium/rack/middleware/rack_lint_compatibility'
+
+require 'iridium/rack/middleware_stack'
+
+require 'iridium/component_helper'
+
 module Iridium
   module Rack
     module RackSupport
@@ -40,6 +54,8 @@ module Iridium
 
     class Component < Iridium::Component
       config.middleware = MiddlewareStack.new
+
+      config.proxies = {}
     end
   end
 end
