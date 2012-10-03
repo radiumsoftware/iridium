@@ -27,56 +27,18 @@ require 'rake-pipeline-web-filters/erb_filter'
 require 'rake-pipeline-web-filters/i18n_filter'
 require 'rake-pipeline-web-filters/manifest_filter'
 
-require 'iridium/reverse_proxy'
+require 'iridium/component'
 
-require 'iridium/generator'
-
-require 'iridium/dev_server'
-
-require 'iridium/command_streamer'
-
-require 'iridium/test_report'
-require 'iridium/test_suite'
-require 'iridium/test_result'
-require 'iridium/test_runner'
-
-require 'iridium/middleware/rack_lint_compatibility'
-require 'iridium/middleware/caching'
-require 'iridium/middleware/add_header'
-require 'iridium/middleware/add_cookie'
-require 'iridium/middleware/gzip_rewriter'
-
-require 'iridium/config'
-require 'iridium/middleware_stack'
-
-require 'iridium/configuration'
-
-require 'iridium/pipeline'
 require 'iridium/rack'
-
+require 'iridium/pipeline'
+require 'iridium/testing'
 require 'iridium/jslint'
-require 'iridium/jslint_runner'
-require 'iridium/jslint_report'
-
-require 'iridium/commands/application'
-require 'iridium/commands/test'
-require 'iridium/commands/jslint'
-require 'iridium/commands/generate'
-
-require 'iridium/cli'
-
-require 'iridium/handlebars_compiler'
-
-require 'iridium/compass_configuration'
 
 module Iridium
   class Error < StandardError ; end
   class MissingFile < Error ; end
   class MissingTestHelper < Error ; end
   class IncorrectLoadPath < Error ; end
-
-  # Provide a namespace for all our stuff
-  class Component < Hydrogen::Component ; end
 
   class << self
     def application
