@@ -53,6 +53,8 @@ module Iridium
     end
 
     class Component < Iridium::Component
+      app.extend RackSupport
+
       config.middleware = MiddlewareStack.new
 
       config.proxies = {}
