@@ -10,7 +10,7 @@ require 'iridium/rack/middleware/rack_lint_compatibility'
 
 require 'iridium/rack/middleware_stack'
 
-require 'iridium/component_helper'
+require 'iridium/rack/component_helper'
 
 module Iridium
   module Rack

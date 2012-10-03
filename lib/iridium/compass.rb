@@ -1,6 +1,6 @@
 module Iridium
   class CompassConfiguration < Compass::Configuration::Data
-    def initialize(app)
+    def initialize
       super "iridium_config"
     end
   end
@@ -8,7 +8,7 @@ module Iridium
   class CompassComponent < Component
     config.compass = CompassConfiguration.new
 
-    config.compass.line_comment = false
+    config.compass.line_comments = false
 
     before_compile do |app|
       Compass.reset_configuration!

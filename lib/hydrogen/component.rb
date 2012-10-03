@@ -127,5 +127,9 @@ module Hydrogen
     def paths
       @paths ||= PathSet.new self.class.called_from
     end
+
+    def callbacks
+      config.callbacks
+    end
   end
 end

@@ -3,14 +3,14 @@ require "rake-pipeline/middleware"
 
 module Iridium
   module Rack
-    class DevServer < Rack::Server
+    class DevServer < ::Rack::Server
       class NotFound
         def call(env)
           [404, { "Content-Type" => "text/plain" }, ["not found"]]
         end
       end
 
-      class DirectoryServer < Rack::Directory
+      class DirectoryServer < ::Rack::Directory
         def initialize(app, root)
           super root, app
         end
