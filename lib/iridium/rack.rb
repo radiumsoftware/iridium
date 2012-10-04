@@ -52,8 +52,8 @@ module Iridium
       end
     end
 
-    class Component < Iridium::Component
-      app.extend RackSupport
+    class Component < Hydrogen::Component
+      app.include RackSupport
 
       config.middleware = MiddlewareStack.new
 

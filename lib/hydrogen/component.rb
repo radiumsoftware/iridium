@@ -54,14 +54,6 @@ module Hydrogen
     end
 
     class << self
-      def abstract!
-        @abstract = true
-      end
-
-      def abstract?
-        @abstract
-      end
-
       def loaded
         @loaded ||= []
       end
@@ -75,8 +67,6 @@ module Hydrogen
       end
 
       def inherited(base)
-        return if abstract?
-
         loaded << base
         base.called_from = File.dirname(caller.first.sub(%r{:\d+.*}, ''))
       end

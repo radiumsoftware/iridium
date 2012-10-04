@@ -7,13 +7,9 @@ module Iridium
     module PipelineSupport
       extend ActiveSupport::Concern
 
-      module ClassMethods
-        def compile
-          instance.compile
-        end
+      included do
+        attr_accessor :app_path, :site_path, :tmp_path, :vendor_path
       end
-
-      attr_accessor :app_path, :site_path, :tmp_path, :vendor_path
 
       def initialize
         @app_path = root.join 'app'
@@ -48,8 +44,8 @@ module Iridium
       end
     end
 
-    class Component < Iridium::Component
-      app.extend PipelineSupport
+    class Component < Hydrogen::Component
+      app.include PipelineSupport
 
       config.pipeline = ActiveSupport::OrderedOptions.new
       config.pipeline.handlebars = ActiveSupport::OrderedOptions.new

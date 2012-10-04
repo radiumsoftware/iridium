@@ -5,7 +5,7 @@ module Iridium
     end
   end
 
-  class CompassComponent < Component
+  class CompassComponent < Hydrogen::Component
     config.compass = CompassConfiguration.new
 
     config.compass.line_comments = false
