@@ -27,8 +27,6 @@ require 'rake-pipeline-web-filters/erb_filter'
 require 'rake-pipeline-web-filters/i18n_filter'
 require 'rake-pipeline-web-filters/manifest_filter'
 
-require 'iridium/component'
-
 require 'iridium/rack'
 require 'iridium/pipeline'
 require 'iridium/compass'
@@ -74,7 +72,7 @@ module Iridium
     end
   end
 
-  class Application
+  class Application < Hydrogen::Application
     class << self
       def inherited(base)
         raise "You cannot have more than one Iridium::Application" if Iridium.application

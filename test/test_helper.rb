@@ -26,20 +26,11 @@ require File.expand_path("../app/application", __FILE__)
 
 # FIXME: clean this up
 module Hydrogen
-  class Component
-    class Configuration
-      def clear
-        @@options.clear
-      end
-    end
-  end
-
   module TestCase
     def setup
     end
 
     def teardown
-      Hydrogen::Component.config.clear
       Hydrogen::Component.loaded.clear
     end
   end

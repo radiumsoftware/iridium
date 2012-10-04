@@ -1,4 +1,4 @@
-module Iridium
+module Hydrogen
   class Component
     class << self
       def proxy(url, to)
