@@ -82,7 +82,7 @@ input app.root do
 
   # compile all SCSS files into equivalent css file.
   # SCSS partials are not included in compiled output.
-  match /app\/stylesheets\/(?:.+\/)?[^_].+\.s[ca]ss/ do
+  match /app\/stylesheets(\/(?!_)(\w+?))*\/(?!_)(\w+?)\.s[ca]ss/ do
     sass
   end
 

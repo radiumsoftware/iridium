@@ -165,6 +165,24 @@ class PipelineTest < MiniTest::Unit::TestCase
     refute_includes content, %Q{#partial}
   end
 
+  def test_does_not_compile_sass_partials_in_sub_directory
+    create_file "app/stylesheets/app.sass", <<-sass
+#this-selector
+  color: black
+    sass
+
+    create_file "app/stylesheets/partials/_partial.sass", <<-sass
+#partial 
+  color: black
+    sass
+
+    compile ; assert_file "site/application.css"
+
+    content = read "site/application.css"
+
+    refute_includes content, %Q{#partial}
+  end
+
   def tests_compiles_handlebars_into_js_file
     create_file "app/templates/home.handlebars", "{{name}}"
 
