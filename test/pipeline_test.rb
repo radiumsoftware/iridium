@@ -166,12 +166,12 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_does_not_compile_sass_partials_in_sub_directory
-    create_file "app/stylesheets/partials/app.sass", <<-sass
+    create_file "app/stylesheets/app.sass", <<-sass
 #this-selector
   color: black
     sass
 
-    create_file "app/stylesheets/_partial.sass", <<-sass
+    create_file "app/stylesheets/partials/_partial.sass", <<-sass
 #partial 
   color: black
     sass
