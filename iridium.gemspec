@@ -26,8 +26,8 @@ Gem::Specification.new do |gem|
   gem.add_dependency "execjs"
   gem.add_dependency "coffee-script"
   gem.add_dependency "yui-compressor"
-  gem.add_dependency "rake-pipeline"
-  gem.add_dependency "rake-pipeline-web-filters"
+  gem.add_dependency "rake-pipeline", "~> 0.7.0"
+  gem.add_dependency "rake-pipeline-web-filters", "~> 0.7.0"
   gem.add_dependency "activesupport"
   gem.add_dependency "thor"
 
