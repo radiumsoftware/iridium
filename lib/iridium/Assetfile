@@ -12,7 +12,7 @@ end
 # 2. Compile environment specific code
 input app.app_path.join("config") do
   match "**/*.coffee" do
-    coffeescript
+    coffee_script
   end
 
   # Put environment specific files in the pipeline
@@ -25,7 +25,7 @@ end
 # 3. Compile initialization code
 input app.app_path.join("config", "initializers") do
   match "**/*.coffee" do
-    coffeescript
+    coffee_script
   end
 
   match "**/*.js" do
@@ -43,9 +43,9 @@ input app.app_path.join("locales") do
 end
 
 # 5. Compile application code
-input.app_path.join("javascripts") do
+input app.app_path.join("javascripts") do
   match "**/*.coffee" do
-    coffeescript
+    coffee_script
   end
 
   # Compile all Javascript files into Minispade modules.
@@ -68,7 +68,7 @@ input.app_path.join("javascripts") do
 end
 
 # 6. Compile handlebars templates
-input app.path.join("templates") do
+input app.app_path.join("templates") do
   match "**/*.{handlebars,hbs}" do
     handlebars :target => (app.config.handlebars.target || "Handlebars.TEMPLATES"),
       :wrapper_proc => (app.config.handlebars.compiler || proc { |source| "Handlebars.compile(#{source});" }),
@@ -83,7 +83,8 @@ end
 # 7. Concatentate all the javascripts from the previous steps
 #    in the proper order. build_path/javascript now contains
 #    the unoptimized application.js
-
+#
+output app.build_path.join("site")
 input app.build_path.join("javascript") do
   match "*.js" do
     concat ["vendor.js", "env.js", "init.js", "i18n.js", "lib.js", "templates.js"] , "application.js"
@@ -117,6 +118,7 @@ end
 
 # 3. Concatenate the vendor and application css.
 #    Now build_path/css contains the final unoptimized application.css
+output app.build_path.join("site")
 input app.build_path.join("css") do
   match "*.css" do
     concat ["vendor.css", "lib.css"], "application.css"
@@ -125,7 +127,7 @@ end
 
 # == Now process the remaining assets
 # 1. Copy over all the assets
-output app.build_path.join("assets")
+output app.build_path.join("site")
 input app.app_path do
   # Skip sprites since compass processes those
   skip "assets/images/sprites/**/*"
@@ -146,27 +148,12 @@ input app.app_path do
   end
 end
 
-# At this point we have 3 directories:
-# 1. build_path/javascripts
-# 2. build_path/css
-# 3. build_path/assets
-# The compiled site consists of a single directory with all the files
-# from each of those directories. Setup a new pipeline step to create
-# the directory.
-
-output app.build_path.join("site")
-input [app.build_path.join("javascripts"), app.build_path.join("css"), app.build_path.join("assets")] do
-  match "**/*" do
-    copy { |path| path.gsub(/^(javascripts|css|assets)/, '' }
-  end
-end
-
 # now build_path/site contains all the files that need to be optimzed
 # or undergo a conditional build step
 input app.build_path.join("site") do
   if app.config.pipeline.minify
     match "**/.js" do
-      uglicy { |path| path }
+      uglify { |path| path }
     end
 
     match "**/*.css" do
@@ -186,7 +173,7 @@ input app.build_path.join("site") do
     end
 
     match "**/*.gz" do
-      gzip { |input| input }
+      gzip { |path| path }
     end
   end
 end
