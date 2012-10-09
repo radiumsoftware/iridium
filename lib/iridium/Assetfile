@@ -1,53 +1,51 @@
-output app.build_path.join("vendor")
-
+# == The JavaScript pipeline
+# 1. Compile all the vendor code
+output app.build_path.join("javascript")
 input app.vendor_path do
   # Use the specified vendor order to create a vendor.js file
   match "javascripts/*.js" do
     ordered_files = app.config.dependencies.collect { |f| "javascripts/#{f}.js" }
-    concat ordered_files, "build/vendor.js"
-  end
-
-  match "stylesheets/*.css" do
-    concat "build/vendor.css"
+    concat ordered_files, "vendor.js"
   end
 end
 
-output app.site_path
-
-input [app.app_path.to_s, app.build_path.join("vendor")] do
-
-  # Skip sprites since compass processes those
-  skip "assets/images/sprites/**/*"
-
-  # Skip SASS partials
-  skip "stylesheets/**/_*.s{a,c}ss"
-
-  # compile all erb templates. You can access "app" 
-  # inside your templates like this: <% app.config %>
-  match "**/*.erb" do
-    erb binding
-  end
-
+# 2. Compile environment specific code
+input app.app_path.join("config") do
   match "**/*.coffee" do
-    coffee_script
+    coffeescript
   end
 
   # Put environment specific files in the pipeline
-  match "config/#{Iridium.env}.js" do
+  match "#{Iridium.env}.js" do
     iife
-    concat "build/env.js"
+    concat "env.js"
+  end
+end
+
+# 3. Compile initialization code
+input app.app_path.join("config", "initializers") do
+  match "**/*.coffee" do
+    coffeescript
   end
 
+  match "**/*.js" do
+    iife
+    concat "init.js"
+  end
+end
+
+# 4. Compile localiation code
+input app.app_path.join("locales") do
   # Compile all the translations into a single dictionary
-  match "locales/**/*.yml" do
-    i18n "config/initializers/i18n_dictionaries.js"
+  match "**.yml" do
+    i18n "i18n.js"
   end
+end
 
-  # Compile all initializers into a single init.js to be concatentated
-  # later
-  match "config/initializers/**/*.js" do
-    iife
-    concat "build/init.js"
+# 5. Compile application code
+input.app_path.join("javascripts") do
+  match "**/*.coffee" do
+    coffeescript
   end
 
   # Compile all Javascript files into Minispade modules.
@@ -58,85 +56,148 @@ input [app.app_path.to_s, app.build_path.join("vendor")] do
   # Examples:
   # javascripts/boot.js -> require('app_name/boot');
   # javascripts/views/main.js -> require('app_name/views/main');
-  match "javascripts/**/*.js" do
+  match "**/*.js" do
     minispade :rewrite_requires => true, 
       :string => (app.config.minispade.module_format == :string),
       :module_id_generator => proc { |input|
-        input.path.gsub("javascripts/", "#{app.class.to_s.demodulize.underscore}/").gsub(/\.js$/, '')
+        "#{app.class.to_s.demodulize.underscore}/#{input.path.gsub(/\.js$/, '')}"
       }
 
-    concat "build/lib.js"
+    concat "lib.js"
   end
+end
 
-  # Now prepare the handlebars templates by transforming them
-  match "templates/**/*.{handlebars,hbs}" do
+# 6. Compile handlebars templates
+input app.path.join("templates") do
+  match "**/*.{handlebars,hbs}" do
     handlebars :target => (app.config.handlebars.target || "Handlebars.TEMPLATES"),
       :wrapper_proc => (app.config.handlebars.compiler || proc { |source| "Handlebars.compile(#{source});" }),
       :key_name_proc => proc { |input|
-      input.path.sub("templates/", '').sub(File.extname(input.path), '')
+      input.path.sub(File.extname(input.path), '')
     }
 
-    concat "build/templates.js"
+    concat "templates.js"
   end
+end
 
-  # minify and contact lib.js and vendor.js into a single
-  # application.js
-  match "build/*.js" do
-    concat ["build/vendor.js", "build/env.js", "build/init.js", "build/lib.js", "build/templates.js"] , "build/application.js"
+# 7. Concatentate all the javascripts from the previous steps
+#    in the proper order. build_path/javascript now contains
+#    the unoptimized application.js
 
-    if app.config.pipeline.minify
-      uglify { |path| path }
-    end
+input app.build_path.join("javascript") do
+  match "*.js" do
+    concat ["vendor.js", "env.js", "init.js", "i18n.js", "lib.js", "templates.js"] , "application.js"
   end
+end
 
-  # compile all SCSS files into equivalent css file.
-  # SCSS partials are not included in compiled output.
+# == Begin CSS Pipeline
+# 1. Prepare the vendor css
+output app.build_path.join("css")
+input app.vendor_path do
+  # Use the specified vendor order to create a vendor.js file
+  match "stylesheets/*.css" do
+    concat "vendor.css"
+  end
+end
+
+# 2. Prepare the application css
+input app.app_path.join("stylesheets") do
+  # Skip SASS partials
+  skip "stylesheets/**/_*.s{a,c}ss"
+
+  # Now compile all the SCSS or SASS code
   match "stylesheets/**/*.s{c,a}ss" do
     sass
   end
 
-  match "stylesheets/**/*.css" do
-    concat "build/lib.css"
+  match "**/*.css" do
+    concat "lib.css"
+  end
+end
+
+# 3. Concatenate the vendor and application css.
+#    Now build_path/css contains the final unoptimized application.css
+input app.build_path.join("css") do
+  match "*.css" do
+    concat ["vendor.css", "lib.css"], "application.css"
+  end
+end
+
+# == Now process the remaining assets
+# 1. Copy over all the assets
+output app.build_path.join("assets")
+input app.app_path do
+  # Skip sprites since compass processes those
+  skip "assets/images/sprites/**/*"
+
+  # compile all erb templates. You can access "app" 
+  # inside your templates like this: <% app.config %>
+  match "**/*.erb" do
+    erb binding
   end
 
-  # select all stylesheets in the project
-  match "build/*.css" do
-    concat ["build/vendor.css", "build/lib.css"], "build/application.css"
+  # All assets are moved into build_path/assets
+  match "assets/**/*" do
+    copy { |path| path.sub("assets/", "") }
+  end
 
-    if app.config.pipeline.minify
+  match "index.html" do
+    copy
+  end
+end
+
+# At this point we have 3 directories:
+# 1. build_path/javascripts
+# 2. build_path/css
+# 3. build_path/assets
+# The compiled site consists of a single directory with all the files
+# from each of those directories. Setup a new pipeline step to create
+# the directory.
+
+output app.build_path.join("site")
+input [app.build_path.join("javascripts"), app.build_path.join("css"), app.build_path.join("assets")] do
+  match "**/*" do
+    copy { |path| path.gsub(/^(javascripts|css|assets)/, '' }
+  end
+end
+
+# now build_path/site contains all the files that need to be optimzed
+# or undergo a conditional build step
+input app.build_path.join("site") do
+  if app.config.pipeline.minify
+    match "**/.js" do
+      uglicy { |path| path }
+    end
+
+    match "**/*.css" do
       yui_css { |path| path }
     end
   end
 
-  # copy the index html
-  match "index.html" do
-    copy do |input|
-      input.sub "", "build/"
-    end
-  end
-
-  # All images are moved int
-  match "assets/**/*" do
-    copy { |path| path.sub("assets/", "build/") }
-  end
-
   if app.config.pipeline.manifest
-    match "build/**/*" do
-      manifest { |asset| asset.gsub("build/", "") }
+    match "**/*" do
+      manifest { |asset| asset }
     end
   end
 
   if app.config.pipeline.gzip
-    match "build/**/*.*" do
+    match "**/*.*" do
       copy { |name| [name, "#{name}.gz"] }
     end
 
-    match "build/**/*.gz" do
+    match "**/*.gz" do
       gzip { |input| input }
     end
   end
+end
 
-  match "build/**/*.*" do
-    copy { |path| path.sub("build/", "") } 
+# Finally! The final step in the pipeline. build_path/site contains all
+# the files for the compiled version. We can simply copy them over
+# into the real directory
+
+output app.site_path
+input app.build_path.join("site") do
+  match "**/*" do
+    copy
   end
 end
