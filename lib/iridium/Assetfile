@@ -1,3 +1,55 @@
+# Iridium's assestfile is rather complex. It's probably one of
+# the more complex pipelines you'll encounter. It's documented
+# so you can learn from it. It's broken up to many different pipeline.
+# Each pipeline is focused solely on it's area. There are 3 pipelines:
+#
+# 1. Javascript
+# 2. Styleshseets
+# 3. Asssets
+#
+# Each pipeline outputs files to the same directory. That directory
+# is used for the next step in the pipeline. There are 3 phases
+# to asset compilation.
+#
+# 1. Generation (JS/CSS/Assets)
+# 2. Optimization
+# 3. Output
+#
+# You can visualize the pipeline like this
+#
+#
+#    \ JS /   \ CSS /    \ Assets /
+#     \  /     \   /      \      /
+#      |---------|------------|
+#                |
+#   ========== Step 1 ===========
+#                |
+#                |
+#         + ------------ +
+#         | Unoptimized  |
+#         + ------------ +
+#                |
+#   ========== Step 2 ===========
+#                |
+#               \|/
+#         + ------------ +
+#         | Optimization |
+#         + ------------ +
+#                |
+#   ========== Step 3 ===========
+#                |
+#               \|/
+#         + ------------ +
+#         |    Output    |
+#         + ------------ +
+#
+# Each pipeline only concerns itself with the inputs from the previous 
+# step. This keeps each stage isolated. It also makes it easy to inject
+# new steps before others as well as expand them.
+#
+# The individual pipeline steps are documented as well so you can
+# understand them.
+
 # == The JavaScript pipeline
 # 1. Compile all the vendor code
 output app.build_path.join("javascript")
