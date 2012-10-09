@@ -104,10 +104,10 @@ end
 # 2. Prepare the application css
 input app.app_path.join("stylesheets") do
   # Skip SASS partials
-  skip "stylesheets/**/_*.s{a,c}ss"
+  skip "**/_*.s{a,c}ss"
 
   # Now compile all the SCSS or SASS code
-  match "stylesheets/**/*.s{c,a}ss" do
+  match "**/*.s{c,a}ss" do
     sass
   end
 
