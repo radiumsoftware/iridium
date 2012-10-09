@@ -84,7 +84,7 @@ end
 #    in the proper order. build_path/javascript now contains
 #    the unoptimized application.js
 #
-output app.build_path.join("site")
+output app.build_path.join("preoptimization")
 input app.build_path.join("javascript") do
   match "*.js" do
     concat ["vendor.js", "env.js", "init.js", "i18n.js", "lib.js", "templates.js"] , "application.js"
@@ -118,7 +118,7 @@ end
 
 # 3. Concatenate the vendor and application css.
 #    Now build_path/css contains the final unoptimized application.css
-output app.build_path.join("site")
+output app.build_path.join("preoptimization")
 input app.build_path.join("css") do
   match "*.css" do
     concat ["vendor.css", "lib.css"], "application.css"
@@ -127,7 +127,7 @@ end
 
 # == Now process the remaining assets
 # 1. Copy over all the assets
-output app.build_path.join("site")
+output app.build_path.join("preoptimization")
 input app.app_path do
   # Skip sprites since compass processes those
   skip "assets/images/sprites/**/*"
@@ -150,9 +150,10 @@ end
 
 # now build_path/site contains all the files that need to be optimzed
 # or undergo a conditional build step
-input app.build_path.join("site") do
+output app.build_path.join("optimized")
+input app.build_path.join("preoptimization") do
   if app.config.pipeline.minify
-    match "**/.js" do
+    match "**/*.js" do
       uglify { |path| path }
     end
 
@@ -176,6 +177,11 @@ input app.build_path.join("site") do
       gzip { |path| path }
     end
   end
+
+  # Everything else is simply copied over
+  match "**/*" do
+    copy
+  end
 end
 
 # Finally! The final step in the pipeline. build_path/site contains all
@@ -183,7 +189,7 @@ end
 # into the real directory
 
 output app.site_path
-input app.build_path.join("site") do
+input app.build_path.join("optimized") do
   match "**/*" do
     copy
   end
