@@ -1,74 +1,79 @@
-output app.site_path
+output app.build_path.join("vendor")
 
-input app.root do
-  # Skip sprites since compass processes those
-  skip "app/assets/images/sprites/**/*"
-
-  # Skip SASS partials
-  skip "app/stylesheets/**/_*.s{a,c}ss"
-
-  # compile all erb templates. You can access "app" 
-  # inside your templates like this: <% app.config %>
-  match "app/**/*.erb" do
-    erb binding
-  end
-
-  match "app/**/*.coffee" do
-    coffee_script
-  end
-
+input app.vendor_path do
   # Use the specified vendor order to create a vendor.js file
-  match "vendor/javascripts/*.js" do
-    ordered_files = app.config.dependencies.collect { |f| "vendor/javascripts/#{f}.js" }
+  match "javascripts/*.js" do
+    ordered_files = app.config.dependencies.collect { |f| "javascripts/#{f}.js" }
     concat ordered_files, "build/vendor.js"
   end
 
-  match "vendor/stylesheets/*.css" do
+  match "stylesheets/*.css" do
     concat "build/vendor.css"
+  end
+end
+
+output app.site_path
+
+input [app.app_path.to_s, app.build_path.join("vendor")] do
+
+  # Skip sprites since compass processes those
+  skip "assets/images/sprites/**/*"
+
+  # Skip SASS partials
+  skip "stylesheets/**/_*.s{a,c}ss"
+
+  # compile all erb templates. You can access "app" 
+  # inside your templates like this: <% app.config %>
+  match "**/*.erb" do
+    erb binding
+  end
+
+  match "**/*.coffee" do
+    coffee_script
   end
 
   # Put environment specific files in the pipeline
-  match "app/config/#{Iridium.env}.js" do
+  match "config/#{Iridium.env}.js" do
     iife
     concat "build/env.js"
   end
 
   # Compile all the translations into a single dictionary
-  match "app/locales/**/*.yml" do
-    i18n "app/config/initializers/i18n_dictionaries.js"
+  match "locales/**/*.yml" do
+    i18n "config/initializers/i18n_dictionaries.js"
   end
 
   # Compile all initializers into a single init.js to be concatentated
   # later
-  match "app/config/initializers/**/*.js" do
+  match "config/initializers/**/*.js" do
     iife
     concat "build/init.js"
   end
 
   # Compile all Javascript files into Minispade modules.
-  # Files in app/vendor/javascripts become modules
-  # based on their file name. Files in app/javascripts
+  # Files in vendor/javascripts become modules
+  # based on their file name. Files in javascripts
   # becomes modules inside your application namespace.
   #
   # Examples:
-  # app/javascripts/boot.js -> require('app_name/boot');
-  # app/javascripts/views/main.js -> require('app_name/views/main');
-  match "app/javascripts/**/*.js" do
+  # javascripts/boot.js -> require('app_name/boot');
+  # javascripts/views/main.js -> require('app_name/views/main');
+  match "javascripts/**/*.js" do
     minispade :rewrite_requires => true, 
       :string => (app.config.minispade.module_format == :string),
       :module_id_generator => proc { |input|
-        input.path.gsub("app/javascripts/", "#{app.class.to_s.demodulize.underscore}/").gsub(/\.js$/, '')
+        input.path.gsub("javascripts/", "#{app.class.to_s.demodulize.underscore}/").gsub(/\.js$/, '')
       }
 
     concat "build/lib.js"
   end
 
   # Now prepare the handlebars templates by transforming them
-  match "app/templates/**/*.{handlebars,hbs}" do
+  match "templates/**/*.{handlebars,hbs}" do
     handlebars :target => (app.config.handlebars.target || "Handlebars.TEMPLATES"),
       :wrapper_proc => (app.config.handlebars.compiler || proc { |source| "Handlebars.compile(#{source});" }),
       :key_name_proc => proc { |input|
-      input.path.sub("app/templates/", '').sub(File.extname(input.path), '')
+      input.path.sub("templates/", '').sub(File.extname(input.path), '')
     }
 
     concat "build/templates.js"
@@ -86,11 +91,11 @@ input app.root do
 
   # compile all SCSS files into equivalent css file.
   # SCSS partials are not included in compiled output.
-  match "app/stylesheets/**/*.s{c,a}ss" do
+  match "stylesheets/**/*.s{c,a}ss" do
     sass
   end
 
-  match "app/stylesheets/**/*.css" do
+  match "stylesheets/**/*.css" do
     concat "build/lib.css"
   end
 
@@ -104,15 +109,15 @@ input app.root do
   end
 
   # copy the index html
-  match "app/index.html" do
+  match "index.html" do
     copy do |input|
-      input.sub "app/", "build/"
+      input.sub "", "build/"
     end
   end
 
   # All images are moved int
-  match "app/assets/**/*" do
-    copy { |path| path.sub("app/assets/", "build/") }
+  match "assets/**/*" do
+    copy { |path| path.sub("assets/", "build/") }
   end
 
   if app.config.pipeline.manifest

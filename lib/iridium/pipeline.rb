@@ -22,6 +22,10 @@ module Iridium
       @vendor_path = root.join 'vendor'
     end
 
+    def build_path
+      tmp_path.join "builds"
+    end
+
     def assetfile
       if File.exists? root.join('Assetfile')
         root.join('Assetfile').to_s
