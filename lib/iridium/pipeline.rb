@@ -8,6 +8,12 @@ module Iridium
     module PipelineSupport
       extend ActiveSupport::Concern
 
+      module ClassMethods
+        def compile
+          instance.compile
+        end
+      end
+
       included do
         attr_accessor :app_path, :site_path, :tmp_path, :vendor_path
       end
@@ -39,6 +45,8 @@ module Iridium
       def compile
         clean!
 
+        run_callbacks :before_compile
+
         Dir.chdir root do
           pipeline.invoke_clean
         end
@@ -51,8 +59,9 @@ module Iridium
       command CompileCommand
 
       config.pipeline = ActiveSupport::OrderedOptions.new
-      config.pipeline.handlebars = ActiveSupport::OrderedOptions.new
-      config.pipeline.minispade = ActiveSupport::OrderedOptions.new
+
+      config.handlebars = ActiveSupport::OrderedOptions.new
+      config.minispade = ActiveSupport::OrderedOptions.new
 
       config.dependencies = DependencyArray.new
       config.scripts = DependencyArray.new
