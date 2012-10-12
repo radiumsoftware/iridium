@@ -21,28 +21,5 @@ module Iridium
 
     desc "generate NAME", "runs the NAME generator"
     subcommand "generate", Commands::Generate
-
-    desc "server", "start a development server"
-    def server
-      ENV['IRIDIUM_ENV'] = 'development'
-      Iridium.load!
-      Iridium.application.clean!
-      Iridium::DevServer.new.start
-    end
-
-    desc "compile PATH", "compile assets for deployment to an optional PATH"
-    method_option :environment, :aliases => '-e', :default => 'production'
-    def compile(path = nil)
-      ENV['IRIDIUM_ENV'] = options[:environment]
-
-      Iridium.load!
-
-      if path
-        raise "#{path} does not exist!" unless File.directory? path
-        Iridium.application.site_path = Pathname.new path
-      end
-
-      Iridium.application.compile
-    end
   end
 end

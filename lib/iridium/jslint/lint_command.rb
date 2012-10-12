@@ -1,6 +1,6 @@
 module Iridium
-  module Commands
-    class JSLint
+  module JSLint
+    class LintCommand
       class << self
         def start(args = ARGV)
           if args.size == 0

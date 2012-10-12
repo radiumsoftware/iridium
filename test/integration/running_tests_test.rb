@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'iridium/commands/test'
 
 class RunningTestsTest < MiniTest::Unit::TestCase
   def index_file_content
