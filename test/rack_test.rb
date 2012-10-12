@@ -1,87 +1,41 @@
 require 'test_helper'
-require 'fileutils'
 
 class RackTest < MiniTest::Unit::TestCase
-  include Rack::Test::Methods
-
-  def app
-    Iridium.application
+  def setup
+    super
+    Iridium.application.config.proxies.clear
   end
 
-  def test_serves_index_from_root
-    create_file 'site/index.html', 'foo'
-
-    get '/'
-
-    assert last_response.ok?
-
-    assert_equal 'foo', last_response.body.chomp
+  def teardown
+    Iridium.application.config.proxies.clear
+    super
   end
 
-  def test_adds_the_last_modified_header_to_assets
-    create_file 'site/foo.html', 'bar'
-
-    get '/foo.html'
-
-    assert last_response.ok?
-
-    mtime = File.new(Iridium.application.site_path.join('foo.html')).mtime.httpdate
-    assert_equal mtime, last_response.headers['Last-Modified']
+  def config
+    Iridium.application.config
   end
 
-  def test_sets_the_cache_control_headers
-    create_file 'site/foo.html', 'bar'
-
-    get "/foo.html"
-
-    assert last_response.ok?
-    assert_equal "max-age=0, private, must-revalidate", last_response.headers['Cache-Control']
+  def test_middleware_config_is_exposed
+    assert_kind_of Iridium::Rack::MiddlewareStack, config.middleware
   end
 
-  def tests_returns_304_when_cache_matchs
-    create_file 'site/foo.html', 'bar'
-
-    get "/foo.html"
-
-    assert last_response.ok?
-
-    timestamp = last_response.headers['Last-Modified']
-
-    assert timestamp
-
-    get "/foo.html", {}, { "HTTP_IF_MODIFIED_SINCE" => timestamp }
-
-    assert 304, last_response.status
+  def test_proxy_config_is_exposed
+    assert_kind_of Hash, config.proxies
   end
 
-  def test_returns_compressed_files_when_requested
-    create_file "site/application.js.gz", 'gzipped'
+  def test_proxy
+    config.proxy '/api', 'foo.com'
 
-    get '/application.js', {}, 'HTTP_ACCEPT_ENCODING' => 'gzip'
-
-    assert last_response.ok?
-
-    assert_equal "gzip", last_response.headers['Content-Encoding']
-    assert_equal "gzipped", last_response.body.chomp
+    assert_equal "foo.com", config.proxies['/api']
   end
 
-  def test_gzipped_files_have_correct_content_type
-    create_file "site/application.js.gz", 'gzipped'
+  def test_proxy_allows_overwriting
+    config.proxy '/api', 'foo.com'
 
-    get '/application.js', {}, 'HTTP_ACCEPT_ENCODING' => 'gzip'
+    assert_equal 'foo.com', config.proxies['/api']
 
-    assert last_response.ok?
-
-    assert_equal "application/javascript", last_response.headers['Content-Type']
-  end
-
-  def test_serves_the_cache_manifest_correctly
-    create_file "site/cache.manifest", "manifest"
-
-    get '/cache.manifest'
-
-    assert last_response.ok?
-
-    assert_equal "text/cache-manifest", last_response.headers['Content-Type']
+    config.proxy '/api', 'bar.com'
+    assert_equal 1, config.proxies.size
+    assert_equal 'bar.com', config.proxies['/api']
   end
 end

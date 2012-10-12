@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class PipelineTest < MiniTest::Unit::TestCase
+class AssetPipelineTest < MiniTest::Unit::TestCase
   def teardown
     Iridium.application.config.minispade.clear
     Iridium.application.config.handlebars.clear
