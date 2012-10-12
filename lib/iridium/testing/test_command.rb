@@ -1,50 +1,19 @@
-require 'optparse'
-
 module Iridium
   module Testing
-    class TestCommand
-      class << self
-        def start(args = ARGV)
-          options = {}
+    class TestCommand < Hydrogen::Command
 
-          unless Iridium.application
-            begin
-              require './application.rb'
-            rescue LoadError
-              $stderr.puts "Could not find application.rb. Navigate to the root of your Iridium app"
-              exit 2
-            end
-          end
+      desc "test PATHS", "run tests match by PATHS"
+      method_option :debug, :type => :boolean, :default => false
+      method_option :dry_run, :type => :boolean, :default => false
+      method_option :seed, :type => :numeric
+      def test(*paths)
+        Iridium.load!
 
-          OptionParser.new do |opts|
-            opts.banner = "Usage: PATH [PATH] [options]"
-
-            opts.on "--debug", "Print messages from tests" do
-              options[:debug] = true
-            end
-
-            opts.on "--dry-run", "Setup and tear down the test suite without executing the tests" do
-              options[:dry_run] = true
-            end
-
-            opts.on "--seed", "Seed for the random number generator" do |s|
-              options[:seed] = s.to_i
-            end
-
-            # No argument, shows at tail.  This will print an options summary.
-            # Try it and see!
-            opts.on_tail("-h", "--help", "Show this message") do
-              puts opts
-              exit
-            end
-          end.parse! args
-
-          if args.size == 0
-            args = Dir['test/**/*_test.{coffee,js}']
-          end
-
-          TestSuite.execute args, options
+        if paths.size == 0
+          paths = Dir['test/**/*_test.{coffee,js}']
         end
+
+        TestSuite.execute paths, options
       end
     end
   end
