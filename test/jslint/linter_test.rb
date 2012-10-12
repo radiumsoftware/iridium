@@ -1,10 +1,14 @@
 require 'test_helper'
 
 class LinterTest < MiniTest::Unit::TestCase
-  def test_returns_no_results_on_a_good_file
-    create_file "app/test.js", Iridium::JSLint.source
+  def linter
+    Iridium::JSLint::Linter
+  end
 
-    results = Iridium::JSLint.run Iridium.application.root.join("app", "test.js") 
+  def test_returns_no_results_on_a_good_file
+    create_file "app/test.js", Iridium::JSLint::Linter.source
+
+    results = linter.run Iridium.application.root.join("app", "test.js") 
 
     assert_kind_of Array, results
     assert_empty results
@@ -12,7 +16,8 @@ class LinterTest < MiniTest::Unit::TestCase
 
   def test_parses_results
     create_file "app/test.js", "foo = 'bar'"
-    results = Iridium::JSLint.run Iridium.application.root.join("app", "test.js")
+
+    results = linter.run Iridium.application.root.join("app", "test.js")
 
     assert_kind_of Array, results
     assert_equal 2, results.size
