@@ -1,5 +1,5 @@
 module Iridium
-  module Pipeline
+  module Rack
     class ServerCommand < Hydrogen::Command
       desc "server", "start a development server"
       def server

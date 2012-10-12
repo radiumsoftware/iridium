@@ -33,6 +33,8 @@ require 'iridium/rack'
 require 'iridium/testing'
 require 'iridium/jslint'
 
+require 'iridium/cli'
+
 module Iridium
   class Error < StandardError ; end
   class MissingFile < Error ; end
