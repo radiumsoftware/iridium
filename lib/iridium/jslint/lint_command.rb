@@ -1,6 +1,8 @@
 module Iridium
   module JSLint
     class LintCommand < Hydrogen::Command
+      description "Run jslint on some files"
+
       desc "lint FILES", "lint the specified files"
       def lint(*files)
         if files.size == 0
