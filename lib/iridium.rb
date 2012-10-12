@@ -27,11 +27,11 @@ require 'rake-pipeline-web-filters/erb_filter'
 require 'rake-pipeline-web-filters/i18n_filter'
 require 'rake-pipeline-web-filters/manifest_filter'
 
-require 'iridium/rack'
 require 'iridium/pipeline'
 require 'iridium/compass'
-# require 'iridium/testing'
-# require 'iridium/jslint'
+require 'iridium/rack'
+require 'iridium/testing'
+require 'iridium/jslint'
 
 module Iridium
   class Error < StandardError ; end

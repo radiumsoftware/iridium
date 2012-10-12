@@ -1,8 +1,8 @@
 require 'optparse'
 
 module Iridium
-  module Commands
-    class Test
+  module Testing
+    class TestCommand
       class << self
         def start(args = ARGV)
           options = {}

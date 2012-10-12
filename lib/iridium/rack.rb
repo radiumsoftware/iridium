@@ -2,6 +2,8 @@ require 'iridium/rack/builder'
 require 'iridium/rack/dev_server'
 require 'iridium/rack/reverse_proxy'
 
+require 'iridium/rack/server_command'
+
 require 'iridium/rack/middleware/add_cookie'
 require 'iridium/rack/middleware/add_header'
 require 'iridium/rack/middleware/caching'
@@ -54,6 +56,8 @@ module Iridium
 
     class Component < Hydrogen::Component
       app.include RackSupport
+
+      command ServerCommand
 
       config.middleware = MiddlewareStack.new
 
