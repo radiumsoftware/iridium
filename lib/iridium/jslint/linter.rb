@@ -40,10 +40,6 @@ module Iridium
         end
       end
 
-      def self.source
-        File.read File.expand_path('../../../vendor/jslint.js', __FILE__)
-      end
-
       def self.context
         @context ||= ExecJS.compile <<-js
           #{source}
@@ -58,6 +54,10 @@ module Iridium
         context.call('LINTER', File.read(file)).collect do |h| 
           Result.new file, h 
         end
+      end
+
+      def self.source
+        File.read Iridium.vendor_path.join("jslint.js")
       end
     end
   end
