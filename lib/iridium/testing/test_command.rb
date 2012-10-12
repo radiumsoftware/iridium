@@ -1,6 +1,7 @@
 module Iridium
   module Testing
     class TestCommand < Hydrogen::Command
+      description "Executes tests"
 
       desc "test PATHS", "run tests match by PATHS"
       method_option :debug, :type => :boolean, :default => false
