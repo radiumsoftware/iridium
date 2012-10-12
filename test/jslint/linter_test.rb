@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class JSHintTest < MiniTest::Unit::TestCase
+class LinterTest < MiniTest::Unit::TestCase
   def test_returns_no_results_on_a_good_file
     create_file "app/test.js", Iridium::JSLint.source
 
