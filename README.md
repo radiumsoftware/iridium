@@ -12,8 +12,8 @@ First create a `Gemfile`
 source :rubygems
 
 gem 'iridium', :github => 'radiumsoftware/iridium'
-gem "rake-pipeline", :github => "livingsocial/rake-pipeline"
-gem "rake-pipeline-web-filters", :github => "wycats/rake-pipeline-web-filters"
+gem "rake-pipeline"
+gem "rake-pipeline-web-filters"
 ```
 
 Now bootstrap:
