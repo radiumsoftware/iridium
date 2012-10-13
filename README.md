@@ -12,8 +12,7 @@ First create a `Gemfile`
 source :rubygems
 
 gem 'iridium', :github => 'radiumsoftware/iridium'
-gem "rake-pipeline"
-gem "rake-pipeline-web-filters"
+
 ```
 
 Now bootstrap:
