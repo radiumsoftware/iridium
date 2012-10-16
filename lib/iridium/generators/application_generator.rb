@@ -1,6 +1,10 @@
 module Iridium
   module Generators
     class ApplicationGenerator < Iridium::Generator
+      def self.generator_name
+        "app"
+      end
+
       desc "generate a new application in PATH"
 
       self.source_paths << Iridium.vendor_path
