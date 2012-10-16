@@ -25,5 +25,6 @@ module Iridium
   end
 end
 
+require 'iridium/generators/application_generator'
 require 'iridium/generators/assetfile_generator'
 require 'iridium/generators/rackup_generator'
