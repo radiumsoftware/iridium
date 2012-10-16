@@ -1,11 +1,30 @@
 require 'test_helper'
 
 class CompileCommandTest < MiniTest::Unit::TestCase
-  def test_compile_generates_a_site
-    create_file "app/javascripts/app.js", "FOO"
+  def setup ; end
+  def teardown ; end
 
-    invoke %w[compile]
+  def test_compile_command_calls_compile
+    app = mock
+    Iridium.application = app
 
-    assert File.exists?(Iridium.application.site_path.join('application.js'))
+    app.expects(:compile)
+
+    Iridium::Pipeline::CompileCommand.new.invoke(:compile)
+  end
+
+  def test_path_can_be_passed_to_compile_into
+    app = mock :compile => true
+    Iridium.application = app
+
+    app.expects(:site_path=).with(".")
+
+    Iridium::Pipeline::CompileCommand.new.invoke(:compile, ["."])
+  end
+
+  def test_an_error_is_raised_when_path_is_invalid
+    assert_raises RuntimeError do
+      Iridium::Pipeline::CompileCommand.new.invoke(:compile, ["/foo/bar"])
+    end
   end
 end
