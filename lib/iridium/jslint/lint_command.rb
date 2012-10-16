@@ -9,7 +9,8 @@ module Iridium
           files = Dir['app/javascripts/**/*.js']
         end
 
-        JSLintRunner.execute files
+        exit_code = Runner.execute files
+        exit exit_code
       end
     end
   end

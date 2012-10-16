@@ -5,6 +5,8 @@ require 'minitest/unit'
 require 'minitest/pride'
 require 'minitest/autorun'
 
+require 'mocha'
+
 require 'rack/test'
 
 require 'iridium'
