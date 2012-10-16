@@ -2,7 +2,7 @@ require 'test_helper'
 
 class RunningTestsTest < MiniTest::Unit::TestCase
   def index_file_content
-    path = File.expand_path "../../../generators/application/app/index.html.erb.tt", __FILE__
+    path = File.expand_path "../../../generators/iridium/application/templates/app/index.html.erb.tt", __FILE__
 
     ERB.new(File.read(path)).result(binding)
   end
