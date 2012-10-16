@@ -57,16 +57,6 @@ class JsLintingTest < MiniTest::Unit::TestCase
     assert_includes stdout, "2 File(s)"
   end
 
-  def test_defaults_to_all_js_files
-    create_file "app/javascripts/file1.js", good_file
-    create_file "app/javascripts/file2.js", good_file
-
-    result, stdout, stderr = invoke
-
-    assert_equal 0, result
-    assert_includes stdout, "2 File(s)"
-  end
-
   def test_expand_directory_arguments
     create_file "app/javascripts/file1.js", good_file
     create_file "app/javascripts/file2.js", good_file
