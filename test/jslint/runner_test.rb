@@ -6,7 +6,7 @@ class JsLintingTest < MiniTest::Unit::TestCase
 
     stdout, stderr = capture_io do
       Dir.chdir Iridium.application.root do
-        status = Iridium::Commands::JSLint.start(args)
+        status = Iridium::JSLint::Runner.execute args
       end
     end
 
@@ -18,7 +18,7 @@ class JsLintingTest < MiniTest::Unit::TestCase
   end
 
   def good_file
-    Iridium::JSLint.source
+    Iridium::JSLint::Linter.source
   end
 
   def test_pukes_on_bad_files

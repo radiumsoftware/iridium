@@ -10,3 +10,4 @@ gem "hydrogen", :path => "~/radium/hydrogen"
 
 gem 'm'
 gem 'debugger'
+gem 'mocha'
