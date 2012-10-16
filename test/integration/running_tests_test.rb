@@ -187,7 +187,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
         console.log 'unit logging'
     test
 
-    status, stdout, stderr = invoke "test/unit/logging.coffee", "test/integration/logging.coffee", "--debug"
+    status, stdout, stderr = invoke "test/unit/logging.coffee", "test/integration/logging.coffee", :debug => true
 
     assert_includes stdout, "integration logging"
     assert_includes stdout, "unit logging"
@@ -204,27 +204,10 @@ class RunningTestsTest < MiniTest::Unit::TestCase
         ok true, "Passed!"
     test
 
-    status, stdout, stderr = invoke "test/integration/truth.coffee", "test/integration/truth.coffee", "--dry-run"
+    status, stdout, stderr = invoke "test/integration/truth.coffee", "test/integration/truth.coffee", :dry_run => true
 
     assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
     assert_includes stdout, "0 Test(s)"
-  end
-
-  def test_runner_defaults_to_all_test_files_when_no_arguments
-    create_file "test/integration/truth_test.coffee", <<-test
-      test 'Truth', ->
-        ok true, "passed!"
-    test
-
-    create_file "test/unit/truth_test.coffee", <<-test
-      test 'Truth', ->
-        ok true, "Passed!"
-    test
-
-    status, stdout, stderr = invoke
-
-    assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
-    assert_includes stdout, "2 Test(s)"
   end
 
   def test_runner_pukes_if_passing_a_non_js_or_cs_file
@@ -357,7 +340,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
       });
     test
 
-    status, stdout, stderr = invoke "test/unit/dump_test.js", "test/integration/dump_test.js", "--debug"
+    status, stdout, stderr = invoke "test/unit/dump_test.js", "test/integration/dump_test.js", :debug => true
 
     assert_includes stdout, %Q{{"mode":"unit"}}
     assert_includes stdout, %Q{{"mode":"integration"}}
@@ -413,7 +396,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
 
     stdout, stderr = capture_io do
       Dir.chdir Iridium.application.root do
-        status = Iridium::Testing::Suite.execute paths
+        options = paths.extract_options!
+        status = Iridium::Testing::Suite.execute paths, options
       end
     end
 
