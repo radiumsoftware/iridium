@@ -4,7 +4,7 @@ class DevServerTest < MiniTest::Unit::TestCase
   include Rack::Test::Methods
 
   def app
-    Iridium::DevServer.new.app
+    Iridium::Rack::DevServer.new.app
   end
 
   def test_returns_not_found

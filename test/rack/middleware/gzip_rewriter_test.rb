@@ -6,7 +6,7 @@ class GzipRewriterTest < MiniTest::Unit::TestCase
 
   def app
     backend = Rack::Directory.new(TestApp.instance.site_path)
-    Iridium::Middleware::GzipRewriter.new backend, TestApp.instance
+    Iridium::Rack::Middleware::GzipRewriter.new backend, TestApp.instance
   end
 
   def setup

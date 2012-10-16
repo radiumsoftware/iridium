@@ -8,7 +8,7 @@ class MiddlewareTest < MiniTest::Unit::TestCase
   end
 
   def test_add_cookie
-    middleware = Iridium::Middleware::AddCookie.new MockApp.new, 'foo', 'bar'
+    middleware = Iridium::Rack::Middleware::AddCookie.new MockApp.new, 'foo', 'bar'
 
     status, headers, body = middleware.call({})
 
@@ -16,7 +16,7 @@ class MiddlewareTest < MiniTest::Unit::TestCase
   end
 
   def test_adds_a_basic_header
-    middleware = Iridium::Middleware::AddHeader.new MockApp.new, 'X-Foo', 'bar'
+    middleware = Iridium::Rack::Middleware::AddHeader.new MockApp.new, 'X-Foo', 'bar'
 
     env = {}
     middleware.call env
@@ -25,7 +25,7 @@ class MiddlewareTest < MiniTest::Unit::TestCase
   end
 
   def test_doesnt_blow_up_on_rack_style
-    middleware = Iridium::Middleware::AddHeader.new MockApp.new, 'HTTP_X_FOO', 'bar'
+    middleware = Iridium::Rack::Middleware::AddHeader.new MockApp.new, 'HTTP_X_FOO', 'bar'
 
     env = {}
     middleware.call env
@@ -34,7 +34,7 @@ class MiddlewareTest < MiniTest::Unit::TestCase
   end
 
   def test_add_header_supports_url_matching
-    middleware = Iridium::Middleware::AddHeader.new MockApp.new, 'HTTP_X_FOO', 'bar', :url => /\/api/
+    middleware = Iridium::Rack::Middleware::AddHeader.new MockApp.new, 'HTTP_X_FOO', 'bar', :url => /\/api/
 
     env = { 'PATH_INFO' => '/api/foo/bar' }
     middleware.call env
