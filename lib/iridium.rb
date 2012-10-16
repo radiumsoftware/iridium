@@ -27,15 +27,9 @@ require 'rake-pipeline-web-filters/erb_filter'
 require 'rake-pipeline-web-filters/i18n_filter'
 require 'rake-pipeline-web-filters/manifest_filter'
 
-require 'iridium/pipeline'
-require 'iridium/compass'
-require 'iridium/rack'
-require 'iridium/testing'
-require 'iridium/jslint'
-
-require 'iridium/generators'
-
-require 'iridium/cli'
+# Declare the top level module with some utility 
+# methods that other pieces of code need before filling
+# in the rest
 
 module Iridium
   class Error < StandardError ; end
@@ -75,7 +69,19 @@ module Iridium
       ENV['IRIDIUM_ENV'] || ENV['RACK_ENV'] || 'development'
     end
   end
+end
 
+require 'iridium/pipeline'
+require 'iridium/compass'
+require 'iridium/rack'
+require 'iridium/testing'
+require 'iridium/jslint'
+
+require 'iridium/generators'
+
+require 'iridium/cli'
+
+module Iridium
   class Application < Hydrogen::Application
     class << self
       def inherited(base)
