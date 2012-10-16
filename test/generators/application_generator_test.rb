@@ -34,6 +34,7 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos', 'app', 'config', 'production.coffee'
     assert_file 'todos', 'app', 'config', 'test.coffee'
     assert_file 'todos', 'app', 'config', 'initializers'
+    assert_file 'todos', 'app', 'config', 'initializers', 'handlebars.coffee'
 
     assert_file 'todos', 'app', 'index.html.erb'
 
