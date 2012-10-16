@@ -94,16 +94,16 @@ module Iridium
           end
         end
 
-        report = TestReport.new
+        report = Report.new
 
         options[:seed] ||= srand % 0xFFFF
         srand options[:seed]
 
         file_names.shuffle!
 
-        tests = [TestRunner.new(Iridium.application, file_names, report.collector)]
+        tests = [Runner.new(Iridium.application, file_names, report.collector)]
 
-        suite = TestSuite.new Iridium.application, tests
+        suite = Suite.new Iridium.application, tests
 
         results = suite.run options
 
@@ -177,10 +177,12 @@ module Iridium
         paths = [
           @app.root.join('test', 'unit_test_runner.html'),
           @app.root.join('test', 'unit_test_runner.html.erb'),
-          File.expand_path("../templates/unit_test_runner.html.erb", __FILE__)
+          File.expand_path("../unit_test_runner.html.erb", __FILE__)
         ]
 
         template_path = paths.find { |f| File.exists? f }
+
+        raise SetupFailed, "Could not find an test loader template in #{paths.inspect}" unless template_path
 
         File.read template_path
       end

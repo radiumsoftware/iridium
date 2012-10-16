@@ -12,7 +12,7 @@ class TestSuiteTest < MiniTest::Unit::TestCase
   end
 
   def mock_test
-    MockTest.new(Iridium::TestResult.new(:passed => true))
+    MockTest.new(Iridium::Testing::Result.new(:passed => true))
   end
 
   def test_suite_collects_results_from_tests
@@ -27,6 +27,6 @@ class TestSuiteTest < MiniTest::Unit::TestCase
   private
   def start(*test_files)
     options = test_files.extract_options!
-    capture_io { Iridium::TestSuite.new(Iridium.application, test_files).run(options) }
+    capture_io { Iridium::Testing::Suite.new(Iridium.application, test_files).run(options) }
   end
 end

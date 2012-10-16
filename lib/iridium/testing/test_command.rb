@@ -10,11 +10,12 @@ module Iridium
       def test(*paths)
         Iridium.load!
 
-        if paths.size == 0
+        if paths.empty?
           paths = Dir['test/**/*_test.{coffee,js}']
         end
 
-        TestSuite.execute paths, options
+        result = Suite.execute paths, options
+        exit result
       end
     end
   end

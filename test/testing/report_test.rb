@@ -2,14 +2,14 @@ require 'test_helper'
 
 class TestReportTest < MiniTest::Unit::TestCase
   def result(attributes = {})
-    Iridium::TestResult.new({
+    Iridium::Testing::Result.new({
       :backtrace => []
     }.merge(attributes))
   end
 
   def print(results)
     stdout, stderr = capture_io do
-      Iridium::TestReport.new.print_results(results)
+      Iridium::Testing::Report.new.print_results(results)
     end
     stdout
   end

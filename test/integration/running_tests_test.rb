@@ -408,12 +408,12 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_includes stderr, "test/support/helper.coffee"
   end
 
-  def invoke(*args)
+  def invoke(*paths)
     stdout, stderr, status = nil
 
     stdout, stderr = capture_io do
       Dir.chdir Iridium.application.root do
-        status = Iridium::Commands::Test.start(args)
+        status = Iridium::Testing::Suite.execute paths
       end
     end
 
