@@ -12,7 +12,7 @@ module Iridium
 
         if path
           raise "#{path} does not exist!" unless File.directory? path
-          Iridium.application.site_path = Pathname.new path
+          Iridium.application.site_path = path
         end
 
         Iridium.application.compile
