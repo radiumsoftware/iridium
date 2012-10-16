@@ -41,6 +41,8 @@ end
 class MiniTest::Unit::TestCase
   include Hydrogen::TestCase
 
+  INDEX_FILE_PATH = File.expand_path("../../generators/iridium/application/templates/app/index.html.erb.tt", __FILE__)
+
   def setup
     super
 
