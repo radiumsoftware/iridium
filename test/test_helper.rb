@@ -26,26 +26,11 @@ end
 # Require the test app which lives in a separate directory
 require File.expand_path("../app/application", __FILE__)
 
-# FIXME: clean this up
-module Hydrogen
-  module TestCase
-    def setup
-    end
-
-    def teardown
-      Hydrogen::Component.loaded.clear
-    end
-  end
-end
-
 class MiniTest::Unit::TestCase
-  include Hydrogen::TestCase
 
   INDEX_FILE_PATH = File.expand_path("../../generators/iridium/application/templates/app/index.html.erb.tt", __FILE__)
 
   def setup
-    super
-
     FileUtils.mkdir_p sandbox_path
 
     Iridium.application = TestApp.instance
@@ -62,8 +47,6 @@ class MiniTest::Unit::TestCase
   end
 
   def teardown
-    super
-
     if Iridium.application
       Iridium.application.config.scripts.clear
       Iridium.application.config.dependencies.clear
