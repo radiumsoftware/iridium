@@ -29,4 +29,9 @@ class RackupGeneratorTest < GeneratorTestCase
 
     assert_includes content, require_line
   end
+
+  def test_generator_naming
+    assert_equal "iridium", command.namespace
+    assert_equal "rackup", command.generator_name
+  end
 end
