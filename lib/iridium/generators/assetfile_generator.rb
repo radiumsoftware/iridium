@@ -1,6 +1,6 @@
 module Iridium
   module Generators
-    class AssetfileGenerator
+    class AssetfileGenerator < Hydrogen::Generator
 
     end
   end

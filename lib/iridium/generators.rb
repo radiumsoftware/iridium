@@ -1,6 +1,8 @@
 module Iridium
-  class Generator < Thor
-    include Thor::Actions
+  class Generator < Hydrogen::Generator
+    def self.base_root
+      File.expand_path("../../../generators", __FILE__)
+    end
 
     no_tasks do
       def app
@@ -22,3 +24,6 @@ module Iridium
     end
   end
 end
+
+require 'iridium/generators/assetfile_generator'
+require 'iridium/generators/rackup_generator'
