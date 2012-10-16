@@ -1,13 +1,4 @@
 #!/usr/bin/env ruby
 
 require 'iridium'
-
-if ARGV.first == 'test'
-  ARGV.shift
-  Iridium::Commands::Test.start
-elsif ARGV.first == 'lint'
-  ARGV.shift
-  Iridium::Commands::JSLint.start
-else
-  Iridium::CLI.start
-end
+Iridium::CLI.start
