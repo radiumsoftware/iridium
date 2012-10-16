@@ -6,6 +6,7 @@ class ApplicationCommandTest < GeneratorTestCase
   end
 
   def tests_generates_an_app_skeleton
+    skip
     invoke 'application', 'todos'
 
     assert_file 'todos'
@@ -80,6 +81,7 @@ class ApplicationCommandTest < GeneratorTestCase
   end
 
   def test_accepts_a_path
+    skip
     invoke 'application', 'my_apps/todos'
 
     assert_file 'my_apps/todos'
@@ -92,12 +94,14 @@ class ApplicationCommandTest < GeneratorTestCase
   end
 
   def test_assetfile_is_optional
+    skip
     invoke 'application', 'todos', :assetfile => true
 
     assert_file 'todos', 'Assetfile'
   end
 
   def test_generated_applications_can_be_deployed
+    skip
     invoke 'application', 'todos', :deployable => true
 
     assert_file 'todos', 'config.ru'
@@ -108,6 +112,7 @@ class ApplicationCommandTest < GeneratorTestCase
   end
 
   def test_generated_applications_support_different_envs
+    skip
     invoke 'application', 'todos', :envs => true
 
     assert_file 'todos', 'config', 'development.rb'
