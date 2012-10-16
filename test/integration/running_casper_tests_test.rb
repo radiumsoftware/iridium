@@ -8,7 +8,7 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
 
     Dir.chdir Iridium.application.root do
       stdout, stderr = capture_io do
-        results = Iridium::TestRunner.new(Iridium.application, files).run(options)
+        results = Iridium::Testing::Runner.new(Iridium.application, files).run(options)
       end
     end
 
@@ -407,7 +407,7 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
       });
     test
 
-    assert_raises Iridium::CommandStreamer::ProcessAborted do
+    assert_raises Iridium::Testing::CommandStreamer::ProcessAborted do
       results, stdout, stderr = invoke "test/casper/warn_test.js"
     end
   end

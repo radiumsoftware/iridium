@@ -3,24 +3,24 @@ require 'shellwords'
 
 class CommandStreamerTest < MiniTest::Unit::TestCase
   def test_nothing_is_raised_when_command_works
-    command = Iridium::CommandStreamer.new "echo hi"
+    command = Iridium::Testing::CommandStreamer.new "echo hi"
     command.run
   end
 
   def test_raises_an_error_when_command_fails
     script_path = File.expand_path "../../script/fail", __FILE__
 
-    command = Iridium::CommandStreamer.new script_path
+    command = Iridium::Testing::CommandStreamer.new script_path
 
-    assert_raises Iridium::CommandStreamer::CommandFailed do
+    assert_raises Iridium::Testing::CommandStreamer::CommandFailed do
       command.run
     end
   end
 
   def test_survives_when_command_cannot_be_found
-    command = Iridium::CommandStreamer.new "asdfoijdafkdasjf"
+    command = Iridium::Testing::CommandStreamer.new "asdfoijdafkdasjf"
 
-    assert_raises Iridium::CommandStreamer::CommandFailed do
+    assert_raises Iridium::Testing::CommandStreamer::CommandFailed do
       command.run
     end
   end
@@ -29,7 +29,7 @@ class CommandStreamerTest < MiniTest::Unit::TestCase
     json = {:iridium => {:this => :message}}.to_json
     collector = []
 
-    command = Iridium::CommandStreamer.new "echo #{Shellwords.shellescape(json)}"
+    command = Iridium::Testing::CommandStreamer.new "echo #{Shellwords.shellescape(json)}"
     command.run do |message|
       collector << message
     end
@@ -43,9 +43,9 @@ class CommandStreamerTest < MiniTest::Unit::TestCase
   def test_raises_an_error_when_process_sends_an_abort_signal
     json = {:abort => "Failed"}.to_json
 
-    command = Iridium::CommandStreamer.new "echo #{Shellwords.shellescape(json)}"
+    command = Iridium::Testing::CommandStreamer.new "echo #{Shellwords.shellescape(json)}"
 
-    assert_raises Iridium::CommandStreamer::ProcessAborted do
+    assert_raises Iridium::Testing::CommandStreamer::ProcessAborted do
       command.run
     end
   end

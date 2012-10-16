@@ -12,7 +12,7 @@ module Iridium
 
         return collector if options[:dry_run]
 
-        js_test_runner = File.expand_path('../casperjs/test_runner.coffee', __FILE__)
+        js_test_runner = File.expand_path('../../casperjs/test_runner.coffee', __FILE__)
 
         command_options = { 
           "lib-path" => Iridium.js_lib_path,
