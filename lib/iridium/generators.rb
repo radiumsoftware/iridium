@@ -28,3 +28,9 @@ end
 require 'iridium/generators/application_generator'
 require 'iridium/generators/assetfile_generator'
 require 'iridium/generators/rackup_generator'
+
+# Allows iridium generators to be invoked without specifying
+# the namespace. Example: "iridium generate app" instead of
+# "iridium generate iridium:app"
+
+Hydrogen::Generators.default_namespaces << :iridium
