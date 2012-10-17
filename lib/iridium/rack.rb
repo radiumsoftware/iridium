@@ -12,8 +12,6 @@ require 'iridium/rack/middleware/rack_lint_compatibility'
 
 require 'iridium/rack/middleware_stack'
 
-require 'iridium/rack/component_helper'
-
 module Iridium
   module Rack
     module RackSupport
@@ -55,15 +53,21 @@ module Iridium
         builder.to_app
       end
     end
+  end
 
-    class Component < Hydrogen::Component
-      app.include RackSupport
+  class Component 
+    include Rack::RackSupport
 
-      command ServerCommand
+    command Rack::ServerCommand
 
-      config.middleware = MiddlewareStack.new
+    config.middleware = Rack::MiddlewareStack.new
 
-      config.proxies = {}
+    config.proxies = {}
+
+    class << self
+      def proxy(url, to)
+        config.proxy(url, to)
+      end
     end
   end
 end
