@@ -3,6 +3,11 @@ module Iridium
     def paths
       @paths ||= begin
         set = Hydrogen::PathSet.new root
+        set[:app].add "app"
+        set[:vendor].add "vendor"
+        set[:site].add "site"
+        set[:tmp].add "tmp"
+        set[:build].add "temp/build"
         set
       end
     end
