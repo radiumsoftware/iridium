@@ -36,7 +36,7 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos', 'app', 'config', 'initializers'
     assert_file 'todos', 'app', 'config', 'initializers', 'handlebars.coffee'
 
-    assert_file 'todos', 'app', 'index.html.erb'
+    assert_file 'todos', 'app', 'assets', 'index.html.erb'
 
     assert_file 'todos', 'test', 'integration', 'navigation_test.coffee'
     assert_file 'todos', 'test', 'unit', 'truth_test.coffee'
@@ -72,7 +72,7 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos', 'vendor', 'javascripts', 'jquery.js'
     assert_file 'todos', 'vendor', 'javascripts', 'i18n.js'
 
-    index_path = destination_root.join('todos', 'app', 'index.html.erb')
+    index_path = destination_root.join('todos', 'app', 'assets', 'index.html.erb')
     content = read index_path
 
     assert_includes content, %Q{<script src="/application.js"></script>}

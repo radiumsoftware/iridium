@@ -31,7 +31,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def create_index
-    create_file "app/index.html.erb", index_file_content
+    create_file "app/assets/index.html.erb", index_file_content
   end
 
   def config
@@ -251,7 +251,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def tests_provides_the_server_for_erb_templates
-    create_file "app/index.html.erb", <<-str
+    create_file "app/assets/index.html.erb", <<-str
     <%= app.config %>
     str
 
