@@ -93,7 +93,7 @@ module Iridium
     end
 
     def root
-      @root ||= Pathname.new(File.dirname(__FILE__))
+      @root ||= find_root_with_flag("application.rb")
     end
 
     def initialize

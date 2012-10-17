@@ -36,7 +36,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_components_can_add_js_processing_hooks
-    component = Class.new Hydrogen::Component do
+    component = Class.new Iridium::Component do
       javascript do |pipeline|
         # this code is not evaluated in this test
       end
@@ -47,7 +47,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_components_can_add_css_processing_hooks
-    component = Class.new Hydrogen::Component do
+    component = Class.new Iridium::Component do
       css do |pipeline|
         # this code is not evaluated in this test
       end
@@ -58,7 +58,7 @@ class PipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_components_can_add_optmization_processing_hooks
-    component = Class.new Hydrogen::Component do
+    component = Class.new Iridium::Component do
       optimize do |pipeline|
         # this code is not evaluated in this test
       end

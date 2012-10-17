@@ -66,7 +66,7 @@ module Iridium
 
     class << self
       def proxy(url, to)
-        config.proxy(url, to)
+        config.proxies[url] = to
       end
     end
   end

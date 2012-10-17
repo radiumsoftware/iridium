@@ -1,13 +1,21 @@
 require 'test_helper'
 
 class RackTest < MiniTest::Unit::TestCase
+  def app
+    Iridium.application
+  end
+
+  def proxies
+    config.proxies
+  end
+
   def setup
     super
-    Iridium.application.config.proxies.clear
+    proxies.clear
   end
 
   def teardown
-    Iridium.application.config.proxies.clear
+    proxies.clear
     super
   end
 
@@ -24,17 +32,24 @@ class RackTest < MiniTest::Unit::TestCase
   end
 
   def test_proxy
-    config.proxy '/api', 'foo.com'
+    app.configure do
+      proxy '/api', 'foo.com'
+    end
 
     assert_equal "foo.com", config.proxies['/api']
   end
 
   def test_proxy_allows_overwriting
-    config.proxy '/api', 'foo.com'
+    app.configure do
+      proxy '/api', 'foo.com'
+    end
 
     assert_equal 'foo.com', config.proxies['/api']
 
-    config.proxy '/api', 'bar.com'
+    app.configure do 
+      proxy '/api', 'bar.com'
+    end
+
     assert_equal 1, config.proxies.size
     assert_equal 'bar.com', config.proxies['/api']
   end

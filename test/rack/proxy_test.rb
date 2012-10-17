@@ -9,7 +9,7 @@ class ProxyTest < MiniTest::Unit::TestCase
 
   def setup
     TestApp.configure do 
-      config.proxy '/api', 'http://myapi.com'
+      proxy '/api', 'http://myapi.com'
     end
   end
 
