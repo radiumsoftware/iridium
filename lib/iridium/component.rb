@@ -7,7 +7,7 @@ module Iridium
         set[:vendor].add "vendor"
         set[:site].add "site"
         set[:tmp].add "tmp"
-        set[:build].add "temp/build"
+        set[:build].add "tmp/build"
         set
       end
     end
@@ -29,7 +29,7 @@ module Iridium
     end
 
     def build_path
-      paths[:build].exapnded.first
+      paths[:build].expanded.first
     end
   end
 end
