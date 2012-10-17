@@ -688,6 +688,21 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "Appending Filter"
   end
 
+  def test_components_can_swap_out_js_dependencies
+    config.dependencies.load :handlebars
+    config.dependencies.swap :handlebars, :handlebars_vm
+
+    create_file "vendor/javascripts/handlebars.js", "full handlebars"
+    create_file "vendor/javascripts/handlebars_vm.js", "handlebars vm"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    refute_includes content, "full handlebars"
+    assert_includes content, "handlebars vm"
+  end
+
   private
   def compile
     TestApp.compile

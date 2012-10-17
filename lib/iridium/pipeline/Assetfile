@@ -57,9 +57,14 @@
 # 1. Compile all the vendor code
 output app.build_path.join("javascript")
 input app.vendor_path.join("javascripts") do
+  # Skip all the files specified.
+  app.config.dependencies.skips.each do |file|
+    skip "#{file}.js"
+  end
+
   # Use the specified vendor order to create a vendor.js file
   match "**/*.js" do
-    ordered_files = app.config.dependencies.collect { |f| "#{f}.js" }
+    ordered_files = app.config.dependencies.files.collect { |f| "#{f}.js" }
     concat ordered_files, "vendor.js"
   end
 end

@@ -8,14 +8,14 @@ class PipelineTest < MiniTest::Unit::TestCase
   def test_load_add_dependences
     config.dependencies.load :foo
 
-    assert_includes config.dependencies, :foo
+    assert_includes config.dependencies.files, :foo
   end
 
   def test_unload_removes_dependences
     config.dependencies << :foo
     config.dependencies.unload :foo
 
-    assert_empty config.dependencies
+    assert_empty config.dependencies.files
   end
 
   def test_swap_dependencies
@@ -23,8 +23,16 @@ class PipelineTest < MiniTest::Unit::TestCase
 
     config.dependencies.swap :handlebars, :handlebars_runtime
 
-    assert_includes config.dependencies, :handlebars_runtime
-    refute_includes config.dependencies, :handlebars
+    assert_includes config.dependencies.files, :handlebars_runtime
+    refute_includes config.dependencies.files, :handlebars
+    assert_includes config.dependencies.skips, :handlebars
+  end
+
+  def test_files_contains_loaded_files_without_skips
+    config.dependencies.load :a, :b, :c
+    config.dependencies.skip :b
+
+    assert_equal [:a, :c], config.dependencies.files
   end
 
   def test_components_can_add_js_processing_hooks
