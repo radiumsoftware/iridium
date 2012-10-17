@@ -299,7 +299,7 @@ point your app to a test server intead. Here's an example:
 ```
 # application.rb
 YourApp.configure do
-  config.proxy "/api", "http://api.myproduct.com"
+  proxy "/api", "http://api.myproduct.com"
 end
 ```
 
@@ -308,12 +308,12 @@ Proxies can be overwritten per env like this:
 ```
 # application.rb
 YourApp.configure do
-  config.proxy "/api", "http://api.myproduct.com"
+  proxy "/api", "http://api.myproduct.com"
 end
 
 # config/test.rb
 YourApp.configure do
-  config.proxy "/api", "http://test-api.myproduct.com"
+  proxy "/api", "http://test-api.myproduct.com"
 end
 ```
 
