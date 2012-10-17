@@ -82,15 +82,17 @@ require 'iridium/generators'
 require 'iridium/cli'
 
 module Iridium
-  class Application < Hydrogen::Application
+  class Application < Component
     class << self
       def inherited(base)
         raise "You cannot have more than one Iridium::Application" if Iridium.application
         super
-        root_path = File.dirname caller.first.match(/(.+):\d+/)[1]
-        base.root = root_path
         Iridium.application = base.instance
       end
+    end
+
+    def root
+      @root ||= Pathname.new(File.dirname(__FILE__))
     end
 
     def initialize

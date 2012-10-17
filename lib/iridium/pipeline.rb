@@ -1,4 +1,3 @@
-require 'iridium/pipeline/component_helper'
 require 'iridium/pipeline/dependency_array'
 require 'iridium/pipeline/handlebars_compiler'
 require 'iridium/pipeline/compile_command'
@@ -56,23 +55,23 @@ module Iridium
         end
       end
     end
+  end
 
-    class Component < Hydrogen::Component
-      app.include PipelineSupport
+  class Component
+    include Pipeline::PipelineSupport
 
-      command CompileCommand
+    command Pipeline::CompileCommand
 
-      config.pipeline = ActiveSupport::OrderedOptions.new
+    config.pipeline = ActiveSupport::OrderedOptions.new
 
-      config.pipeline.js_pipelines = []
-      config.pipeline.css_pipelines = []
-      config.pipeline.optimization_pipelines = []
+    config.pipeline.js_pipelines = []
+    config.pipeline.css_pipelines = []
+    config.pipeline.optimization_pipelines = []
 
-      config.handlebars = ActiveSupport::OrderedOptions.new
-      config.minispade = ActiveSupport::OrderedOptions.new
+    config.handlebars = ActiveSupport::OrderedOptions.new
+    config.minispade = ActiveSupport::OrderedOptions.new
 
-      config.dependencies = DependencyArray.new
-      config.scripts = DependencyArray.new
-    end
+    config.dependencies = Pipeline::DependencyArray.new
+    config.scripts = Pipeline::DependencyArray.new
   end
 end
