@@ -7,7 +7,7 @@ require 'iridium/testing/result'
 
 module Iridium
   module Testing
-    class Component < Hydrogen::Component
+    class TestingComponent < Component
       command TestCommand
     end
   end
