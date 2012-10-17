@@ -52,6 +52,7 @@ class MiniTest::Unit::TestCase
       Iridium.application.config.dependencies.clear
       Iridium.application.config.pipeline.js_pipelines = []
       Iridium.application.config.pipeline.css_pipelines = []
+      Iridium.application.config.pipeline.optimization_pipelines = []
 
       FileUtils.rm_rf Iridium.application.app_path
       FileUtils.rm_rf Iridium.application.site_path

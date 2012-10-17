@@ -62,6 +62,7 @@ module Iridium
 
       config.pipeline.js_pipelines = []
       config.pipeline.css_pipelines = []
+      config.pipeline.optimization_pipelines = []
 
       config.handlebars = ActiveSupport::OrderedOptions.new
       config.minispade = ActiveSupport::OrderedOptions.new
