@@ -34,7 +34,6 @@ class MiniTest::Unit::TestCase
     FileUtils.mkdir_p sandbox_path
 
     Iridium.application = TestApp.instance
-    Iridium.application.site_path = Iridium.application.root.join("site")
 
     FileUtils.mkdir_p Iridium.application.app_path
     FileUtils.mkdir_p Iridium.application.site_path
