@@ -4,8 +4,18 @@ module Iridium
       @paths ||= begin
         set = Hydrogen::PathSet.new root
         set[:app].add "app"
+        set[:config].add "app/config"
+        set[:initializers].add "app/config/initializers"
+        set[:javascripts].add "app/javascripts"
+        set[:stylesheets].add "app/stylesheets"
+        set[:templates].add "app/templates"
+
+        set[:locales].add "app/locales"
+
         set[:vendor].add "vendor"
+
         set[:site].add "site"
+
         set[:tmp].add "tmp"
         set[:build].add "tmp/build"
         set
