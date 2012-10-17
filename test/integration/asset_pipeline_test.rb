@@ -1,10 +1,19 @@
 require 'test_helper'
 
 class AssetPipelineTest < MiniTest::Unit::TestCase
+  class AppendingFilter < Rake::Pipeline::Filter
+    def generate_output(inputs, output)
+      inputs.each do |input|
+        output.write input.read
+        output.write "Appending Filter"
+      end
+    end
+  end
+
   def teardown
-    Iridium.application.config.minispade.clear
-    Iridium.application.config.handlebars.clear
-    Iridium.application.config.pipeline.clear
+    config.minispade.clear
+    config.handlebars.clear
+    config.pipeline.clear
     super
   end
 
@@ -23,6 +32,10 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
   def create_index
     create_file "app/index.html.erb", index_file_content
+  end
+
+  def config
+    Iridium.application.config
   end
 
   def test_index_is_copied_over_correctly
@@ -56,7 +69,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def tests_compiles_app_js_into_string_minispade_modules
-    Iridium.application.config.minispade.module_format = :string
+    config.minispade.module_format = :string
 
     create_file "app/javascripts/main.js", "Main = {};"
 
@@ -68,7 +81,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def tests_compiles_app_js_into_modules
-    Iridium.application.config.minispade.module_format = :function
+    config.minispade.module_format = :function
 
     create_file "app/javascripts/main.js", "FOO"
 
@@ -186,7 +199,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_handlebars_destination_is_configurbale
-    Iridium.application.config.handlebars.target = "FOO"
+    config.handlebars.target = "FOO"
 
     create_file "app/templates/home.handlebars", "{{name}}"
 
@@ -198,7 +211,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_handlebars_wrapper_is_configurable
-    Iridium.application.config.handlebars.compiler = proc { |source| 
+    config.handlebars.compiler = proc { |source| 
       "Pizza.compile(#{source});"
     }
 
@@ -261,7 +274,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     create_file "vendor/javascripts/file1.js", "var file1 = {};"
     create_file "vendor/javascripts/file2.js", "var file2 = {};"
 
-    Iridium.application.config.dependencies.load :file2
+    config.dependencies.load :file2
 
     compile ; assert_file "site/application.js"
 
@@ -278,8 +291,8 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     create_file "vendor/javascripts/jquery_ui.js", "var jqui = {};"
     create_file "vendor/javascripts/underscore.js", "var underscore = {};"
 
-    Iridium.application.config.dependencies.load :jquery
-    Iridium.application.config.dependencies.load :jquery_ui
+    config.dependencies.load :jquery
+    config.dependencies.load :jquery_ui
 
     compile ; assert_file "site/application.js"
 
@@ -327,7 +340,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_minifies_js
-    Iridium.application.config.pipeline.minify = true
+    config.pipeline.minify = true
 
     create_file "app/javascripts/app.js", <<-js
       var App = function() {
@@ -353,7 +366,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_minifies_css
-    Iridium.application.config.pipeline.minify = true
+    config.pipeline.minify = true
 
     create_file "app/stylesheets/app.css", <<-js
       #APP {
@@ -379,7 +392,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_generates_gzip_versions
-    Iridium.application.config.pipeline.gzip = true
+    config.pipeline.gzip = true
 
     create_file "app/javascripts/app.js", "var fooBar = {};"
 
@@ -390,7 +403,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_gzip_ignores_project_files
-    Iridium.application.config.pipeline.gzip = true
+    config.pipeline.gzip = true
 
     create_file "readme.md", "This is my readme.md"
 
@@ -401,7 +414,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_generates_a_cache_manifest
-    Iridium.application.config.pipeline.manifest = true
+    config.pipeline.manifest = true
 
     create_file "app/javascripts/app.js", "var MyApp = {};"
     create_file "app/assets/images/logo.png", "image content"
@@ -419,7 +432,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_includes_a_cache_manifest
-    Iridium.application.config.pipeline.manifest = true
+    config.pipeline.manifest = true
 
     create_index
 
@@ -502,7 +515,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   def test_index_contains_scripts
     create_index
 
-    Iridium.application.config.scripts << "http://jquery.com/jquery.js"
+    config.scripts << "http://jquery.com/jquery.js"
 
     compile ; assert_file "site/index.html"
 
@@ -619,6 +632,42 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     compile
 
     assert_file "site/application.css"
+  end
+
+  def test_components_can_add_to_the_js_pipeline
+    callback = proc { |pipeline|
+      pipeline.match "**/*.js" do
+        filter AppendingFilter
+      end
+    }
+
+    config.pipeline.js_pipelines << callback
+
+    create_file "app/javascripts/app.js", "foo"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "Appending Filter"
+  end
+
+  def test_components_can_add_to_the_css_pipeline
+    callback = proc { |pipeline|
+      pipeline.match "**/*.css" do
+        filter AppendingFilter
+      end
+    }
+
+    config.pipeline.css_pipelines << callback
+
+    create_file "app/stylesheets/application.css", "foo"
+
+    compile ; assert_file "site/application.css"
+
+    content = read "site/application.css"
+
+    assert_includes content, "Appending Filter"
   end
 
   private
