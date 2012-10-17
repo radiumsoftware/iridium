@@ -50,6 +50,8 @@ class MiniTest::Unit::TestCase
     if Iridium.application
       Iridium.application.config.scripts.clear
       Iridium.application.config.dependencies.clear
+      Iridium.application.config.pipeline.js_pipelines = []
+      Iridium.application.config.pipeline.css_pipelines = []
 
       FileUtils.rm_rf Iridium.application.app_path
       FileUtils.rm_rf Iridium.application.site_path
