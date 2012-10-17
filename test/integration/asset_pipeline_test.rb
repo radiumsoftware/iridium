@@ -581,7 +581,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_sprites_are_compiled
-    sprite_path = Iridium.application.app_path.join("assets", "images", "sprites")
+    sprite_path = Iridium.application.app_path.join "sprites"
 
     FileUtils.mkdir_p sprite_path.join("icons")
 

@@ -12,6 +12,7 @@ module Iridium
         set[:templates].add "app/templates"
         set[:assets].add "app/assets"
         set[:locales].add "app/locales"
+        set[:sprites].add "app/sprites"
 
         set[:vendor].add "vendor"
 
