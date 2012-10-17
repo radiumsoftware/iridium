@@ -5,7 +5,7 @@ require 'iridium/jslint/runner'
 
 module Iridium
   module JSLint
-    class Component < Hydrogen::Component
+    class LintComponent < Component
       command LintCommand
     end
   end

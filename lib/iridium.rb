@@ -71,6 +71,7 @@ module Iridium
   end
 end
 
+require 'iridium/component'
 require 'iridium/pipeline'
 require 'iridium/compass'
 require 'iridium/rack'
