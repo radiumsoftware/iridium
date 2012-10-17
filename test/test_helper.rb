@@ -28,7 +28,7 @@ require File.expand_path("../app/application", __FILE__)
 
 class MiniTest::Unit::TestCase
 
-  INDEX_FILE_PATH = File.expand_path("../../generators/iridium/application/templates/app/index.html.erb.tt", __FILE__)
+  INDEX_FILE_PATH = File.expand_path("../../generators/iridium/application/templates/app/assets/index.html.erb.tt", __FILE__)
 
   def setup
     FileUtils.mkdir_p sandbox_path

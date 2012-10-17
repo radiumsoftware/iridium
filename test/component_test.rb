@@ -10,6 +10,7 @@ class ComponentTest < MiniTest::Unit::TestCase
     assert_equal "app/javascripts", component.paths[:javascripts].first.path
     assert_equal "app/templates", component.paths[:templates].first.path
     assert_equal "app/stylesheets", component.paths[:stylesheets].first.path
+    assert_equal "app/assets", component.paths[:assets].first.path
   end
 
   def test_vendor_path
