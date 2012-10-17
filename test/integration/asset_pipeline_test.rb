@@ -670,6 +670,24 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "Appending Filter"
   end
 
+  def test_components_ccan_add_to_the_optimization_pipeline
+    callback = proc { |pipeline|
+      pipeline.match "**/*" do
+        filter AppendingFilter
+      end
+    }
+
+    config.pipeline.optimization_pipelines << callback
+
+    create_file "app/stylesheets/application.css", "foo"
+
+    compile ; assert_file "site/application.css"
+
+    content = read "site/application.css"
+
+    assert_includes content, "Appending Filter"
+  end
+
   private
   def compile
     TestApp.compile

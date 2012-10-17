@@ -48,4 +48,15 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_kind_of Array, component.config.pipeline.css_pipelines
     assert_equal 1, component.config.pipeline.css_pipelines.size
   end
+
+  def test_components_can_add_optmization_processing_hooks
+    component = Class.new Hydrogen::Component do
+      optimize do |pipeline|
+        # this code is not evaluated in this test
+      end
+    end
+
+    assert_kind_of Array, component.config.pipeline.optimization_pipelines
+    assert_equal 1, component.config.pipeline.optimization_pipelines.size
+  end
 end

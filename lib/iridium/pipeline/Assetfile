@@ -218,6 +218,12 @@ end
 # or undergo a conditional build step
 output app.build_path.join("optimized")
 input app.build_path.join("preoptimization") do
+
+  # Execute build hooks added by external components
+  app.config.pipeline.optimization_pipelines.each do |callback|
+    callback.call self
+  end
+
   if app.config.pipeline.minify
     match "**/*.js" do
       uglify { |path| path }
