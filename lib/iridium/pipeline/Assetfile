@@ -148,9 +148,7 @@ output app.build_path.join("preoptimization")
 input app.build_path.join("javascript") do
 
   # Execute build hooks added by external components
-  app.config.pipeline.js_pipelines.each do |callback|
-    callback.call self
-  end
+  app.config.js_pipelines.invoke self
 
   match "*.js" do
     concat ["vendor.js", "env.js", "init.js", "i18n.js", "lib.js", "templates.js"] , "application.js"
@@ -187,9 +185,7 @@ end
 output app.build_path.join("preoptimization")
 input app.build_path.join("css") do
   # Execute build hooks added by external components
-  app.config.pipeline.css_pipelines.each do |callback|
-    callback.call self
-  end
+  app.config.css_pipelines.invoke self
 
   match "*.css" do
     concat ["vendor.css", "lib.css"], "application.css"
@@ -221,9 +217,7 @@ output app.build_path.join("optimized")
 input app.build_path.join("preoptimization") do
 
   # Execute build hooks added by external components
-  app.config.pipeline.optimization_pipelines.each do |callback|
-    callback.call self
-  end
+  app.config.optimization_pipelines.invoke self
 
   if app.config.pipeline.minify
     match "**/*.js" do

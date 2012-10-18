@@ -53,9 +53,9 @@ module Iridium
 
     config.pipeline = ActiveSupport::OrderedOptions.new
 
-    config.pipeline.js_pipelines = []
-    config.pipeline.css_pipelines = []
-    config.pipeline.optimization_pipelines = []
+    config.js_pipelines = Hydrogen::CallbackSet.new
+    config.css_pipelines = Hydrogen::CallbackSet.new
+    config.optimization_pipelines = Hydrogen::CallbackSet.new
 
     config.handlebars = ActiveSupport::OrderedOptions.new
     config.minispade = ActiveSupport::OrderedOptions.new
@@ -68,18 +68,18 @@ module Iridium
         callback :before_compile, *args, &block
       end
 
-      def javascript(&block)
-        config.pipeline.js_pipelines.push block
+      def javascript(*args, &block)
+        config.js_pipelines.add *args, &block
       end
       alias js javascript
 
-      def stylesheet(&block)
-        config.pipeline.css_pipelines.push block
+      def stylesheet(*args, &block)
+        config.css_pipelines.add *args, &block
       end
       alias css stylesheet
 
-      def optimize(&block)
-        config.pipeline.optimization_pipelines.push block
+      def optimize(*args, &block)
+        config.optimization_pipelines.add *arg, &block
       end
       alias optimizations stylesheet
     end
