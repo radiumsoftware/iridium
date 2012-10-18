@@ -13,6 +13,10 @@ module Iridium
         end
       end
 
+      def all_paths
+        @all_paths ||= Hydrogen::PathSetProxy.new Engine.subclasses.map(&:paths)
+      end
+
       def assetfile
         if File.exists? root.join('Assetfile')
           root.join('Assetfile').to_s
