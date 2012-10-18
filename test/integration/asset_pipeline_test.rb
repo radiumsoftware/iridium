@@ -10,10 +10,25 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     end
   end
 
+  def setup
+    super
+    FileUtils.mkdir_p Iridium.application.root.join("external")
+
+    # Declare an engine so we can dump files in /external
+    # to simulate loaded engines
+    Class.new Iridium::Engine do
+      def root
+        # so create_file works as expected
+        Iridium.application.root.join("external")
+      end
+    end
+  end
+
   def teardown
     config.minispade.clear
     config.handlebars.clear
     config.pipeline.clear
+    FileUtils.rm_rf Iridium.application.root.join("external")
     super
   end
 
@@ -697,14 +712,97 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "handlebars vm"
   end
 
-  def test_engines_can_load_vendor_javascript
-    skip
-
+  def test_engine_vendor_javascript_comes_before_app_vendor_js
     create_file "external/vendor/javascripts/engine.js", "engine"
+    create_file "vendor/javascripts/app.js", "app"
 
     compile ; assert_file "site/application.js"
     content = read "site/application.js"
-    assert_includes content, "engine"
+
+    assert_before content, "app", "engine"
+  end
+
+  def test_engines_configurations_come_before_app_configurations
+    create_file "external/app/config/test.js", "engine"
+    create_file "app/config/test.js", "app"
+
+    compile ; assert_file "site/application.js"
+    content = read "site/application.js"
+
+    assert_before content, "app", "engine"
+  end
+
+  def test_engines_initializers_come_before_app_initializers
+    create_file "external/app/config/initializers/engine.js", "engine"
+    create_file "app/config/initializers/app.js", "app"
+
+    compile ; assert_file "site/application.js"
+    content = read "site/application.js"
+
+    assert_before content, "app", "engine"
+  end
+
+  def test_engine_locales_come_before_app_locales
+    create_file "external/app/locales/engine.yml", "engine"
+    create_file "app/locales/app.yml", "app"
+
+    compile ; assert_file "site/application.js"
+    content = read "site/application.js"
+
+    assert_before content, "app", "engine"
+  end
+
+  def test_engine_javascripts_come_before_app_javascripts
+    skip
+
+    compile ; assert_file "site/application.js"
+    content = read "site/application.js"
+
+    assert_before content, "app", "engine"
+  end
+
+  def test_engine_javascript_gets_its_own_namespace
+    skip
+  end
+
+  def test_engines_can_add_their_own_templates
+    skip
+  end
+
+  def test_engine_vendor_css_comes_before_app_vendor_css
+    create_file "external/vendor/stylesheets/engine.css", "engine"
+    create_file "vendor/stylehseets/app.css", "app"
+
+    compile ; assert_file "site/application.js"
+    content = read "site/application.js"
+
+    assert_before content, "app", "engine"
+  end
+
+  def test_engine_css_comes_before_app_css
+    create_file "external/stylesheets/app.css", "engine"
+    create_file "app/stylehseets/app.css", "app"
+
+    compile ; assert_file "site/application.js"
+    content = read "site/application.js"
+
+    assert_before content, "app", "engine"
+  end
+
+  def test_engine_assets_are_copied_over
+    create_file "external/assets/engine.asset", "engine"
+
+    compile ; assert_file "site/engine.asset"
+  end
+
+  def test_engine_sprites_can_be_imported
+    skip
+  end
+
+  def assert_before(string, before, after)
+    assert_includes string, before
+    assert_includes string, after
+    assert string.index(before) < string.index(after), "#{before} should be before #{after}"
   end
 
   private
