@@ -56,7 +56,7 @@
 # == The JavaScript pipeline
 # 1. Compile all the vendor code
 output app.build_path.join("javascript")
-input app.paths[:vendor].expanded do
+input app.all_paths[:vendor].expanded do
   # Skip all the files specified.
   app.config.dependencies.skips.each do |file|
     skip "javascripts/#{file}.js"

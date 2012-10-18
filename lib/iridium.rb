@@ -78,51 +78,7 @@ require 'iridium/compass'
 require 'iridium/rack'
 require 'iridium/testing'
 require 'iridium/jslint'
+require 'iridium/application'
 
 require 'iridium/generators'
-
 require 'iridium/cli'
-
-module Iridium
-  class Application < Engine
-    class << self
-      def inherited(base)
-        raise "You cannot have more than one Iridium::Application" if Iridium.application
-        super
-        Iridium.application = base.instance
-      end
-    end
-
-    def root
-      @root ||= find_root_with_flag("application.rb")
-    end
-
-    def initialize
-      boot!
-      super
-    end
-
-    def boot!
-      raise "root is not set. You must set the root directory before using!" unless root
-
-      settings_file = root.join("config", "settings.yml").to_s
-
-      if File.exists? settings_file
-        config.settings = OpenStruct.new(YAML.load(ERB.new(File.read(settings_file)).result)[Iridium.env])
-      end
-
-      begin
-        require "#{root}/config/application.rb"
-      rescue LoadError ; end
-
-      begin
-        require "#{root}/config/#{Iridium.env}.rb"
-      rescue LoadError
-      end
-    end
-
-    def settings
-      config.settings
-    end
-  end
-end

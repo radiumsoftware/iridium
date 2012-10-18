@@ -14,6 +14,8 @@ module Iridium
         set[:locales].add "app/locales"
         set[:sprites].add "app/sprites"
 
+        set[:settings].add "config", :glob => "**/*.yml"
+
         set[:vendor].add "vendor"
 
         set[:site].add "site"

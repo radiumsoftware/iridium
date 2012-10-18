@@ -14,7 +14,7 @@ module Iridium
       end
 
       def all_paths
-        @all_paths ||= Hydrogen::PathSetProxy.new Engine.subclasses.map(&:paths)
+        Hydrogen::PathSetProxy.new Engine.subclasses.map(&:paths)
       end
 
       def assetfile
@@ -37,7 +37,7 @@ module Iridium
       def compile
         clean!
 
-        run_callbacks :before_compile
+        run_callbacks :before_compile, self
 
         Dir.chdir root do
           pipeline.invoke_clean
@@ -64,8 +64,8 @@ module Iridium
     config.scripts = Pipeline::DependencyArray.new
 
     class << self
-      def before_compile(&block)
-        callback :before_compile, &block
+      def before_compile(*args, &block)
+        callback :before_compile, *args, &block
       end
 
       def javascript(&block)
