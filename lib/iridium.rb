@@ -72,6 +72,7 @@ module Iridium
 end
 
 require 'iridium/component'
+require 'iridium/engine'
 require 'iridium/pipeline'
 require 'iridium/compass'
 require 'iridium/rack'
@@ -83,7 +84,7 @@ require 'iridium/generators'
 require 'iridium/cli'
 
 module Iridium
-  class Application < Component
+  class Application < Engine
     class << self
       def inherited(base)
         raise "You cannot have more than one Iridium::Application" if Iridium.application
