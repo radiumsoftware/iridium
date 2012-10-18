@@ -49,9 +49,9 @@ class MiniTest::Unit::TestCase
     if Iridium.application
       Iridium.application.config.scripts.clear
       Iridium.application.config.dependencies.clear
-      Iridium.application.config.pipeline.js_pipelines = []
-      Iridium.application.config.pipeline.css_pipelines = []
-      Iridium.application.config.pipeline.optimization_pipelines = []
+      Iridium.application.config.js_pipelines.clear
+      Iridium.application.config.css_pipelines.clear
+      Iridium.application.config.optimization_pipelines.clear
 
       FileUtils.rm_rf Iridium.application.app_path
       FileUtils.rm_rf Iridium.application.site_path

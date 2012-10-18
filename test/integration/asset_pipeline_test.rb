@@ -635,13 +635,11 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_components_can_add_to_the_js_pipeline
-    callback = proc { |pipeline|
+    config.js_pipelines.add do |pipeline|
       pipeline.match "**/*.js" do
         filter AppendingFilter
       end
-    }
-
-    config.pipeline.js_pipelines << callback
+    end
 
     create_file "app/javascripts/app.js", "foo"
 
@@ -653,13 +651,11 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_components_can_add_to_the_css_pipeline
-    callback = proc { |pipeline|
+    config.css_pipelines.add do |pipeline|
       pipeline.match "**/*.css" do
         filter AppendingFilter
       end
-    }
-
-    config.pipeline.css_pipelines << callback
+    end
 
     create_file "app/stylesheets/application.css", "foo"
 
@@ -671,13 +667,11 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_components_ccan_add_to_the_optimization_pipeline
-    callback = proc { |pipeline|
+    config.optimization_pipelines.add do |pipeline|
       pipeline.match "**/*" do
         filter AppendingFilter
       end
-    }
-
-    config.pipeline.optimization_pipelines << callback
+    end
 
     create_file "app/stylesheets/application.css", "foo"
 
