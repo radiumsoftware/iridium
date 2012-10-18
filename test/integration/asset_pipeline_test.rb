@@ -703,6 +703,16 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "handlebars vm"
   end
 
+  def test_engines_can_load_vendor_javascript
+    skip
+
+    create_file "external/vendor/javascripts/engine.js", "engine"
+
+    compile ; assert_file "site/application.js"
+    content = read "site/application.js"
+    assert_includes content, "engine"
+  end
+
   private
   def compile
     TestApp.compile

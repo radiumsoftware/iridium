@@ -24,6 +24,10 @@ module Iridium
       def abstract?
         ABSTRACT_COMPONENTS.include?(name)
       end
+
+      def initializer(*args, &block)
+        callback :initializer, args, &block
+      end
     end
   end
 end
