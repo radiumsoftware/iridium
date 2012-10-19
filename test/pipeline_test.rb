@@ -18,6 +18,29 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_empty config.dependencies.files
   end
 
+  def test_insert_after
+    config.dependencies << :a
+    config.dependencies << :b
+    config.dependencies.insert_after :a, :c
+
+    assert_equal [:a, :c, :b], config.dependencies.files
+  end
+
+  def test_insert_before
+    config.dependencies << :a
+    config.dependencies << :b
+    config.dependencies.insert_before :b, :c
+
+    assert_equal [:a, :c, :b], config.dependencies.files
+  end
+
+  def test_insert_bang_inserts_at_the_top
+    config.dependencies << :a
+    config.dependencies.load! :b
+
+    assert_equal [:b, :a], config.dependencies.files
+  end
+
   def test_swap_dependencies
     config.dependencies.load :handlebars
 

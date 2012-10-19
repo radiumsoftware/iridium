@@ -14,6 +14,24 @@ module Iridium
         end
       end
 
+      def load!(*names)
+        @files.unshift(*names)
+      end
+
+      def insert_before(marker, *names)
+        index = @files.index marker
+        head = @files[0..index-1]
+        tail = @files[index..-1]
+        @files = head + names + tail
+      end
+
+      def insert_after(marker, *names)
+        index = @files.index marker
+        head = @files[0..index]
+        tail = @files[index+1..-1]
+        @files = head + names + tail
+      end
+
       def unload(*names)
         names.each do |name|
           @files.delete name
