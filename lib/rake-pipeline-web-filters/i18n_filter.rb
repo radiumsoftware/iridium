@@ -1,3 +1,5 @@
+require 'active_support/core_ext/hash/deep_merge'
+
 module Rake::Pipeline::Web::Filters
   class I18nFilter < Rake::Pipeline::Filter
     include Rake::Pipeline::Web::Filters::FilterWithDependencies
@@ -11,7 +13,7 @@ module Rake::Pipeline::Web::Filters
       hash = {}
 
       inputs.each do |input|
-        hash.merge! YAML.load(input.read)
+        hash.deep_merge! YAML.load(input.read)
       end
 
       output.write "I18n.translations = #{JSON.pretty_generate(hash)};"
