@@ -1,15 +1,19 @@
 module Iridium
   class HandlebarsCompiler
-    def initialize(source, template)
-      @source, @template = source, template
+    def self.call(template)
+      new.compile(template)
     end
 
-    def compile(options = {})
-      context.call 'Handlebars.precompile', @template
+    def compile(template)
+      context.call 'Handlebars.precompile', template
     end
 
     def context
-      @context ||= ExecJS.compile @source
+      @context ||= ExecJS.compile source
+    end
+
+    def source
+      @source ||= File.read(Iridium.vendor_path.join('handlebars.js'))
     end
   end
 end

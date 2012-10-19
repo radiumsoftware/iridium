@@ -24,6 +24,7 @@ require 'rake-pipeline/iridium_helper'
 
 require 'rake-pipeline-web-filters'
 require 'rake-pipeline-web-filters/sass_filter_patch'
+require 'rake-pipeline-web-filters/handlebars_filter_patch'
 require 'rake-pipeline-web-filters/erb_filter'
 require 'rake-pipeline-web-filters/i18n_filter'
 require 'rake-pipeline-web-filters/manifest_filter'

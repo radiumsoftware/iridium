@@ -243,6 +243,21 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "Pizza.compile"
   end
 
+  def test_handlebars_templates_are_precompiled
+    config.handlebars.precompile = true
+    config.handlebars.precompiler = proc { |source|
+      "PRECOMPILED(source)"
+    }
+
+    create_file "app/templates/home.handlebars", "{{name}}"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "PRECOMPILED(source)"
+  end
+
   def test_concats_vendor_css_before_app_css
     create_file "app/stylesheets/home.css", "app"
     create_file "vendor/stylesheets/bootstrap.css", "vendor"
