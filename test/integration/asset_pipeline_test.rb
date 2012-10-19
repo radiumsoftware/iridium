@@ -84,7 +84,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_includes content, %Q{minispade.register('test_app/main'}
+    assert_minispade content, "test_app/main"
   end
 
   def tests_compiles_app_js_into_string_minispade_modules
@@ -251,10 +251,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.css"
 
-    assert_includes content, "app"
-    assert_includes content, "vendor"
-    assert content.index("vendor") < content.index("app"),
-      "vendor css should come before app css!"
+    assert_before content, "vendor", "app"
   end
 
   def tests_copies_assets
@@ -299,32 +296,23 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_includes content, "file1"
-    assert_includes content, "file2"
-    assert content.index("file2") < content.index("file1"), 
-      "File2 should be included before file1"
+    assert_before content, "file2", "file1"
   end
 
   def test_unspecifed_dependencies_come_after_specified_dependencies
-    create_file "vendor/javascripts/jquery.js", "var jquery = {};"
-    create_file "vendor/javascripts/jquery_ui.js", "var jqui = {};"
-    create_file "vendor/javascripts/underscore.js", "var underscore = {};"
+    create_file "vendor/javascripts/jquery.js", "JQUERY"
+    create_file "vendor/javascripts/jquery_ui.js", "UI"
+    create_file "vendor/javascripts/underscore.js", "UNDERSCORE"
 
-    config.dependencies.load :jquery
     config.dependencies.load :jquery_ui
+    config.dependencies.load :jquery
 
     compile ; assert_file "site/application.js"
 
     content = read "site/application.js"
 
-    assert_includes content, "jquery"
-    assert_includes content, "jqui"
-    assert_includes content, "underscore"
-    assert content.index("jquery") < content.index("jqui"), 
-      "jquery should be included before jquery_ui"
-
-    assert content.index("jqui") < content.index("underscore"), 
-      "jquery_ui should be included before underscore"
+    assert_before content, "UI", "JQUERY"
+    assert_before content, "UI", "UNDERSCORE"
   end
 
   def test_vendored_code_comes_before_app_code
@@ -335,8 +323,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert content.index("jquery") < content.index("MyApp"), 
-      "jquery should be included before MyApp"
+    assert_before content, "jquery", "MyApp"
   end
 
   def test_server_can_accept_an_asset_file
@@ -380,8 +367,6 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "APP"
     assert_includes content, "VENDOR"
     refute_includes content, "\n"
-    assert content.index("VENDOR") < content.index("APP"),
-      "Vendor JS must be loaded before app JS!"
   end
 
   def test_minifies_css
@@ -406,8 +391,6 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "APP"
     assert_includes content, "VENDOR"
     refute_includes content, "\n"
-    assert content.index("VENDOR") < content.index("APP"),
-      "Vendor JS must be loaded before app JS!"
   end
 
   def test_generates_gzip_versions
@@ -607,13 +590,13 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "ENV", "Env code not loaded!"
     assert_includes content, "APP", "App code not loaded!"
 
-    assert content.index("VENDOR") < content.index("ENV"), 
+    assert_before content, "VENDOR", "ENV",
       "Vendored code must be loaded before environment initialization!"
 
-    assert content.index("ENV") < content.index("INITIALIZER"), 
+    assert_before content, "ENV", "INITIALIZER",
       "Environment must be prepared for initialization!"
 
-    assert content.index("INITIALIZER") < content.index("APP"), 
+    assert_before content, "INITIALIZER", "APP",
       "App code must be loaded after initialization"
   end
 
@@ -805,7 +788,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     compile ; assert_file "site/application.js"
     content = read "site/application.js"
 
-    assert_includes content, %Q{minispade.register('engine/foo}
+    assert_minispade content, "engine/foo"
   end
 
   def test_engines_can_add_their_own_templates
@@ -869,10 +852,14 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     refute_file "site/images/sprites/icons/icon1.png"
   end
 
-  def assert_before(string, before, after)
+  def assert_before(string, before, after, msg = nil)
     assert_includes string, before
     assert_includes string, after
-    assert string.index(before) < string.index(after), "#{before} should be before #{after}"
+    assert string.index(before) < string.index(after), (msg || "#{before} should be before #{after}")
+  end
+
+  def assert_minispade(content, name, msg = nil)
+    assert_includes content, %Q{minispade.register('#{name}'}
   end
 
   private
