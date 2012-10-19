@@ -42,8 +42,8 @@ class PipelineTest < MiniTest::Unit::TestCase
       end
     end
 
-    assert_kind_of Array, component.config.pipeline.js_pipelines
-    assert_equal 1, component.config.pipeline.js_pipelines.size
+    assert_kind_of Hydrogen::CallbackSet, component.config.js_pipelines
+    assert_equal 1, component.config.js_pipelines.size
   end
 
   def test_components_can_add_css_processing_hooks
@@ -53,8 +53,8 @@ class PipelineTest < MiniTest::Unit::TestCase
       end
     end
 
-    assert_kind_of Array, component.config.pipeline.css_pipelines
-    assert_equal 1, component.config.pipeline.css_pipelines.size
+    assert_kind_of Hydrogen::CallbackSet, component.config.css_pipelines
+    assert_equal 1, component.config.css_pipelines.size
   end
 
   def test_components_can_add_optmization_processing_hooks
@@ -64,7 +64,7 @@ class PipelineTest < MiniTest::Unit::TestCase
       end
     end
 
-    assert_kind_of Array, component.config.pipeline.optimization_pipelines
-    assert_equal 1, component.config.pipeline.optimization_pipelines.size
+    assert_kind_of Hydrogen::CallbackSet, component.config.optimization_pipelines
+    assert_equal 1, component.config.optimization_pipelines.size
   end
 end
