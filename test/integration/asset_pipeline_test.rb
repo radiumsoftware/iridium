@@ -497,6 +497,24 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
       "Translations dictionary must be loaded after I18n"
   end
 
+  def test_translations_are_merged
+    create_file "app/locales/en.yml", <<-EN
+      en:
+        hello: Hello!
+    EN
+
+    create_file "app/locales/more_en.yml", <<-DE
+      en:
+        greeting: Yo!
+    DE
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+    assert_includes content, "Yo!"
+    assert_includes content, "Hello!"
+  end
+
   def test_intializers_are_compiles
     create_file "app/config/initializers/bar.js", "INIT"
 
