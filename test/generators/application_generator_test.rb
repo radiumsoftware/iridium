@@ -79,6 +79,16 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_includes content, %Q{<script src="/application.js"></script>}
     assert_includes content, %Q{<link href="/application.css" rel="stylesheet">}
     assert_includes content, %Q{minispade.require("todos/boot");}
+
+    production_rb = destination_root.join("todos", "config", "production.rb")
+    content = read production_rb
+
+    assert_includes content, "config.pipeline.minify = true"
+    assert_includes content, "config.pipeline.gzip = true"
+    assert_includes content, "config.pipeline.manifest = true"
+    assert_includes content, "config.handlebars.precompile = true"
+    assert_includes content, "config.handlebars.precompiler = HandlebarsCompiler"
+    assert_includes content, "config.minispade.module_format = :function"
   end
 
   def test_accepts_a_path
