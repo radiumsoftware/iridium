@@ -107,27 +107,29 @@ input app.all_paths[:locales].expanded do
 end
 
 # 5. Compile application code
-input app.all_paths[:javascripts].expanded do
-  match "**/*.coffee" do
-    coffee_script
-  end
+Iridium::Engine.subclasses.each do |engine|
+  input engine.paths[:javascripts].expanded do
+    match "**/*.coffee" do
+      coffee_script
+    end
 
-  # Compile all Javascript files into Minispade modules.
-  # Files in vendor/javascripts become modules
-  # based on their file name. Files in javascripts
-  # becomes modules inside your application namespace.
-  #
-  # Examples:
-  # javascripts/boot.js -> require('app_name/boot');
-  # javascripts/views/main.js -> require('app_name/views/main');
-  match "**/*.js" do
-    minispade :rewrite_requires => true, 
-      :string => (app.config.minispade.module_format == :string),
-      :module_id_generator => proc { |input|
-        "#{app.class.to_s.demodulize.underscore}/#{input.path.gsub(/\.js$/, '')}"
-      }
+    # Compile all Javascript files into Minispade modules.
+    # Files in vendor/javascripts become modules
+    # based on their file name. Files in javascripts
+    # becomes modules inside your application namespace.
+    #
+    # Examples:
+    # javascripts/boot.js -> require('engine_name/boot');
+    # javascripts/views/main.js -> require('engine_name/views/main');
+    match "**/*.js" do
+      minispade :rewrite_requires => true, 
+        :string => (app.config.minispade.module_format == :string),
+        :module_id_generator => proc { |input|
+          "#{engine.name.demodulize.underscore}/#{input.path.gsub(/\.js$/, '')}"
+        }
 
-    concat "lib.js"
+      concat "lib.js"
+    end
   end
 end
 
