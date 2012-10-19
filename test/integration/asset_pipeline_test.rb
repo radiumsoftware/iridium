@@ -202,7 +202,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_includes content, "Handlebars.TEMPLATES['home']="
+    assert_includes content, "Handlebars.TEMPLATES['test_app/home']="
     assert_includes content, "{{name}}"
     assert_includes content, "Handlebars.compile"
   end
@@ -214,7 +214,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_includes content, "Handlebars.TEMPLATES['dashboard/feed/header']="
+    assert_includes content, "Handlebars.TEMPLATES['test_app/dashboard/feed/header']="
   end
 
   def test_handlebars_destination_is_configurbale
@@ -226,7 +226,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_includes content, "FOO['home']="
+    assert_includes content, "FOO['test_app/home']="
   end
 
   def test_handlebars_wrapper_is_configurable
@@ -809,7 +809,12 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_engines_can_add_their_own_templates
-    skip
+    create_file "external/app/templates/foo.hbs", "engine"
+
+    compile ; assert_file "site/application.js"
+    content = read "site/application.js"
+
+    assert_includes content, %Q{Handlebars.TEMPLATES['engine/foo']=}
   end
 
   def test_engine_vendor_css_comes_before_app_vendor_css
