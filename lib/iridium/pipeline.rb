@@ -83,7 +83,7 @@ module Iridium
       alias css stylesheet
 
       def optimize(*args, &block)
-        config.optimization_pipelines.add *arg, &block
+        config.optimization_pipelines.add *args, &block
       end
       alias optimizations stylesheet
     end
