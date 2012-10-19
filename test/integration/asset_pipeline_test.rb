@@ -777,6 +777,24 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_before content, "engine", "app"
   end
 
+  def test_app_locales_overwrite_engine_locales
+    create_file "external/app/locales/proper.yml", <<-EN
+      en:
+        hello: Hello!
+    EN
+
+    create_file "app/locales/adam.yml", <<-DE
+      en:
+        hello: Yo!
+    DE
+
+    compile ; assert_file "site/application.js"
+    content = read "site/application.js"
+
+    refute_includes content, "Hello!"
+    assert_includes content, "Yo!"
+  end
+
   def test_engine_javascripts_come_before_app_javascripts
     skip
 
