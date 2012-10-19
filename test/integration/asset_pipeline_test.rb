@@ -17,6 +17,10 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     # Declare an engine so we can dump files in /external
     # to simulate loaded engines
     Class.new Iridium::Engine do
+      def self.name
+        "engine"
+      end
+
       def root
         # so create_file works as expected
         Iridium.application.root.join("external")
@@ -795,17 +799,13 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "Yo!"
   end
 
-  def test_engine_javascripts_come_before_app_javascripts
-    skip
+  def test_engine_javascript_gets_its_own_namespace
+    create_file "external/app/javascripts/foo.js", "engine"
 
     compile ; assert_file "site/application.js"
     content = read "site/application.js"
 
-    assert_before content, "engine", "app"
-  end
-
-  def test_engine_javascript_gets_its_own_namespace
-    skip
+    assert_includes content, %Q{minispade.register('engine/foo}
   end
 
   def test_engines_can_add_their_own_templates
