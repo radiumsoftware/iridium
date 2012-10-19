@@ -64,6 +64,7 @@ input app.all_paths[:vendor].expanded do
 
   # Use the specified vendor order to create a vendor.js file
   match "**/*.js" do
+    engines_first
     ordered_files = app.config.dependencies.files.collect { |f| "javascripts/#{f}.js" }
     concat ordered_files, "vendor.js"
   end
@@ -77,6 +78,7 @@ input app.all_paths[:config].expanded do
 
   # Put environment specific files in the pipeline
   match "#{Iridium.env}.js" do
+    engines_first
     iife
     concat "env.js"
   end
@@ -89,6 +91,7 @@ input app.all_paths[:initializers].expanded do
   end
 
   match "**/*.js" do
+    engines_first
     iife
     concat "init.js"
   end
@@ -98,6 +101,7 @@ end
 input app.all_paths[:locales].expanded do
   # Compile all the translations into a single dictionary
   match "**.yml" do
+    engines_first
     i18n "i18n.js"
   end
 end
@@ -161,6 +165,7 @@ output app.build_path.join("css")
 input app.all_paths[:vendor].expanded do
   # Use the specified vendor order to create a vendor.js file
   match "stylesheets/**/*.css" do
+    engines_first
     concat "vendor.css"
   end
 end
@@ -176,6 +181,7 @@ input app.all_paths[:stylesheets].expanded do
   end
 
   match "**/*.css" do
+    engines_first
     concat "lib.css"
   end
 end
