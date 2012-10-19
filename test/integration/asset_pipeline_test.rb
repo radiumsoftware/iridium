@@ -844,7 +844,29 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_engine_sprites_can_be_imported
-    skip
+    sprite_path = Iridium.application.root.join "external", "app", "sprites"
+
+    FileUtils.mkdir_p sprite_path.join("icons")
+
+    FileUtils.cp fixtures_path.join("images", "icon1.png"), sprite_path.join("icons", "icon1.png")
+    FileUtils.cp fixtures_path.join("images", "icon1.png"), sprite_path.join("icons", "icon2.png")
+
+    create_file "app/stylesheets/app.scss", <<-scss
+      @import "icons/*.png";
+      @include all-icons-sprites;
+    scss
+
+    compile
+
+    assert_file "site/application.css"
+
+    content = read "site/application.css"
+
+    assert_match content, %r{/images/icons-\w+.png}, "Compiled CSS does not point to the correct image"
+
+    assert_file "site/images/icons-s0d4ab78e54.png"
+
+    refute_file "site/images/sprites/icons/icon1.png"
   end
 
   def assert_before(string, before, after)
