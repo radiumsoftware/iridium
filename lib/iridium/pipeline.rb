@@ -14,7 +14,11 @@ module Iridium
       end
 
       def all_paths
-        Hydrogen::PathSetProxy.new Engine.subclasses.map(&:paths)
+        engines = Engine.subclasses
+        engines.delete self.class
+        engines.push self.class
+
+        Hydrogen::PathSetProxy.new engines.map(&:paths)
       end
 
       def assetfile

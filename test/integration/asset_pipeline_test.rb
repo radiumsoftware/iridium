@@ -719,7 +719,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     compile ; assert_file "site/application.js"
     content = read "site/application.js"
 
-    assert_before content, "app", "engine"
+    assert_before content, "engine", "app"
   end
 
   def test_engines_configurations_come_before_app_configurations
@@ -729,7 +729,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     compile ; assert_file "site/application.js"
     content = read "site/application.js"
 
-    assert_before content, "app", "engine"
+    assert_before content, "engine", "app"
   end
 
   def test_engines_initializers_come_before_app_initializers
@@ -739,17 +739,24 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     compile ; assert_file "site/application.js"
     content = read "site/application.js"
 
-    assert_before content, "app", "engine"
+    assert_before content, "engine", "app"
   end
 
   def test_engine_locales_come_before_app_locales
-    create_file "external/app/locales/engine.yml", "engine"
-    create_file "app/locales/app.yml", "app"
+    create_file "external/app/locales/engine.yml", <<-EN
+      en:
+        hello: engine!
+    EN
+
+    create_file "app/locales/app.yml", <<-DE
+      de:
+        hello: app!
+    DE
 
     compile ; assert_file "site/application.js"
     content = read "site/application.js"
 
-    assert_before content, "app", "engine"
+    assert_before content, "engine", "app"
   end
 
   def test_engine_javascripts_come_before_app_javascripts
@@ -758,7 +765,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     compile ; assert_file "site/application.js"
     content = read "site/application.js"
 
-    assert_before content, "app", "engine"
+    assert_before content, "engine", "app"
   end
 
   def test_engine_javascript_gets_its_own_namespace
@@ -771,26 +778,26 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
   def test_engine_vendor_css_comes_before_app_vendor_css
     create_file "external/vendor/stylesheets/engine.css", "engine"
-    create_file "vendor/stylehseets/app.css", "app"
+    create_file "vendor/stylesheets/app.css", "app"
 
-    compile ; assert_file "site/application.js"
-    content = read "site/application.js"
+    compile ; assert_file "site/application.css"
+    content = read "site/application.css"
 
-    assert_before content, "app", "engine"
+    assert_before content, "engine", "app"
   end
 
   def test_engine_css_comes_before_app_css
-    create_file "external/stylesheets/app.css", "engine"
-    create_file "app/stylehseets/app.css", "app"
+    create_file "external/vendor/stylesheets/app.css", "engine"
+    create_file "app/stylesheets/app.css", "app"
 
-    compile ; assert_file "site/application.js"
-    content = read "site/application.js"
+    compile ; assert_file "site/application.css"
+    content = read "site/application.css"
 
-    assert_before content, "app", "engine"
+    assert_before content, "engine", "app"
   end
 
   def test_engine_assets_are_copied_over
-    create_file "external/assets/engine.asset", "engine"
+    create_file "external/app/assets/engine.asset", "engine"
 
     compile ; assert_file "site/engine.asset"
   end

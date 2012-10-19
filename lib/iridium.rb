@@ -19,6 +19,7 @@ require 'rack/rewrite'
 require 'rake-pipeline'
 require 'rake-pipeline/middleware'
 require 'rake-pipeline/drop_matcher'
+require 'rake-pipeline/sorted_pipeline'
 require 'rake-pipeline/iridium_helper'
 
 require 'rake-pipeline-web-filters'
