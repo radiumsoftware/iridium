@@ -1,5 +1,5 @@
 require 'iridium/pipeline/dependency_array'
-require 'iridium/pipeline/handlebars_compiler'
+require 'iridium/pipeline/handlebars_precompiler'
 require 'iridium/pipeline/compile_command'
 
 module Iridium
