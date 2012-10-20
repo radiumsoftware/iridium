@@ -1,11 +1,12 @@
 module Iridium
-  class HandlebarsCompiler
+  class HandlebarsPrecompiler
     def self.call(template)
       new.compile(template)
     end
 
     def compile(template)
-      context.call 'Handlebars.precompile', template
+      precompiled_template = context.call 'Handlebars.precompile', template
+      "Handlebars.template(#{precompiled_template});"
     end
 
     def context
