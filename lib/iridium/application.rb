@@ -46,6 +46,10 @@ module Iridium
       @booted = true
     end
 
+    def booted?
+      @booted
+    end
+
     def settings
       config.settings
     end
