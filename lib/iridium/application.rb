@@ -29,8 +29,12 @@ module Iridium
       raise "root is not set. You must set the root directory before using!" unless root
 
       settings_hash = paths[:settings].expanded.inject({}) do |hash, file|
-        values = YAML.load(ERB.new(File.read(file)).result)[Iridium.env]
-        hash.merge values
+        values = YAML.load(ERB.new(File.read(file)).result)
+        if values[Iridium.env]
+          hash.merge values[Iridium.env]
+        else
+          hash.merge values
+        end
       end
 
       config.settings = OpenStruct.new settings_hash
@@ -43,10 +47,17 @@ module Iridium
     end
 
     private
+    # run callbacks with application callbacks last
     def run_callbacks(name, *args)
       return unless callbacks[name]
 
-      callbacks[name].invoke *args
+      callbacks[name].invoke *args do |cbk|
+        cbk.options[:class] != self.class
+      end
+
+      callbacks[name].invoke *args do |cbk|
+        cbk.options[:class] == self.class
+      end
     end
   end
 end

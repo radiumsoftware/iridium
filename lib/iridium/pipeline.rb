@@ -69,7 +69,7 @@ module Iridium
 
     class << self
       def before_compile(*args, &block)
-        callback :before_compile, *args, &block
+        #callback :before_compile, *args, &block
       end
 
       def javascript(*args, &block)

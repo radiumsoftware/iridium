@@ -54,6 +54,7 @@ class MiniTest::Unit::TestCase
       Iridium.application.config.optimization_pipelines.clear
 
       FileUtils.rm_rf Iridium.application.app_path
+      FileUtils.rm_rf Iridium.application.root.join("config")
       FileUtils.rm_rf Iridium.application.site_path
       FileUtils.rm_rf Iridium.application.tmp_path
       FileUtils.rm_rf Iridium.application.vendor_path
