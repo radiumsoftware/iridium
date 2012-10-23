@@ -66,4 +66,13 @@ class ApplicationTest < MiniTest::Unit::TestCase
 
     assert_equal :noob, TestApp.config.dubstep
   end
+
+  def test_raises_an_error_when_already_booted
+    app = TestApp.new
+    app.boot!
+
+    assert_raises Iridium::AlreadyBooted do
+      app.boot!
+    end
+  end
 end
