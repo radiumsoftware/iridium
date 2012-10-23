@@ -1,0 +1,5 @@
+module <%= camelized %>
+  class Engine < Iridium::Engine
+
+  end
+end

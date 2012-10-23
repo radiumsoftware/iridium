@@ -28,6 +28,7 @@ module Iridium
 end
 
 require 'iridium/generators/application_generator'
+require 'iridium/generators/plugin_generator'
 require 'iridium/generators/assetfile_generator'
 require 'iridium/generators/rackup_generator'
 

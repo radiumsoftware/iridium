@@ -1,0 +1,6 @@
+# This is your default dictionary. All your tranlsations belong in files
+# in this directory. Each file is parsed into JSON and added to the
+# dictionaries for I18n.js
+
+en:
+  welcome: Welcome to Iridium
