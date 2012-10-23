@@ -10,7 +10,7 @@
 
   # Run templates through a precompiler instead of using
   # compile and runtime mode.
-  config.handlebars.compiler = HandlebarsPrecompiler
+  config.handlebars.compiler = Iridium::HandlebarsPrecompiler
 
   # Module format for minispade: :string or :function
   config.minispade.module_format = :function
