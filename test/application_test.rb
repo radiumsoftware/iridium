@@ -75,4 +75,12 @@ class ApplicationTest < MiniTest::Unit::TestCase
       app.boot!
     end
   end
+
+  def test_boot_sets_booted?
+    app = TestApp.new
+
+    app.boot!
+
+    assert app.booted?
+  end
 end
