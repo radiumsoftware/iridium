@@ -26,6 +26,8 @@ module Iridium
     end
 
     def boot!
+      raise AlreadyBooted if @booted
+
       raise "root is not set. You must set the root directory before using!" unless root
 
       settings_hash = paths[:settings].expanded.inject({}) do |hash, file|
@@ -40,6 +42,8 @@ module Iridium
       config.settings = OpenStruct.new settings_hash
 
       run_callbacks :initialize, self
+
+      @booted = true
     end
 
     def settings

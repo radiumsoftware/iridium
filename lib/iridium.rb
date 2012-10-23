@@ -37,6 +37,11 @@ module Iridium
   class MissingFile < Error ; end
   class MissingTestHelper < Error ; end
   class IncorrectLoadPath < Error ; end
+  class AlreadyBooted < Error
+    def to_s 
+      "Cannot boot application twice!"
+    end
+  end
 
   class << self
     def application
