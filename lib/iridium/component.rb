@@ -26,7 +26,14 @@ module Iridium
       end
 
       def initializer(*args, &block)
-        callback :initializer, args, &block
+        callback :initialize, *args, &block
+      end
+
+      def callback(set, *args, &block)
+        options = args.extract_options!
+        options[:class] = self
+        args << options
+        super set, *args, &block
       end
     end
   end
