@@ -13,19 +13,6 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   def setup
     super
     FileUtils.mkdir_p Iridium.application.root.join("external")
-
-    # Declare an engine so we can dump files in /external
-    # to simulate loaded engines
-    Class.new Iridium::Engine do
-      def self.name
-        "engine"
-      end
-
-      def root
-        # so create_file works as expected
-        Iridium.application.root.join("external")
-      end
-    end
   end
 
   def teardown
@@ -788,7 +775,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     compile ; assert_file "site/application.js"
     content = read "site/application.js"
 
-    assert_minispade content, "engine/foo"
+    assert_minispade content, "test_engine/foo"
   end
 
   def test_engines_can_add_their_own_templates
@@ -797,7 +784,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     compile ; assert_file "site/application.js"
     content = read "site/application.js"
 
-    assert_includes content, %Q{Handlebars.TEMPLATES['engine/foo']=}
+    assert_includes content, %Q{Handlebars.TEMPLATES['test_engine/foo']=}
   end
 
   def test_engine_vendor_css_comes_before_app_vendor_css
