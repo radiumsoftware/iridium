@@ -1,0 +1,8 @@
+require 'iridium'
+require '<%= underscored %>/version'
+
+module <%= camelized %>
+
+end
+
+require '<%= underscored %>/engine'
