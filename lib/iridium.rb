@@ -74,6 +74,10 @@ module Iridium
     def env
       ENV['IRIDIUM_ENV'] || ENV['RACK_ENV'] || 'development'
     end
+
+    def boot!
+      application.boot!
+    end
   end
 end
 
