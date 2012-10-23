@@ -8,7 +8,7 @@ class ApplicationTest < MiniTest::Unit::TestCase
       end
     end
 
-    engine = Class.new Iridium::Engine do
+    engine = Class.new MockEngine do
       initializer do
         config.foos = [:engine]
       end
