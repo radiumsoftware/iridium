@@ -51,6 +51,15 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_includes config.dependencies.skips, :handlebars
   end
 
+  def test_swapping_in_depenencies_removes_skips
+    config.dependencies.load :handlebars
+    config.dependencies.skip :handlebars_runtime
+    config.dependencies.swap :handlebars, :handlebars_runtime
+
+    assert_includes config.dependencies.files, :handlebars_runtime
+    refute_includes config.dependencies.skips, :handlebars_runtime
+  end
+
   def test_files_contains_loaded_files_without_skips
     config.dependencies.load :a, :b, :c
     config.dependencies.skip :b

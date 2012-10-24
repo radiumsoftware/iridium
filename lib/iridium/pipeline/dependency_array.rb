@@ -41,6 +41,7 @@ module Iridium
       def swap(existing, replacement)
         return unless files.include? existing
         skip existing
+        @skips.delete replacement
         @files[@files.index(existing)] = replacement
       end
 
