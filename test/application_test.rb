@@ -74,6 +74,18 @@ class ApplicationTest < MiniTest::Unit::TestCase
     assert_equal :noob, TestApp.config.dubstep
   end
 
+  def test_environment_files_in_engines_are_loaded
+    create_file "external/config/#{Iridium.env}.rb", <<-ruby
+      TestApp.configure do 
+        config.progressive = :awesome
+      end
+    ruby
+
+    TestApp.new.boot!
+
+    assert_equal :awesome, TestApp.config.progressive
+  end
+
   def test_raises_an_error_when_already_booted
     app = TestApp.new
     app.boot!

@@ -9,10 +9,8 @@ module Iridium
     end
 
     initializer do |app|
-      begin
-        env_path = app.paths[:environment].expanded.first
-        require env_path if env_path
-      rescue LoadError
+      app.all_paths[:environment].expanded.each do |path|
+        require path
       end
     end
 
