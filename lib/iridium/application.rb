@@ -36,6 +36,10 @@ module Iridium
 
       config.settings = OpenStruct.new settings_hash
 
+      all_paths[:system_initializers].expanded.each do |path|
+        require path
+      end
+
       run_callbacks :initialize, self
 
       @booted = true
@@ -47,6 +51,14 @@ module Iridium
 
     def settings
       config.settings
+    end
+
+    def all_paths
+      engines = Engine.subclasses
+      engines.delete self.class
+      engines.push self.class
+
+      Hydrogen::PathSetProxy.new engines.map(&:paths)
     end
 
     private

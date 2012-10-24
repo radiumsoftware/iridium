@@ -20,6 +20,25 @@ class ApplicationTest < MiniTest::Unit::TestCase
     assert_equal [:engine, :app], TestApp.config.foos
   end
 
+  def test_engine_initializer_files_are_loaded_before_app_initializers
+    create_file "external/config/initializers/engine.rb", <<-ruby
+      TestApp.configure do
+        config.results = [:engine]
+      end
+    ruby
+
+    create_file "config/initializers/engine.rb", <<-ruby
+      TestApp.configure do
+        config.results << :app
+      end
+    ruby
+
+    TestApp.new.boot!
+
+    assert_kind_of Array, TestApp.config.results
+    assert_equal [:engine, :app], TestApp.config.results
+  end
+
   def test_settings_files_are_loaded
     create_file "config/settings.yml", <<-yml
       foo:
