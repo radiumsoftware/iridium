@@ -82,7 +82,6 @@ class ApplicationCommandTest < GeneratorTestCase
     content = read destination_root.join('todos', 'application.rb')
 
     assert_includes content, 'Todos < Iridium::Application'
-    assert_includes content, %Q{config.dependencies.load :minispade}
   end
 
   def test_html_file_loads_required_assets_and_code
