@@ -10,13 +10,8 @@ module Iridium
 
     initializer do |app|
       begin
-        require "#{app.root}/config/application.rb"
-      rescue LoadError ; end
-    end
-
-    initializer do |app|
-      begin
-        require "#{app.root}/config/#{Iridium.env}.rb"
+        env_path = app.paths[:environment].expanded.first
+        require env_path if env_path
       rescue LoadError
       end
     end

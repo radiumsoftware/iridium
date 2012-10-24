@@ -14,6 +14,9 @@ module Iridium
         set[:locales].add "app/locales"
         set[:sprites].add "app/sprites"
 
+        set[:system_initializers].add "config/initializers", :glob => "**/*.rb"
+        set[:environment].add "config", :glob => "#{Iridium.env}.rb"
+
         set[:settings].add "config", :glob => "**/*.yml"
 
         set[:vendor].add "vendor"

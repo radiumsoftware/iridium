@@ -25,4 +25,9 @@ class EngineTest < MiniTest::Unit::TestCase
     assert_equal "tmp", app.paths[:tmp].first.path
     assert_equal "tmp/build", app.paths[:build].first.path
   end
+
+  def test_iridium_config_paths
+    assert_equal "config/initializers", app.paths[:system_initializers].first.path
+    assert_equal "config", app.paths[:environment].first.path
+  end
 end

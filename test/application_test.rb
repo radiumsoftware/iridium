@@ -43,18 +43,6 @@ class ApplicationTest < MiniTest::Unit::TestCase
     assert_equal "baz", TestApp.config.settings.bar
   end
 
-  def test_configuration_file_is_loaded
-    create_file "config/application.rb", <<-ruby
-      TestApp.configure do 
-        config.trance = :awesome
-      end
-    ruby
-
-    TestApp.new.boot!
-
-    assert_equal :awesome, TestApp.config.trance
-  end
-
   def test_environment_specific_configuration_file_is_loaded
     create_file "config/#{Iridium.env}.rb", <<-ruby
       TestApp.configure do 

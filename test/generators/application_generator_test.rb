@@ -74,7 +74,7 @@ class ApplicationCommandTest < GeneratorTestCase
     content = read destination_root.join('todos', 'config', 'environment.rb')
 
     assert_includes content, %Q{require File.expand_path('../../application', __FILE__)}
-    assert_includes content, %Q{Iridium::Application.boot!}
+    assert_includes content, %Q{Iridium.application.boot!}
   end
 
   def test_application_is_configured_correctly
