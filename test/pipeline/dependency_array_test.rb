@@ -68,4 +68,12 @@ class DependencyArrayTest < MiniTest::Unit::TestCase
 
     assert_equal [:a, :c], deps.files
   end
+
+  def test_loading_unskips_files
+    deps.skip :a
+    deps.load :a
+
+    assert_equal [:a], deps.files
+    assert_empty deps.skips
+  end
 end
