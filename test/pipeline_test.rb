@@ -5,68 +5,6 @@ class PipelineTest < MiniTest::Unit::TestCase
     Iridium.application.config
   end
 
-  def test_load_add_dependences
-    config.dependencies.load :foo
-
-    assert_includes config.dependencies.files, :foo
-  end
-
-  def test_unload_removes_dependences
-    config.dependencies << :foo
-    config.dependencies.unload :foo
-
-    assert_empty config.dependencies.files
-  end
-
-  def test_insert_after
-    config.dependencies << :a
-    config.dependencies << :b
-    config.dependencies.insert_after :a, :c
-
-    assert_equal [:a, :c, :b], config.dependencies.files
-  end
-
-  def test_insert_before
-    config.dependencies << :a
-    config.dependencies << :b
-    config.dependencies.insert_before :b, :c
-
-    assert_equal [:a, :c, :b], config.dependencies.files
-  end
-
-  def test_insert_bang_inserts_at_the_top
-    config.dependencies << :a
-    config.dependencies.load! :b
-
-    assert_equal [:b, :a], config.dependencies.files
-  end
-
-  def test_swap_dependencies
-    config.dependencies.load :handlebars
-
-    config.dependencies.swap :handlebars, :handlebars_runtime
-
-    assert_includes config.dependencies.files, :handlebars_runtime
-    refute_includes config.dependencies.files, :handlebars
-    assert_includes config.dependencies.skips, :handlebars
-  end
-
-  def test_swapping_in_depenencies_removes_skips
-    config.dependencies.load :handlebars
-    config.dependencies.skip :handlebars_runtime
-    config.dependencies.swap :handlebars, :handlebars_runtime
-
-    assert_includes config.dependencies.files, :handlebars_runtime
-    refute_includes config.dependencies.skips, :handlebars_runtime
-  end
-
-  def test_files_contains_loaded_files_without_skips
-    config.dependencies.load :a, :b, :c
-    config.dependencies.skip :b
-
-    assert_equal [:a, :c], config.dependencies.files
-  end
-
   def test_components_can_add_js_processing_hooks
     component = Class.new Iridium::Component do
       javascript do |pipeline|
