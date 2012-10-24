@@ -59,6 +59,8 @@ module Iridium
     config.dependencies = Pipeline::DependencyArray.new
     config.scripts = Pipeline::DependencyArray.new
 
+    config.dependencies.load :minispade, :handlebars, :i18n, :jquery
+
     class << self
       def before_compile(*args, &block)
         callback :before_compile, *args, &block
