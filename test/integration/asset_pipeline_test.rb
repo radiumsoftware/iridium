@@ -714,6 +714,17 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_before content, "engine", "app"
   end
 
+  def test_engine_vendor_javascript_is_overriden_by_app_js
+    create_file "external/vendor/javascripts/ember.js", "engine"
+    create_file "vendor/javascripts/ember.js", "app"
+
+    compile ; assert_file "site/application.js"
+    content = read "site/application.js"
+
+    refute_includes content, "engine"
+    assert_includes content, "app"
+  end
+
   def test_engines_configurations_come_before_app_configurations
     create_file "external/app/config/test.js", "engine"
     create_file "app/config/test.js", "app"
@@ -798,13 +809,24 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_engine_css_comes_before_app_css
-    create_file "external/vendor/stylesheets/app.css", "engine"
+    create_file "external/app/stylesheets/engine.css", "engine"
     create_file "app/stylesheets/app.css", "app"
 
     compile ; assert_file "site/application.css"
     content = read "site/application.css"
 
     assert_before content, "engine", "app"
+  end
+
+  def test_engine_vendor_css_is_overridden_by_vendor_app_css
+    create_file "external/vendor/stylesheets/bootstrap.css", "engine"
+    create_file "vendor/stylesheets/bootstrap.css", "app"
+
+    compile ; assert_file "site/application.css"
+    content = read "site/application.css"
+
+    refute_includes content, "engine"
+    assert_includes content, "app"
   end
 
   def test_engine_assets_are_copied_over

@@ -57,6 +57,8 @@
 # 1. Compile all the vendor code
 output app.build_path.join("javascript")
 input app.all_paths[:vendor].expanded do
+  app_overrides_engines
+
   # Skip all the files specified.
   app.config.dependencies.skips.each do |file|
     skip "javascripts/#{file}.js"
@@ -167,6 +169,8 @@ end
 # 1. Prepare the vendor css
 output app.build_path.join("css")
 input app.all_paths[:vendor].expanded do
+  app_overrides_engines
+
   # Use the specified vendor order to create a vendor.js file
   match "stylesheets/**/*.css" do
     engines_first

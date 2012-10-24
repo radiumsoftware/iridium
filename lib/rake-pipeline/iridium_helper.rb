@@ -23,9 +23,10 @@ module Rake
       class PipelineDSL
         include IridiumHelper
 
-        def drop(pattern)
+        def drop(pattern = '', &block)
           matcher = pipeline.copy(DropMatcher)
           matcher.glob = pattern
+          matcher.block = block
           pipeline.add_filter matcher
           matcher
         end
@@ -55,6 +56,26 @@ module Rake
             else
               0
             end
+          end
+        end
+
+        def app_overrides_engines
+          # Skip files that exist in engines and app. App javascripts
+          # should take precendence over the same file in engines
+          skip do |input|
+            app_vendor_files = app.paths[:vendor].expanded.collect do |path|
+              Dir["#{path}/**/*"].collect do |file|
+                File.basename file
+              end
+            end.flatten
+
+            engine_vendor_files = app.engine_paths[:vendor].expanded.collect do |path|
+              Dir["#{path}/**/*"]
+            end.flatten
+
+            file_name = File.basename input.path
+
+            app_vendor_files.include?(file_name) && engine_vendor_files.include?(input.fullpath)
           end
         end
       end
