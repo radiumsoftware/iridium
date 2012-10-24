@@ -11,6 +11,7 @@ module Iridium
       def load(*names)
         names.each do |name|
           @files << name
+          @skips.delete name
         end
       end
 
