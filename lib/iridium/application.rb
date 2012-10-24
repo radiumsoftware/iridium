@@ -57,7 +57,12 @@ module Iridium
       engines = Engine.subclasses
       engines.delete self.class
       engines.push self.class
+      Hydrogen::PathSetProxy.new engines.map(&:paths)
+    end
 
+    def engine_paths
+      engines = Engine.subclasses
+      engines.delete self.class
       Hydrogen::PathSetProxy.new engines.map(&:paths)
     end
 
