@@ -64,19 +64,15 @@ module Iridium
       return if Iridium.application
 
       begin
-        require "#{Dir.pwd}/application"
+        require "#{Dir.pwd}/config/environment.rb"
       rescue LoadError
-        $stderr.puts "Could not find application.rb. Are you in your app's root?"
+        $stderr.puts "Could not find environment.rb. Are you in your app's root?"
         abort
       end
     end
 
     def env
       ENV['IRIDIUM_ENV'] || ENV['RACK_ENV'] || 'development'
-    end
-
-    def boot!
-      application.boot!
     end
   end
 end

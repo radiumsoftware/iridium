@@ -51,6 +51,7 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos', 'site'
 
     assert_file 'todos', 'application.rb'
+    assert_file 'todos', 'config', 'environment.rb'
 
     assert_file 'todos', '.gitignore'
 
@@ -62,24 +63,40 @@ class ApplicationCommandTest < GeneratorTestCase
 
     assert_file 'todos', 'config', 'settings.yml'
 
-    content = read destination_root.join('todos', 'application.rb')
-
-    assert_includes content, 'Todos < Iridium::Application'
-
-    assert_includes content, %Q{config.dependencies.load :minispade}
     assert_file 'todos', 'vendor', 'javascripts', 'minispade.js'
-
     assert_file 'todos', 'vendor', 'javascripts', 'handlebars.js'
     assert_file 'todos', 'vendor', 'javascripts', 'jquery.js'
     assert_file 'todos', 'vendor', 'javascripts', 'i18n.js'
+  end
 
+  def test_application_enviroment_files
+    invoke 'application', 'todos'
+    content = read destination_root.join('todos', 'config', 'environment.rb')
+
+    assert_includes content, %Q{require File.expand_path('../../application', __FILE__)}
+    assert_includes content, %Q{Iridium::Application.boot!}
+  end
+
+  def test_application_is_configured_correctly
+    invoke 'application', 'todos'
+    content = read destination_root.join('todos', 'application.rb')
+
+    assert_includes content, 'Todos < Iridium::Application'
+    assert_includes content, %Q{config.dependencies.load :minispade}
+  end
+
+  def test_html_file_loads_required_assets_and_code
+    invoke 'application', 'todos'
     index_path = destination_root.join('todos', 'app', 'assets', 'index.html.erb')
     content = read index_path
 
     assert_includes content, %Q{<script src="/application.js"></script>}
     assert_includes content, %Q{<link href="/application.css" rel="stylesheet">}
     assert_includes content, %Q{minispade.require("todos/boot");}
+  end
 
+  def test_production_env_is_configured_correctly
+    invoke 'application', 'todos'
     production_rb = destination_root.join("todos", "config", "production.rb")
     content = read production_rb
 

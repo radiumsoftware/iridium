@@ -35,12 +35,14 @@ class MiniTest::Unit::TestCase
 
     Iridium.application = TestApp.instance
 
+
     FileUtils.mkdir_p Iridium.application.app_path
     FileUtils.mkdir_p Iridium.application.site_path
     FileUtils.mkdir_p Iridium.application.tmp_path
     FileUtils.mkdir_p Iridium.application.vendor_path.join("javascripts")
     FileUtils.mkdir_p Iridium.application.vendor_path.join("stylesheets")
     FileUtils.mkdir_p Iridium.application.root.join('test', 'support')
+    FileUtils.mkdir_p Iridium.application.root.join('external')
 
     ENV['IRIDIUM_ENV'] = 'test'
   end
@@ -60,6 +62,7 @@ class MiniTest::Unit::TestCase
       FileUtils.rm_rf Iridium.application.vendor_path
       FileUtils.rm_rf Iridium.application.root.join("test")
       FileUtils.rm_rf Iridium.application.root.join("Assetfile") if File.exists?(Iridium.application.root.join('Assetfile'))
+      FileUtils.rm_rf Iridium.application.root.join('external')
     end
 
     Iridium.application = nil
