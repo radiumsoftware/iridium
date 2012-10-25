@@ -41,7 +41,14 @@ module Rake
       #   representing the output.
       def generate_output(inputs, output)
         inputs.each do |input|
-          output.write input.read.gsub(*@args, &@block)
+          if @block
+            content = input.read.gsub(*@args) do |match|
+              @block.call match, *$~.captures
+            end
+            output.write content
+          else
+            output.write input.read.gsub(*@args)
+          end
         end
       end
     end
