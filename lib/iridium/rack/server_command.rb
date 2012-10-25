@@ -8,7 +8,7 @@ module Iridium
         ENV['IRIDIUM_ENV'] = 'development'
         Iridium.load!
         Iridium.application.clean!
-        Iridium::DevServer.new.start
+        Iridium::Rack::DevServer.new.start
       end
 
       default_task :server
