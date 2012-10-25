@@ -23,7 +23,7 @@ module Rake
       #
       # @see String#gsub
       def initialize(*args, &block)
-        @args, @bock = args, block
+        @args, @block = args, block
         super() { |input| input }
       end
 
