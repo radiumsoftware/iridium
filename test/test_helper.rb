@@ -48,7 +48,7 @@ class MiniTest::Unit::TestCase
   end
 
   def teardown
-    if Iridium.application
+    if Iridium.application && Iridium.application.is_a?(Iridium::Application)
       Iridium.application.config.scripts.clear
       Iridium.application.config.dependencies.clear
       Iridium.application.config.js_pipelines.clear
