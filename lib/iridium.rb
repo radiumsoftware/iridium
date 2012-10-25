@@ -64,11 +64,13 @@ module Iridium
     def load!
       return if Iridium.application
 
-      begin
-        require "#{Dir.pwd}/config/environment.rb"
-      rescue LoadError
+      env_file = "#{Dir.pwd}/config/environment.rb"
+
+      if !File.exists? env_file
         $stderr.puts "Could not find environment.rb. Are you in your app's root?"
         abort
+      else
+        require env_file
       end
     end
 
