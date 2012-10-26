@@ -60,6 +60,7 @@ class MiniTest::Unit::TestCase
       FileUtils.rm_rf Iridium.application.site_path
       FileUtils.rm_rf Iridium.application.tmp_path
       FileUtils.rm_rf Iridium.application.vendor_path
+      FileUtils.rm_rf Iridium.application.build_path
       FileUtils.rm_rf Iridium.application.root.join("test")
       FileUtils.rm_rf Iridium.application.root.join("Assetfile") if File.exists?(Iridium.application.root.join('Assetfile'))
       FileUtils.rm_rf Iridium.application.root.join('external')

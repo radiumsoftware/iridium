@@ -44,7 +44,7 @@ NETWORK:
   end
 
   module PipelineHelpers
-    def manifest(*args, &block)
+    def cache_manifest(*args, &block)
       match "**/*" do
         copy { |name| [name, "manifest/#{name}"] }
       end

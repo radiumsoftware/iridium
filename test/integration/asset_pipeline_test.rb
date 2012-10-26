@@ -420,7 +420,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_match content, /^images\/logo\.png$/
   end
 
-  def test_includes_a_cache_manifest
+  def test_index_file_loads_the_manifest
     config.pipeline.manifest = true
 
     create_index
