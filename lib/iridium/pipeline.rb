@@ -80,7 +80,7 @@ module Iridium
       def optimize(*args, &block)
         config.optimization_pipelines.add *args, &block
       end
-      alias optimizations stylesheet
+      alias optimizations optimize
     end
   end
 end
