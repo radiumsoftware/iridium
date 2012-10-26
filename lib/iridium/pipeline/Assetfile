@@ -242,7 +242,7 @@ input app.build_path.join("preoptimization") do
 
   if app.config.pipeline.manifest
     match "**/*" do
-      manifest { |asset| asset }
+      cache_manifest { |asset| asset }
     end
   end
 
