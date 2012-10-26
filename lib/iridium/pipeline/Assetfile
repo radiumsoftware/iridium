@@ -210,9 +210,6 @@ end
 # 1. Copy over all the assets
 output app.build_path.join("preoptimization")
 input app.all_paths[:assets].expanded do
-  # Skip sprites since compass processes those
-  skip "images/sprites/**/*"
-
   # compile all erb templates. You can access "app" 
   # inside your templates like this: <% app.config %>
   match "**/*.erb" do
