@@ -3,8 +3,8 @@ require File.expand_path('../lib/iridium/version', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.authors       = ["Adam Hawkins"]
-  gem.email         = ["adam@radiumcrm.com"]
-  gem.description   = %q{Asset Compilation, API Proxying, and Server for Pure JS Frontends}
+  gem.email         = ["me@broadcastingdam.com"]
+  gem.description   = %q{Integrated development environment for browser applications}
   gem.summary       = %q{}
   gem.homepage      = "https://github.com/radiumsoftware/iridium"
 
