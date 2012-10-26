@@ -12,21 +12,4 @@ class CompileCommandTest < MiniTest::Unit::TestCase
 
     Iridium::Pipeline::CompileCommand.new.invoke(:compile)
   end
-
-  def test_path_can_be_passed_to_compile_into
-    app = mock :compile => true
-    Iridium.application = app
-
-    app.expects(:site_path=).with(".")
-
-    Iridium::Pipeline::CompileCommand.new.invoke(:compile, ["."])
-  end
-
-  def test_an_error_is_raised_when_path_is_invalid
-    Iridium.application = mock
-
-    assert_raises RuntimeError do
-      Iridium::Pipeline::CompileCommand.new.invoke(:compile, ["/foo/bar"])
-    end
-  end
 end
