@@ -11,6 +11,5 @@
 #
 # Your boot code begins here...
 
-
 require('<%= underscored %>/app')
 <%= camelized %>.booted = true
