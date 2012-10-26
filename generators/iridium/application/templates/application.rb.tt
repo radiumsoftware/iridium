@@ -5,9 +5,10 @@ if defined?(Bundler)
 end
 
 class <%= camelized %> < Iridium::Application
-  # Specify vendor load order. Files will be concatenated in the
+  # Specify vendor load order. Files will be concatentated in the
   # declared order. Undeclared files will be concatentated after
   # all declared files
+  #
   # config.dependencies.load :bootstrap
 
   # Specify a different place to load your templates. All templates
@@ -21,14 +22,11 @@ class <%= camelized %> < Iridium::Application
   #
   # config.handlebars.target = "<%= camelized %>.TEMPLATES"
 
-  # Specify a different handlebars compiler to use. This is not the
-  # the same as the precompiler! This proc returns a Javascript snippet
-  # used to compile the raw template. It's written directly into the
-  # final application.js
-  # 
-  # Example for Ember:
+  # Specify a different handlebars compiler to use. This sets the 
+  # other side of template assignment This proc returns a Javascript 
+  # snippet.
   #
-  # config.handlebars.compiler = proc { |source| "Ember.Handlebars.compile(#{source});" }
+  # config.handlebars.compiler = proc { |source| "CustomHandlebars.compile(#{source});" }
 
   # Enable a proxy to an API. You can use this to get around CORS
   # or use it for authentication hidding.
