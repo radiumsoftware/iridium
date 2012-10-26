@@ -1,10 +1,10 @@
 # WARNING: This is currently prerelease software!
 
 Please note this is prerelease software and can only be used through
-bundler. It also requires git depenencies of rake-pipline and
-rake-pipeline-web-filers. It also requires CasperJS 1.0 RC1. If you
-don't have any of that installed then you can turn back now. CasperJS
-1.0 can be installed with homebrew on mac. Here's how you can boostrap.
+bundler. It also requires git depenencies of various projects.
+It also requires CasperJS 1.0 RC1. If you don't have any of that installed 
+then you can turn back now. CasperJS 1.0 can be installed with homebrew on mac. 
+Here's how you can boostrap.
 
 First create a `Gemfile`
 
@@ -12,8 +12,8 @@ First create a `Gemfile`
 source :rubygems
 
 gem 'iridium', :github => 'radiumsoftware/iridium'
-gem "rake-pipeline", :github => "livingsocial/rake-pipeline"
-gem "rake-pipeline-web-filters", :github => "wycats/rake-pipeline-web-filters"
+gem 'thor', :github => 'wycats/thor'
+gem 'rake-pipeline', :github => 'living-social/rake-pipeline'
 ```
 
 Now bootstrap:
@@ -26,21 +26,20 @@ $ bundle exec iridium
 
 Don't forget you **must use bundle exec!**
 
-# Iridium: A Toolchain for JS Development
+# Iridium: A Toolchain for JS Application Development
 
 Iridium is a tool to help you with modern Javascript development. It's
 here to make you a faster developer and solve common problems. It
 focuses primarily on:
 
 * CLI driven interactions
-* Expose as little Ruby as possible
 * Focus on JS/CSS/HTML
 * Make JS testable
 
 ## Sensible Defaults
 
 Iridium makes some choices for you by default. These choices work well
-together. All Iridium apps include integrated right out of the box:
+together. All Iridium apps get all this right out of the box:
 
 * jQuery for DOM manipulation
 * Handlebars for templating
@@ -54,53 +53,13 @@ together. All Iridium apps include integrated right out of the box:
 
 ## Getting Started
 
-Iridium supports the most common use case right out of the box. You have
-a directory of assets that need to be compiled into a web application.
-Iridium uses `Rake::Pipeline` and sensible defaults to make writing
-structured and testable Javascript possible. The first step is to use
-the built in generator to create the structure:
+The first step is to use the built in generator to create the structure:
 
 ```
 $ iridium app todos
-      create  app
-      create  app/config
-      create  app/config/development.coffee
-      create  app/config/initializers
-      create  app/config/production.coffee
-      create  app/config/test.coffee
-      create  app/images
-      create  app/javascripts/app.coffee
-      create  app/javascripts/boot.coffee
-      create  app/javascripts/controllers
-      create  app/javascripts/models
-      create  app/javascripts/templates
-      create  app/javascripts/views
-      create  app/locales/en.yml
-      create  app/public
-      create  app/public/index.html.erb
-      create  app/stylesheets/app.scss
-      create  app/vendor/javascripts
-      create  app/vendor/javascripts/handlebars.js
-      create  app/vendor/javascripts/i18n.js
-      create  app/vendor/javascripts/jquery.js
-      create  app/vendor/javascripts/minispade.js
-      create  app/vendor/stylesheets
-      create  site
-      create  test
-      create  test/controllers
-      create  test/integration/navigation_test.coffee
-      create  test/models
-      create  test/support/helper.coffee
-      create  test/support/sinon.js
-      create  test/templates
-      create  test/unit/truth_test.coffee
-      create  test/views
-      create  application.rb
-      create  readme.md
-      create  .gitignore
 ```
 
-Now your pipeline is ready. You can use the built in development server
+Now your application is ready. You can use the built in development server
 to edit your JS/CSS files and reload the browser. 
 
 ```
@@ -121,7 +80,7 @@ All files in this directory are loaded before your app code in
 alphabetical order unless an order is specified. You don't have to
 specify the order for all files. You can declare files that should be
 included before all others and not worry about the others. For example,
-you have 10 files in `app/vendor/javascripts`. You only care that
+you have 10 files in `vendor/javascripts`. You only care that
 `minispade`, `jquery`, and `jquery_ui` are loaded first. All the other
 files will be included after those.
 
@@ -187,10 +146,10 @@ then use an integration test!
 
 ### Writing Integration Tests
 
-Integration tests execute a running app. Your entire stack is loaded and
-served via ruby. Your app is booted then your integration test are ran.
-You have direct access to your app code during integration tests. It's
-your responsiblity to setup and teardown each test case.
+Integration tests execute in a running app. Your entire stack is loaded and
+served via ruby. Your app is booted then the integration test is
+executed. You have direct access to your app code during integration tests. 
+It's your responsiblity to setup and teardown each test case.
 
 ```coffeescript
 test "my app says hello", ->
@@ -262,21 +221,6 @@ experience in ruby. I've tried as much as I can to shield some
 complexity from newbies. Each part of Iridium is hidden by default, but
 can be generated and customized.
 
-
-### Customizing the Asset pipeline
-
-You may want to change the way assets are compiled. Iridium uses it's
-own pipeline by default. You can override this by creating your
-`Assetfile` inside the root directory. You can start with a blank slate,
-or use a generator. The generator creates an `Assetfile` that does the
-same thing as the internal pipeline. You may also access the `app`
-method.
-
-```
-$ cd todos
-$ iridium generate assetfile
-    create Assetfile
-```
 
 ### Configuration, Middleware, and Proxying
 
