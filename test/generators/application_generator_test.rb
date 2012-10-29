@@ -63,6 +63,10 @@ class ApplicationCommandTest < GeneratorTestCase
 
     assert_file 'todos', 'config', 'settings.yml'
 
+    assert_file 'todos', 'vendor', 'assets'
+
+    assert_file 'todos', 'vendor', 'stylesheets'
+
     assert_file 'todos', 'vendor', 'javascripts', 'minispade.js'
     assert_file 'todos', 'vendor', 'javascripts', 'handlebars.js'
     assert_file 'todos', 'vendor', 'javascripts', 'jquery.js'
