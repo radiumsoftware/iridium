@@ -28,6 +28,7 @@ module Iridium
       def clean!
         FileUtils.rm_rf site_path
         FileUtils.rm_rf tmp_path
+        FileUtils.rm_rf build_path
       end
 
       def compile
