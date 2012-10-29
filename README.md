@@ -13,7 +13,7 @@ source :rubygems
 
 gem 'iridium', :github => 'radiumsoftware/iridium'
 gem 'thor', :github => 'wycats/thor'
-gem 'rake-pipeline', :github => 'living-social/rake-pipeline'
+gem 'rake-pipeline', :github => 'twinturbo/rake-pipeline', :branch => 'iridium'
 ```
 
 Now bootstrap:
