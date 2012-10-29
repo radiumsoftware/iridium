@@ -10,6 +10,8 @@ module Iridium
         Iridium.load!
         Iridium.application.compile
       end
+
+      default_task :compile
     end
   end
 end
