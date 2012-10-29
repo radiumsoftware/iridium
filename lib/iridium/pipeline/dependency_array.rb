@@ -25,6 +25,7 @@ module Iridium
         tail = @files[index..-1]
         @files = head + names + tail
       end
+      alias load_before insert_before
 
       def insert_after(marker, *names)
         index = @files.index marker
@@ -32,6 +33,7 @@ module Iridium
         tail = @files[index+1..-1]
         @files = head + names + tail
       end
+      alias load_after insert_after
 
       def unload(*names)
         names.each do |name|
