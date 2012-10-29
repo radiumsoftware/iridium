@@ -1,5 +1,14 @@
 module Iridium
   class Engine < Component
+    class << self
+      def inherited(base)
+        super
+
+        call_stack = caller.map { |p| p.sub(/:\d+.*/, '') }
+        base.called_from = File.dirname(call_stack.detect { |l| l !~ %r{lib\/iridium\/} })
+      end
+    end
+
     def paths
       @paths ||= begin
         set = Hydrogen::PathSet.new root
