@@ -33,7 +33,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
       file.puts File.read(Iridium.vendor_path.join("minispade.js"))
     end
 
-    create_file "app/index.html.erb", index_file_content
+    create_file "app/assets/index.html.erb", index_file_content
   end
 
   def working_directory
@@ -302,9 +302,9 @@ class RunningTestsTest < MiniTest::Unit::TestCase
         ok window.TestApp, "TestApp should be accessible!"
     test
 
-    status, stdout, stderr = invoke "test/integration/code_access_test.coffee"
+    status, stdout, stderr = invoke "test/integration/code_access_test.coffee", :debug => true
 
-    assert_equal 0, status, "Test should pass! Output:\n #{stderr}"
+    assert_equal 0, status, "Test should pass! Output:\n #{stdout}"
   end
 
   def test_failing_integration_test_does_not_stop_other_integration_tests
