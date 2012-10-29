@@ -48,6 +48,7 @@ class ApplicationTest < MiniTest::Unit::TestCase
     TestApp.new.boot!
 
     assert_equal "bar", TestApp.config.settings.foo
+    assert TestApp.config.settings.frozen?, "settings should be frozen"
   end
 
   def test_settings_with_with_env_keys_are_loaded

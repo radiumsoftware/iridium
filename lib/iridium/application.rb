@@ -8,6 +8,8 @@ module Iridium
       end
     end
 
+    attr_reader :settings
+
     initializer do |app|
       app.all_paths[:environment].expanded.each do |path|
         require path
@@ -33,6 +35,7 @@ module Iridium
       end
 
       config.settings = OpenStruct.new settings_hash
+      config.settings.freeze
 
       all_paths[:system_initializers].expanded.each do |path|
         require path
