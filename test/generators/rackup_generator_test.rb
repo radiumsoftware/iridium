@@ -23,7 +23,7 @@ class RackupGeneratorTest < GeneratorTestCase
   def test_rackup_file_requires_the_application
     invoke ; assert_file "config.ru"
 
-    require_line = %Q{require File.expand_path("../application", __FILE__)}
+    require_line = %Q{require File.expand_path("../config/environment", __FILE__)}
 
     content = read "config.ru"
 
