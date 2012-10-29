@@ -861,6 +861,12 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     refute_file "site/images/sprites/icons/icon1.png"
   end
 
+  def test_vendored_assets_are_compiled
+    create_file "vendor/assets/images/foo.png", "PNG content"
+
+    compile ; assert_file "site/images/foo.png"
+  end
+
   def assert_before(string, before, after, msg = nil)
     assert_includes string, before
     assert_includes string, after
