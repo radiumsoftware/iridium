@@ -11,6 +11,7 @@ casper.on 'resource.received', (request) ->
     result.backtrace = []
     result.assertions = 0
     logger.message result
+    casper.log "Test failed because #{request.url} did not return properly"
     casper.test.done()
 
 injectJsStep = (path) ->
@@ -21,12 +22,18 @@ injectJsStep = (path) ->
 waitForTestStep = (path) ->
   casper.waitFor(
     ->
+      casper.log "Checking if #{path} is done...", "debug"
+
       casper.evaluate ->
         window.testsDone == true
     , -> 
+      casper.log "#{path} finished successfully!", "debug"
+
       # do nothing, the test passed
       true
     , ->
+      casper.log "#{path} timed out! You need to debug this in-browser.", "debug"
+
       result = {}
       result.name = apth
       result.message = "Test timed out"
@@ -44,7 +51,11 @@ startTestStep = (path) ->
 casper.start casper.unitTestLoader
 
 for unitTest in casper.unitTests
+  casper.log "Adding: #{unitTest} to the test suite", "debug"
+
   casper.then ->
+    casper.log "Reloading page to wipe state", "debug"
+
     casper.reload()
 
   injectJsStep unitTest
@@ -54,4 +65,6 @@ for unitTest in casper.unitTests
   waitForTestStep unitTest
 
 casper.run ->
+  casper.log "Executing unit tests", "debug"
+
   @test.done()
