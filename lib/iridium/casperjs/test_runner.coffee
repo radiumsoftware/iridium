@@ -56,9 +56,15 @@ for test in testFiles
 unitTestRunner = fs.pathJoin(loadPaths[0], "iridium", "unit_test_runner.coffee")
 integrationTestRunner = fs.pathJoin(loadPaths[0], "iridium", "integration_test_runner.coffee")
 
-casper = iridium.casper({
+options = {
   exitOnError: false
-})
+}
+
+if phantom.casperArgs.get('verbose')
+  options.verbose = true
+  options.logLevel = 'debug'
+
+casper = iridium.casper options
 
 casper.unitTests = unitTests
 casper.integrationTests = integrationTests
