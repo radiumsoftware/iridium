@@ -28,29 +28,31 @@ module Iridium
       end
 
       def app
-        server = self
+        @app ||= begin
+          server = self
 
-        builder = Builder.new
+          builder = Builder.new
 
-        builder.use Middleware::RackLintCompatibility
+          builder.use Middleware::RackLintCompatibility
 
-        builder.use ::Rack::ConditionalGet
-        builder.use Middleware::Caching, server
-        builder.use Middleware::GzipRewriter, server
+          builder.use ::Rack::ConditionalGet
+          builder.use Middleware::Caching, server
+          builder.use Middleware::GzipRewriter, server
 
-        config.middleware.each do |middleware|
-          builder.use middleware.name, *middleware.args, &middleware.block
+          config.middleware.each do |middleware|
+            builder.use middleware.name, *middleware.args, &middleware.block
+          end
+
+          config.proxies.each_pair do |url, to|
+            builder.proxy url, to
+          end
+
+          builder.rewrite_urls
+
+          builder.run ::Rack::Directory.new server.site_path
+
+          builder.to_app
         end
-
-        config.proxies.each_pair do |url, to|
-          builder.proxy url, to
-        end
-
-        builder.rewrite_urls
-
-        builder.run ::Rack::Directory.new server.site_path
-
-        builder.to_app
       end
     end
   end

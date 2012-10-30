@@ -22,7 +22,7 @@ module Iridium
       end
 
       def pipeline
-        @pipeline ||= Rake::Pipeline::Project.new assetfile
+        Rake::Pipeline::Project.new assetfile
       end
 
       def clean!
@@ -37,7 +37,7 @@ module Iridium
         run_callbacks :before_compile, self
 
         Dir.chdir root do
-          pipeline.invoke_clean
+          pipeline.invoke
         end
       end
     end

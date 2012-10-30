@@ -17,7 +17,7 @@ module Iridium
       end
 
       def app
-        Rack::Builder.new do
+        @app ||= Rack::Builder.new do
           use Middleware::RackLintCompatibility
 
           Iridium.application.config.middleware.each do |middleware|
