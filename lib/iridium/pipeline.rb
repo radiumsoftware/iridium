@@ -61,7 +61,7 @@ module Iridium
     config.scripts = Pipeline::DependencyArray.new
 
     config.dependencies.load :minispade, :handlebars, :i18n, :jquery
-    config.dependencies.skip "handlebars-vm"
+    config.dependencies.skip "handlebars-runtime"
 
     class << self
       def before_compile(*args, &block)
