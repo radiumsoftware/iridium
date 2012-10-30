@@ -22,7 +22,7 @@ module Iridium
       end
 
       def pipeline
-        Rake::Pipeline::Project.new assetfile
+        @pipeline ||= Rake::Pipeline::Project.new assetfile
       end
 
       def clean!
