@@ -16,6 +16,12 @@ module Iridium
         end
       end
 
+      class PipelineServer < ::Rake::Pipeline::Middleware
+        def initialize(app, project)
+          @app, @project = app, project
+        end
+      end
+
       def app
         @app ||= Rack::Builder.new do
           use Middleware::RackLintCompatibility
@@ -33,7 +39,7 @@ module Iridium
             rewrite %r{^\/?[^\.]+\/?(\?.*)?$}, '/index.html$1'
           end
 
-          use Rake::Pipeline::Middleware, Iridium.application.assetfile
+          use PipelineServer, Iridium.application.pipeline
           use DirectoryServer, Iridium.application.site_path
           run NotFound.new
         end
