@@ -230,6 +230,18 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "Pizza.compile"
   end
 
+  def test_handlebars_files_work_with_precompilation
+    config.handlebars.compiler = Iridium::Pipeline::HandlebarsFilePrecompiler
+
+    create_file "app/templates/home.handlebars", "{{name}}"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "Handlebars.template"
+  end
+
   def test_concats_vendor_css_before_app_css
     create_file "app/stylesheets/home.css", "app"
     create_file "vendor/stylesheets/bootstrap.css", "vendor"

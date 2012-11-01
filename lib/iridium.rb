@@ -14,6 +14,7 @@ require 'yaml'
 require 'erb'
 require 'execjs'
 require 'compass'
+require 'barber'
 
 require 'rack/rewrite'
 require 'rake-pipeline'
