@@ -30,7 +30,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "rake-pipeline-web-filters", "0.7.0"
   gem.add_dependency "activesupport"
   gem.add_dependency "thor"
-  gem.add_dependency "barber"
+  gem.add_dependency "barber", "~> 0.1.1"
 
   gem.add_development_dependency "simplecov"
   gem.add_development_dependency "rack-test"

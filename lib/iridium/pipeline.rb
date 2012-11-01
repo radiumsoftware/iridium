@@ -22,6 +22,16 @@ module Iridium
         end
       end
 
+      def handlebars_path
+        base = paths[:vendor].expanded.find do |path|
+          File.exists? File.join(path, "javascripts", "handlebars.js")
+        end
+
+        return unless base
+
+        File.join base, "javascripts", "handlebars.js"
+      end
+
       def pipeline
         Rake::Pipeline::Project.new assetfile
       end

@@ -231,6 +231,8 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_handlebars_files_work_with_precompilation
+    create_file "vendor/javascripts/handlebars.js", File.read(Iridium.vendor_path.join("handlebars.js"))
+
     config.handlebars.compiler = Iridium::Pipeline::HandlebarsFilePrecompiler
 
     create_file "app/templates/home.handlebars", "{{name}}"
@@ -239,7 +241,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_includes content, "Handlebars.template"
+    assert_match content, %r{Handlebars\.TEMPLATES\['test_app/home'\]=Handlebars\.template\(.+\);}m
   end
 
   def test_concats_vendor_css_before_app_css
