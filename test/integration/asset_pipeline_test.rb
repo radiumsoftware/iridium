@@ -244,6 +244,88 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_match content, %r{Handlebars\.TEMPLATES\['test_app/home'\]=Handlebars\.template\(.+\);}m
   end
 
+  def test_inline_coffeescript_block_templates_with_line_breaks_are_compiled
+    TestApp.configure do
+      js do |pipeline|
+        pipeline.gsub /Handlebars\.compile\(.+\)/ do |match, template|
+          Iridium::Pipeline::InlineHandlebarsPrecompiler.call template
+        end
+      end
+    end
+
+    create_file "vendor/javascripts/handlebars.js", File.read(Iridium.vendor_path.join("handlebars.js"))
+
+    create_file "app/javascripts/view.coffee", <<-coffee
+      template: Handlebars.compile '''
+        <h2>{{unbound view.title}}</h2>
+        <ul>
+          {{#each view.content}}
+            {{view view.resultItemView 
+              contentBinding="this" 
+              selectedItemBinding="view.selectedItem"}}
+          {{/each}}
+        </ul>
+      '''
+    coffee
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_match content, %r{template:\sHandlebars\.template\(.+\);}m
+  end
+
+  def test_inline_coffeescript_block_templates_with_line_breaks_are_compiled
+    TestApp.configure do
+      js do |pipeline|
+        pipeline.gsub /Handlebars\.compile\(.+\)/ do |match, template|
+          Iridium::Pipeline::InlineHandlebarsPrecompiler.call template
+        end
+      end
+    end
+
+    create_file "vendor/javascripts/handlebars.js", File.read(Iridium.vendor_path.join("handlebars.js"))
+
+    create_file "app/javascripts/view.coffee", <<-coffee
+      template: Handlebars.compile '''
+        <h2>{{unbound view.title}}</h2>
+        <ul>
+          {{#each view.content}}
+            {{view view.resultItemView contentBinding="this" selectedItemBinding="view.selectedItem"}}
+          {{/each}}
+        </ul>
+      '''
+    coffee
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_match content, %r{template:\sHandlebars\.template\(.+\);}m
+  end
+
+  def test_inline_javascript_templates_are_compiled
+    TestApp.configure do
+      js do |pipeline|
+        pipeline.gsub /Handlebars\.compile\(.+\)/ do |match, template|
+          Iridium::Pipeline::InlineHandlebarsPrecompiler.call template
+        end
+      end
+    end
+
+    create_file "vendor/javascripts/handlebars.js", File.read(Iridium.vendor_path.join("handlebars.js"))
+
+    create_file "app/javascripts/view.js", <<-coffee
+      template: Handlebars.compile("{{foo}}")
+    coffee
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_match content, %r{template:\sHandlebars\.template\(.+\);}m
+  end
+
   def test_concats_vendor_css_before_app_css
     create_file "app/stylesheets/home.css", "app"
     create_file "vendor/stylesheets/bootstrap.css", "vendor"
