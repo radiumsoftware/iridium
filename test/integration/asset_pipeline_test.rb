@@ -422,8 +422,18 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_equal "bar", read("site/index.html").chomp
   end
 
-  def test_minifies_js
-    config.pipeline.minify = true
+  def compile_css_and_js_files
+    create_file "app/stylesheets/app.css", <<-js
+      #APP {
+       new-lines: everywhere;
+      };
+    js
+
+    create_file "vendor/stylesheets/vendor.css", <<-js
+      #VENDOR {
+       new-lines: everywhere;
+      };
+    js
 
     create_file "app/javascripts/app.js", <<-js
       var App = function() {
@@ -437,37 +447,41 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
       };
     js
 
-    compile ; assert_file "site/application.js"
-
-    content = read "site/application.js"
-
-    assert_includes content, "APP"
-    assert_includes content, "VENDOR"
-    refute_includes content, "\n"
+    compile
   end
 
-  def test_minifies_css
+  def assert_file_compiled(file, opts = {})
+    path = "site/#{file}"
+    assert_file(path)
+    content = read(path)
+    assert_includes(content, "APP")
+    assert_includes(content, "VENDOR")
+    if opts[:minified]
+      refute_includes(content, "\n")
+    else
+      assert_includes(content, "\n")
+    end
+  end
+
+  def test_minifies_only_js
+    config.pipeline.minify = :js
+    compile_css_and_js_files
+    assert_file_compiled "application.js", :minified => true
+    assert_file_compiled "application.css"
+  end
+
+  def test_minifies_css_only
+    config.pipeline.minify = :css
+    compile_css_and_js_files
+    assert_file_compiled "application.js"
+    assert_file_compiled "application.css", :minified => true
+  end
+
+  def test_minifies_both_css_and_js
     config.pipeline.minify = true
-
-    create_file "app/stylesheets/app.css", <<-js
-      #APP {
-       new-lines: everywhere;
-      };
-    js
-
-    create_file "vendor/stylesheets/vendor.css", <<-js
-      #VENDOR {
-       new-lines: everywhere;
-      };
-    js
-
-    compile ; assert_file "site/application.css"
-
-    content = read "site/application.css"
-
-    assert_includes content, "APP"
-    assert_includes content, "VENDOR"
-    refute_includes content, "\n"
+    compile_css_and_js_files
+    assert_file_compiled "application.js",  :minified => true
+    assert_file_compiled "application.css", :minified => true
   end
 
   def test_generates_gzip_versions

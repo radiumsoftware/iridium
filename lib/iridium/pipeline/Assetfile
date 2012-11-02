@@ -232,13 +232,17 @@ input app.build_path.join("preoptimization") do
   # Execute build hooks added by external components
   app.config.optimization_pipelines.invoke self, app
 
-  if app.config.pipeline.minify
-    match "**/*.js" do
-      uglify { |path| path }
+  if (minify = app.config.pipeline.minify)
+    if minify == :js || minify == true
+      match "**/*.js" do
+        uglify { |path| path }
+      end
     end
 
-    match "**/*.css" do
-      yui_css { |path| path }
+    if minify == :css || minify == true
+      match "**/*.css" do
+        yui_css { |path| path }
+      end
     end
   end
 
