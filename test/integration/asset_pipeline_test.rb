@@ -422,7 +422,9 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_equal "bar", read("site/index.html").chomp
   end
 
-  def compile_css_and_js_files
+  def test_minifies_js_only
+    config.pipeline.minify = :js
+
     create_file "app/stylesheets/app.css", <<-js
       #APP {
        new-lines: everywhere;
@@ -448,40 +450,108 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     js
 
     compile
-  end
 
-  def assert_file_compiled(file, opts = {})
-    path = "site/#{file}"
-    assert_file(path)
-    content = read(path)
-    assert_includes(content, "APP")
-    assert_includes(content, "VENDOR")
-    if opts[:minified]
-      refute_includes(content, "\n")
-    else
-      assert_includes(content, "\n")
-    end
-  end
+    assert_file "site/application.js"
+    assert_file "site/application.css"
 
-  def test_minifies_only_js
-    config.pipeline.minify = :js
-    compile_css_and_js_files
-    assert_file_compiled "application.js", :minified => true
-    assert_file_compiled "application.css"
+    js  = read "site/application.js"
+    css = read "site/application.css"
+
+    assert_includes js, "APP"
+    assert_includes js, "VENDOR"
+    refute_match js, /\n/
+
+    assert_includes css, "APP"
+    assert_includes css, "VENDOR"
+    assert_match css, /\n/
   end
 
   def test_minifies_css_only
     config.pipeline.minify = :css
-    compile_css_and_js_files
-    assert_file_compiled "application.js"
-    assert_file_compiled "application.css", :minified => true
+
+    create_file "app/stylesheets/app.css", <<-js
+      #APP {
+       new-lines: everywhere;
+      };
+    js
+
+    create_file "vendor/stylesheets/vendor.css", <<-js
+      #VENDOR {
+       new-lines: everywhere;
+      };
+    js
+
+    create_file "app/javascripts/app.js", <<-js
+      var App = function() {
+        console.log("APP");
+      };
+    js
+
+    create_file "vendor/javascripts/vendor.js", <<-js
+      var vendor = function() {
+        console.log("VENDOR");
+      };
+    js
+
+    compile
+
+    assert_file "site/application.js"
+    assert_file "site/application.css"
+
+    js  = read "site/application.js"
+    css = read "site/application.css"
+
+    assert_includes js, "APP"
+    assert_includes js, "VENDOR"
+    assert_match js, /\n/
+
+    assert_includes css, "APP"
+    assert_includes css, "VENDOR"
+    refute_match css, /\n/
   end
 
   def test_minifies_both_css_and_js
     config.pipeline.minify = true
-    compile_css_and_js_files
-    assert_file_compiled "application.js",  :minified => true
-    assert_file_compiled "application.css", :minified => true
+
+    create_file "app/stylesheets/app.css", <<-js
+      #APP {
+       new-lines: everywhere;
+      };
+    js
+
+    create_file "vendor/stylesheets/vendor.css", <<-js
+      #VENDOR {
+       new-lines: everywhere;
+      };
+    js
+
+    create_file "app/javascripts/app.js", <<-js
+      var App = function() {
+        console.log("APP");
+      };
+    js
+
+    create_file "vendor/javascripts/vendor.js", <<-js
+      var vendor = function() {
+        console.log("VENDOR");
+      };
+    js
+
+    compile
+
+    assert_file "site/application.js"
+    assert_file "site/application.css"
+
+    js  = read "site/application.js"
+    css = read "site/application.css"
+
+    assert_includes js, "APP"
+    assert_includes js, "VENDOR"
+    refute_match js, /\n/
+
+    assert_includes css, "APP"
+    assert_includes css, "VENDOR"
+    refute_match css, /\n/
   end
 
   def test_generates_gzip_versions
