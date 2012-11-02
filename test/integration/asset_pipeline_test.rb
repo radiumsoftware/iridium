@@ -247,9 +247,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   def test_inline_coffeescript_block_templates_with_line_breaks_are_compiled
     TestApp.configure do
       js do |pipeline|
-        pipeline.gsub /Handlebars\.compile\(.+\)/ do |match, template|
-          Iridium::Pipeline::InlineHandlebarsPrecompiler.call template
-        end
+        pipeline.filter Iridium::Pipeline::InlinePrecompilerFilter
       end
     end
 
@@ -278,9 +276,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   def test_inline_coffeescript_block_templates_with_line_breaks_are_compiled
     TestApp.configure do
       js do |pipeline|
-        pipeline.gsub /Handlebars\.compile\(.+\)/ do |match, template|
-          Iridium::Pipeline::InlineHandlebarsPrecompiler.call template
-        end
+        pipeline.filter Iridium::Pipeline::InlinePrecompilerFilter
       end
     end
 
@@ -307,9 +303,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   def test_inline_javascript_templates_are_compiled
     TestApp.configure do
       js do |pipeline|
-        pipeline.gsub /Handlebars\.compile\(.+\)/ do |match, template|
-          Iridium::Pipeline::InlineHandlebarsPrecompiler.call template
-        end
+        pipeline.filter Iridium::Pipeline::InlinePrecompilerFilter
       end
     end
 

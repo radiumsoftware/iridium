@@ -10,7 +10,10 @@
 
   # Run templates through a precompiler instead of using
   # compile and runtime mode.
-  config.handlebars.compiler = Iridium::HandlebarsPrecompiler
+  config.handlebars.compiler = Iridium::Pipeline::HandlebarsPrecompiler
+
+  # Run javascript code through this inline precompiler
+  config.handlebars.inline_compiler = Iridium::Pipeline::InlinePrecompilerFilter
 
   # Swap out entire handlebars library for just the runtime
   config.dependencies.swap :handlebars, "handlebars-runtime"

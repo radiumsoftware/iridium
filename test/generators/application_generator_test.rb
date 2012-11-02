@@ -106,7 +106,8 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_includes content, "config.pipeline.minify = true"
     assert_includes content, "config.pipeline.gzip = true"
     assert_includes content, "config.pipeline.manifest = true"
-    assert_includes content, "config.handlebars.compiler = Iridium::HandlebarsPrecompiler"
+    assert_includes content, "config.handlebars.compiler = Iridium::Pipeline::HandlebarsPrecompiler"
+    assert_includes content, "config.handlebars.inline_compiler = Iridium::Pipeline::InlinePrecompilerFilter"
     assert_includes content, "config.minispade.module_format = :function"
   end
 

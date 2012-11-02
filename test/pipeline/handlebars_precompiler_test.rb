@@ -9,7 +9,7 @@ class HandlebarsPrecompilerTest < MiniTest::Unit::TestCase
     <div>{{name}} hello!</div>
     handlebars
 
-    compiler = Iridium::HandlebarsPrecompiler.new mock_app
+    compiler = Iridium::Pipeline::HandlebarsPrecompiler.new mock_app
 
     result = compiler.compile template
 

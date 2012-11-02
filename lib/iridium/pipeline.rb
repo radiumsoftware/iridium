@@ -2,6 +2,7 @@ require 'iridium/pipeline/dependency_array'
 require 'iridium/pipeline/handlebars_precompiler'
 require 'iridium/pipeline/handlebars_precompilers'
 require 'iridium/pipeline/compile_command'
+require 'iridium/pipeline/inline_precompiler_filter'
 
 module Iridium
   module Pipeline
@@ -93,6 +94,12 @@ module Iridium
         config.optimization_pipelines.add *args, &block
       end
       alias optimizations optimize
+    end
+
+    js do |pipeline, app|
+      if inline_precompiler = app.config.handlebars.inline_compiler
+        pipeline.filter inline_precompiler
+      end
     end
   end
 end
