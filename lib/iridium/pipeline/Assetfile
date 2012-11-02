@@ -115,15 +115,18 @@ Iridium::Engine.subclasses.each do |engine|
       coffee_script
     end
 
-    # Compile all Javascript files into Minispade modules.
-    # Files in vendor/javascripts become modules
-    # based on their file name. Files in javascripts
-    # becomes modules inside your application namespace.
-    #
-    # Examples:
-    # javascripts/boot.js -> require('engine_name/boot');
-    # javascripts/views/main.js -> require('engine_name/views/main');
     match "**/*.js" do
+      # Execute build hooks added by external components
+      app.config.js_pipelines.invoke self, app
+
+      # Compile all Javascript files into Minispade modules.
+      # Files in vendor/javascripts become modules
+      # based on their file name. Files in javascripts
+      # becomes modules inside your application namespace.
+      #
+      # Examples:
+      # javascripts/boot.js -> require('engine_name/boot');
+      # javascripts/views/main.js -> require('engine_name/views/main');
       minispade :rewrite_requires => true, 
         :string => (app.config.minispade.module_format == :string),
         :module_id_generator => proc { |input|
@@ -157,8 +160,6 @@ end
 output app.build_path.join("preoptimization")
 input app.build_path.join("javascript") do
 
-  # Execute build hooks added by external components
-  app.config.js_pipelines.invoke self, app
 
   match "*.js" do
     concat ["vendor.js", "env.js", "init.js", "i18n.js", "lib.js", "templates.js"] , "application.js"
@@ -190,6 +191,10 @@ input app.all_paths[:stylesheets].expanded do
 
   match "**/*.css" do
     engines_first
+
+    # Execute build hooks added by external components
+    app.config.css_pipelines.invoke self, app
+
     concat "lib.css"
   end
 end
@@ -198,9 +203,6 @@ end
 #    Now build_path/css contains the final unoptimized application.css
 output app.build_path.join("preoptimization")
 input app.build_path.join("css") do
-  # Execute build hooks added by external components
-  app.config.css_pipelines.invoke self, app
-
   match "*.css" do
     concat ["vendor.css", "lib.css"], "application.css"
   end
