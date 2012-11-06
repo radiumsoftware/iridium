@@ -204,6 +204,16 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "Handlebars.TEMPLATES['test_app/dashboard/feed/header']="
   end
 
+  def test_removes_view_from_handlebars_template_name
+    create_file "app/templates/dashboard/feed/header_view.handlebars", "{{name}}"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "Handlebars.TEMPLATES['test_app/dashboard/feed/header']="
+  end
+
   def test_handlebars_destination_is_configurbale
     config.handlebars.target = "FOO"
 
