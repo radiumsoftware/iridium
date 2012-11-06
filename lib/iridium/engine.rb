@@ -34,7 +34,8 @@ module Iridium
         set[:site].add "site"
 
         set[:tmp].add "tmp"
-        set[:build].add "builds"
+        set[:build].add "tmp/builds"
+
         set
       end
     end

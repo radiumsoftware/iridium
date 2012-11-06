@@ -23,7 +23,7 @@ class EngineTest < MiniTest::Unit::TestCase
   def test_build_paths
     assert_equal "site", app.paths[:site].first.path
     assert_equal "tmp", app.paths[:tmp].first.path
-    assert_equal "builds", app.paths[:build].first.path
+    assert_equal "tmp/builds", app.paths[:build].first.path
   end
 
   def test_iridium_config_paths

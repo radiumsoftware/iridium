@@ -35,7 +35,6 @@ class MiniTest::Unit::TestCase
 
     Iridium.application = TestApp.instance
 
-
     FileUtils.mkdir_p Iridium.application.app_path
     FileUtils.mkdir_p Iridium.application.site_path
     FileUtils.mkdir_p Iridium.application.tmp_path

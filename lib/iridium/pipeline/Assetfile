@@ -53,6 +53,8 @@
 # The individual pipeline steps are documented as well so you can
 # understand them.
 
+tmpdir app.tmp_path.join("pipeline")
+
 # == The JavaScript pipeline
 # 1. Compile all the vendor code
 output app.build_path.join("javascript")
