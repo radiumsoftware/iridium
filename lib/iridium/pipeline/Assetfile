@@ -58,18 +58,18 @@ tmpdir app.tmp_path.join("pipeline")
 # == The JavaScript pipeline
 # 1. Compile all the vendor code
 output app.build_path.join("javascript")
-input app.all_paths[:vendor].expanded do
-  app_overrides_engines
+input app.all_paths[:vendored_javascripts].expanded do
+  app_javascript_overrides_engines
 
   # Skip all the files specified.
   app.config.dependencies.skips.each do |file|
-    skip "javascripts/#{file}.js"
+    skip "#{file}.js"
   end
 
   # Use the specified vendor order to create a vendor.js file
   match "**/*.js" do
     engines_first
-    ordered_files = app.config.dependencies.files.collect { |f| "javascripts/#{f}.js" }
+    ordered_files = app.config.dependencies.files.collect { |f| "#{f}.js" }
     concat ordered_files, "vendor.js"
   end
 end
@@ -161,8 +161,6 @@ end
 #
 output app.build_path.join("preoptimization")
 input app.build_path.join("javascript") do
-
-
   match "*.js" do
     concat ["vendor.js", "env.js", "init.js", "i18n.js", "lib.js", "templates.js"] , "application.js"
   end
@@ -171,11 +169,11 @@ end
 # == Begin CSS Pipeline
 # 1. Prepare the vendor css
 output app.build_path.join("css")
-input app.all_paths[:vendor].expanded do
-  app_overrides_engines
+input app.all_paths[:vendored_stylesheets].expanded do
+  app_stylesheets_overrides_engines
 
   # Use the specified vendor order to create a vendor.js file
-  match "stylesheets/**/*.css" do
+  match "**/*.css" do
     engines_first
     concat "vendor.css"
   end

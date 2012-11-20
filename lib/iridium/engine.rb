@@ -17,7 +17,11 @@ module Iridium
         set[:config].add "app/config"
         set[:initializers].add "app/config/initializers"
         set[:javascripts].add "app/javascripts"
+        set[:vendored_javascripts].add "vendor/javascripts"
+
         set[:stylesheets].add "app/stylesheets"
+        set[:vendored_stylesheets].add "vendor/stylesheets"
+
         set[:templates].add "app/templates"
         set[:assets].add "app/assets"
         set[:assets].add "vendor/assets"

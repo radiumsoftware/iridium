@@ -43,17 +43,25 @@ module Rake
           end
         end
 
-        def app_overrides_engines
+        def app_javascript_overrides_engines
+          app_overrides_engines :vendored_javascripts
+        end
+
+        def app_stylesheets_overrides_engines
+          app_overrides_engines :vendored_stylesheets
+        end
+
+        def app_overrides_engines(set)
           # Skip files that exist in engines and app. App javascripts
           # should take precendence over the same file in engines
           skip do |input|
-            app_vendor_files = app.paths[:vendor].expanded.collect do |path|
+            app_vendor_files = app.paths[set].expanded.collect do |path|
               Dir["#{path}/**/*"].collect do |file|
                 File.basename file
               end
             end.flatten
 
-            engine_vendor_files = app.engine_paths[:vendor].expanded.collect do |path|
+            engine_vendor_files = app.engine_paths[set].expanded.collect do |path|
               Dir["#{path}/**/*"]
             end.flatten
 
