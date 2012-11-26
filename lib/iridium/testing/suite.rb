@@ -96,8 +96,7 @@ module Iridium
 
         report = Report.new
 
-        options[:seed] ||= srand % 0xFFFF
-        srand options[:seed]
+        srand(options[:seed] || srand % 0xFFFF)
 
         file_names.shuffle!
 
