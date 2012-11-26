@@ -18,6 +18,8 @@ module Iridium
         result = Suite.execute paths, options
         exit result
       end
+
+      default_task :test
     end
   end
 end
