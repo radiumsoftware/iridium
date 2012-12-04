@@ -33,7 +33,7 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
     test_result = results.first
     assert_equal "test/casper/success.js", test_result.file
     assert_kind_of Fixnum, test_result.time
-    assert_equal 1, test_result.assertions
+    assert_equal 1, test_result.assertions, "Assertions should be recorded"
     assert test_result.name
   end
 
@@ -96,9 +96,11 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_stdout_prints_in_debug_mode
+    skip
+
     create_file "test/casper/error.js", <<-test
       casper.start('http://localhost:7776/', function() {
-        console.log('This is logged!');
+        phantom.logger.info('This is logged!');
       });
 
       casper.run(function() {
@@ -338,22 +340,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
     result = results.first
     assert result.error?
     assert_equal 1, result.assertions
-  end
-
-  def test_can_dump_json_to_the_console
-    create_file "test/casper/dump.js", <<-test
-      casper.start('http://localhost:7776/', function() {
-        console.dump({foo: "bar"});
-      });
-
-      casper.run(function() {
-        this.test.done();
-      });
-    test
-
-    status, stdout, stderr = invoke "test/casper/dump.js", :debug => true
-
-    assert_includes stdout, '{"foo":"bar"}'
   end
 
   def test_step_timeouts_dont_blow_up_tests

@@ -24,15 +24,13 @@ module Iridium
               begin
                 json = JSON.parse output
 
-                if json.is_a?(Hash) && json['iridium']
-                  yield json['iridium'] if block_given?
-                elsif json.is_a?(Hash) && json['abort']
-                  raise ProcessAborted, json['abort']
-                else
-                  puts output if options[:debug]
+                if json.is_a?(Hash) && json['signal'] == 'abort'
+                  raise ProcessAborted, json['data']
+                elsif block_given?
+                  yield json
                 end
               rescue JSON::ParserError
-                puts output if options[:debug]
+                # do nothing. We only care about JSON messages
               end
             end
           rescue Errno::EIO 

@@ -15,5 +15,5 @@ casper.then(function() {
 });
 
 casper.run(function() {
-  this.test.renderResults(true);
+  this.test.done()
 });;

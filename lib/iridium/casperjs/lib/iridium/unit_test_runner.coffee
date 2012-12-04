@@ -15,12 +15,6 @@ casper.on 'resource.received', (request) ->
 
     casper.test.done()
 
-bootstrapStep = ->
-  casper.then ->
-    @evaluate((reporter) ->
-      window.report = reporter
-    , { report: phantom.report })
-
 injectJsStep = (path) ->
   casper.then ->
     if !casper.page.injectJs(path)
@@ -60,8 +54,6 @@ for unitTest in casper.unitTests
   casper.then ->
     phantom.logger.info "Reloading page to wipe state"
     casper.reload()
-
-  bootstrapStep()
 
   injectJsStep unitTest
 

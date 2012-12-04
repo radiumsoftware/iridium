@@ -175,6 +175,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def test_runner_supports_debug_mode
+    skip
+
     create_file "test/integration/logging.coffee", <<-test
       test 'Truth', ->
         console.log 'integration logging'
@@ -302,7 +304,7 @@ class RunningTestsTest < MiniTest::Unit::TestCase
         ok window.TestApp, "TestApp should be accessible!"
     test
 
-    status, stdout, stderr = invoke "test/integration/code_access_test.coffee", :debug => true
+    status, stdout, stderr = invoke "test/integration/code_access_test.coffee"
 
     assert_equal 0, status, "Test should pass! Output:\n #{stdout}"
   end
@@ -326,6 +328,8 @@ class RunningTestsTest < MiniTest::Unit::TestCase
   end
 
   def tests_can_dump_json_to_console
+    skip
+
     create_file "test/unit/dump_test.js", <<-test
       test('Console has a dump method', function() {
         console.dump({mode: "unit"});

@@ -7,6 +7,8 @@ require 'active_support/core_ext/string/inflections'
 
 require 'active_support/ordered_options'
 
+require 'logger'
+
 require 'thor'
 require 'thin'
 require 'json'

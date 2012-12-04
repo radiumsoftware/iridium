@@ -38,13 +38,20 @@ class IridiumCasper extends require('casper').Casper
     # the message is from remote browser and a test result
     # then report the test instead of forwarding the message
     if source == "remote"
-      try
-        result = JSON.parse msg
-        phantom.report(result.message) if result.signal == 'test'
-      catch exception
-        phantom.logger[level](msg)
+      @logRemoteMessage msg
     else
       phantom.logger[level](msg)
+
+  logRemoteMessage: (msg) ->
+    try
+      result = JSON.parse msg
+      phantom.report(result.data) if result.signal == 'test'
+    catch exception
+      phantom.logger.info msg
+
+  # Also override echo to forward stuff to the logger
+  echo: (msg) ->
+    @log(msg, "debug")
 
   # Warning should blow up the process.
   # There is no reason why any code should trigger
@@ -161,12 +168,11 @@ class IridiumCasper extends require('casper').Casper
       currentTest.backtrace = [failure.file]
       @done()
 
-    @test.on 'test.done', =>
+    @test.on 'test.done', ->
       # don't report results coming from the integration test that runs unit tests
       return if currentTest.name.match(/lib\/iridium\//)
 
       currentTest.time = (new Date().getTime()) - startTime
-
       phantom.report currentTest
 
     @test.on 'tests.complete', =>
@@ -177,7 +183,7 @@ class Iridium
     absolutePaths = []
     absolutePaths.push fs.pathJoin(@root, "iridium", "qunit.js")
 
-    for file in ['qunit_adapter']
+    for file in ['test_reporter', 'qunit_adapter']
       absolutePaths.push fs.pathJoin(@root, "iridium", "#{file}.coffee")
 
     options ||= {}

@@ -7,6 +7,10 @@ module Iridium
         @app, @files, @collector = app, files, collector
       end
 
+      def logger
+        @logger ||= Logger.new $stdout
+      end
+
       def run(options = {})
         file_arg = files.map { |f| %Q{"#{f}"} }.join " "
 
@@ -28,7 +32,17 @@ module Iridium
         begin
           streamer = CommandStreamer.new command
           streamer.run options do |message|
-            collector << Result.new(message)
+            case message['signal']
+            when 'test'
+              collector << Result.new(message['data'])
+            when 'log'
+              case message['level']
+              when 'warning'
+                logger.warn message['data']
+              else
+                logger.send message['level'], message['data']
+              end
+            end
           end
         rescue CommandStreamer::CommandFailed => ex
           result = Result.new :error => true

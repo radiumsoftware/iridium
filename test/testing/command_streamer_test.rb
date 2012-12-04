@@ -3,7 +3,7 @@ require 'shellwords'
 
 class CommandStreamerTest < MiniTest::Unit::TestCase
   def test_nothing_is_raised_when_command_works
-    command = Iridium::Testing::CommandStreamer.new "echo hi"
+    command = Iridium::Testing::CommandStreamer.new "ls"
     command.run
   end
 
@@ -26,7 +26,7 @@ class CommandStreamerTest < MiniTest::Unit::TestCase
   end
 
   def test_passes_message_back_to_iridium
-    json = {:iridium => {:this => :message}}.to_json
+    json = { :foo => :bar }.to_json
     collector = []
 
     command = Iridium::Testing::CommandStreamer.new "echo #{Shellwords.shellescape(json)}"
@@ -36,12 +36,12 @@ class CommandStreamerTest < MiniTest::Unit::TestCase
 
     assert_equal 1, collector.size
     assert_equal({
-      "this" => "message"
+      "foo" => "bar"
     }, collector.first)
   end
 
   def test_raises_an_error_when_process_sends_an_abort_signal
-    json = {:abort => "Failed"}.to_json
+    json = {:signal => 'abort', :data => "Failed"}.to_json
 
     command = Iridium::Testing::CommandStreamer.new "echo #{Shellwords.shellescape(json)}"
 

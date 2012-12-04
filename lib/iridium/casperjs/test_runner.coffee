@@ -4,7 +4,7 @@ utils = require('utils')
 phantom.abort = (msg) ->
   console.log(JSON.stringify({
     signal: 'abort',
-    message: msg
+    data: msg
   }))
   @exit()
 
@@ -35,17 +35,17 @@ class Logger
     console.log(JSON.stringify({
       signal: 'log',
       level: level,
-      message: msg
+      data: msg
     }))
 
 # Debug logging
 phantom.logger = new Logger()
 
 # Pass test results back to the ruby process
-phantom.report = (test) ->
+phantom.report = (testResult) ->
   console.log(JSON.stringify({
     signal: 'test',
-    message: test
+    data: testResult
   }))
 
 unless phantom.casperArgs.get('lib-path')

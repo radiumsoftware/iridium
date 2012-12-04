@@ -52,8 +52,8 @@ QUnit.log (context) =>
 
 QUnit.testDone (context) => 
   @currentTest.time = (new Date()).getTime() - @startTime
-  window.testDone = true
   window.report @currentTest
+  window.testDone = true
 
 QUnit.done (context) =>
   window.testsDone = true
