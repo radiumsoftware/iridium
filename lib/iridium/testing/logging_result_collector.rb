@@ -17,6 +17,10 @@ module Iridium
                        else
                          Logger::WARN
                        end
+
+        @logger.formatter = proc { |severity, datetime, prog_name, msg|
+          "#{severity.upcase}: #{msg}"
+        }
       end
 
       def <<(message)
