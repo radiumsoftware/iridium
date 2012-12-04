@@ -100,7 +100,21 @@ module Iridium
 
         file_names.shuffle!
 
-        tests = [Runner.new(Iridium.application, file_names, report.collector)]
+        logger = Logger.new $stdout
+        logger.level = case options[:log_level]
+                       when 'debug'
+                         Logger::DEBUG
+                       when 'info'
+                         Logger::INFO
+                       when 'warn'
+                         Logger::WARN
+                       when 'error'
+                         Logger::ERROR
+                       else
+                         Logger::WARN
+                       end
+
+        tests = [Runner.new(Iridium.application, file_names, logger, report.collector)]
 
         suite = Suite.new Iridium.application, tests
 

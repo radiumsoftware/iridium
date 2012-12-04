@@ -4,8 +4,7 @@ module Iridium
       description "Executes tests"
 
       desc "test PATHS", "run tests match by PATHS"
-      method_option :debug, :type => :boolean, :default => false
-      method_option :verbose, :type => :boolean, :default => false
+      method_option :log_level, :type => :string, :default => 'warn'
       method_option :dry_run, :type => :boolean, :default => false
       method_option :seed, :type => :numeric
       def test(*paths)

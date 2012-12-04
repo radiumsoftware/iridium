@@ -1,14 +1,10 @@
 module Iridium
   module Testing
     class Runner
-      attr_reader :app, :files, :collector
+      attr_reader :app, :files, :collector, :logger
 
-      def initialize(app, files, collector = [])
-        @app, @files, @collector = app, files, collector
-      end
-
-      def logger
-        @logger ||= Logger.new $stdout
+      def initialize(app, files, logger, collector = [])
+        @app, @files, @logger, @collector = app, files, logger, collector
       end
 
       def run(options = {})

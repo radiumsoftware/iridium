@@ -8,7 +8,7 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
 
     Dir.chdir Iridium.application.root do
       stdout, stderr = capture_io do
-        results = Iridium::Testing::Runner.new(Iridium.application, files).run(options)
+        results = Iridium::Testing::Runner.new(Iridium.application, files, Logger.new($stdout)).run(options)
       end
     end
 
@@ -93,23 +93,6 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
     assert_equal "ReferenceError: Can't find variable: foobar", test_result.message
     assert_equal "test/casper/error.js:2", test_result.backtrace.first
     assert_equal 0, test_result.assertions
-  end
-
-  def test_stdout_prints_in_debug_mode
-    skip
-
-    create_file "test/casper/error.js", <<-test
-      casper.start('http://localhost:7776/', function() {
-        phantom.logger.info('This is logged!');
-      });
-
-      casper.run(function() {
-        this.test.done();
-      });
-    test
-
-    results, stdout, stderr = invoke "test/casper/error.js", :debug => true
-    assert_includes stdout, "This is logged!"
   end
 
   def test_dry_return_returns_no_results
