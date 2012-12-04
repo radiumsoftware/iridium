@@ -160,22 +160,21 @@ test "my app says hello", ->
 ## Debugging Tests
 
 The remote console is not printed by default. You can enable it by
-passing `--debug` to `iridium test`. Console messages will be printed to
-standard out during the tests. I've added `console.dump` for printing
-complex objects. It dumps the JSON version to the console. Here's an
-example:
+passing `--log-level=info` to `iridium test`. Console messages will be printed to
+standard out during the tests. Also `console.debug` statements will
+be printed if `--log-level=debug` is passed.
 
 ```coffeescript
 # test/unit/debug_test.coffee
 test "can debug", ->
   console.log "I can see this!"
-  console.dump({foo: "bar"})
+  console.debug "More verbose debugging"
 ```
 
 ```
-$ iridium test test/unit/debug_test.coffee --debug
+$ iridium test test/unit/debug_test.coffee --log-level=debug
 I can see this!
-{"foo":"bar"}
+More verbose debugging
 ```
 
 ## JSLint
