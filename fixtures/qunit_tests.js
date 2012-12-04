@@ -13,3 +13,8 @@ test("error test", function() {
 test("expectation test", function() {
   expect(1);
 });
+
+test("console logs", function() {
+  expect(0);
+  console.log("Oh hai!")
+});

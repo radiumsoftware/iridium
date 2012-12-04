@@ -19,23 +19,24 @@ phantom.abort = (msg) ->
 # * warning
 # * error
 class Logger
-  debug: (msg) ->
-    @log 'debug', msg
+  debug: (msg, file) ->
+    @log 'debug', msg, file
 
-  info: (msg) ->
-    @log 'info', msg
+  info: (msg, file) ->
+    @log 'info', msg, file
 
-  warning: (msg) ->
-    @log 'warning', msg
+  warning: (msg, file) ->
+    @log 'warning', msg, file
 
-  error: (msg) ->
-    @log 'error', msg
+  error: (msg, file) ->
+    @log 'error', msg, file
 
-  log: (level, msg) ->
+  log: (level, msg, file) ->
     console.log(JSON.stringify({
       signal: 'log',
       level: level,
-      data: msg
+      data: msg,
+      file: file
     }))
 
 # Debug logging

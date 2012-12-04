@@ -35,6 +35,12 @@ module Iridium
 
         @hash['data']
       end
+
+      def file
+        return unless log?
+
+        @hash['file']
+      end
     end
   end
 end

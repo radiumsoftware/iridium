@@ -15,6 +15,10 @@ casper.on 'resource.received', (request) ->
 
     casper.test.done()
 
+setCurrentTestStep = (path) ->
+  casper.then -> 
+    @currentTestFile = path
+
 injectJsStep = (path) ->
   casper.then ->
     if !casper.page.injectJs(path)
@@ -41,15 +45,19 @@ waitForTestStep = (path) ->
 
 startTestStep = (path) ->
   casper.then -> 
+    @currentTestFile = path
     @evaluate((file) ->
       window.currentTestFileName = file
       window.startTests()
     , { file: path})
 
+
 casper.start casper.unitTestLoader
 
 for unitTest in casper.unitTests
   phantom.logger.info "Adding: #{unitTest} to the test suite"
+
+  setCurrentTestStep unitTest
 
   casper.then ->
     phantom.logger.info "Reloading page to wipe state"

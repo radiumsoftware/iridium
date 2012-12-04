@@ -40,14 +40,14 @@ class IridiumCasper extends require('casper').Casper
     if source == "remote"
       @logRemoteMessage msg
     else
-      phantom.logger[level](msg)
+      phantom.logger[level](msg, @currentTestFile)
 
   logRemoteMessage: (msg) ->
     try
       result = JSON.parse msg
       phantom.report(result.data) if result.signal == 'test'
     catch exception
-      phantom.logger.info msg
+      @log msg, 'info'
 
   # Also override echo to forward stuff to the logger
   echo: (msg) ->

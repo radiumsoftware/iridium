@@ -193,6 +193,25 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_includes stdout, "unit logging"
   end
 
+  def test_test_name_is_included_in_log_message
+    create_file "test/integration/logging.coffee", <<-test
+      test 'Truth', ->
+        expect(0)
+        console.log 'integration logging'
+    test
+
+    create_file "test/unit/logging.coffee", <<-test
+      test 'Truth', ->
+        expect(0)
+        console.log 'unit logging'
+    test
+
+    status, stdout, stderr = invoke "test/unit/logging.coffee", "test/integration/logging.coffee", :log_level => 'debug'
+
+    assert_includes stdout, "[test/integration/logging.coffee]"
+    assert_includes stdout, "[test/unit/logging.coffee]"
+  end
+
   def test_runner_returns_successfully_on_dry_run
     create_file "test/integration/truth.coffee", <<-test
       test 'Truth', ->

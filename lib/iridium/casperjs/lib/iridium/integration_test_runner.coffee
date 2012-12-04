@@ -1,3 +1,7 @@
+setCurrentTestStep = (path) ->
+  casper.then -> 
+    @currentTestFile = path
+
 injectJsStep = (path) ->
   casper.then ->
     if !casper.page.injectJs(path)
@@ -7,6 +11,7 @@ startTestStep = (path) ->
   casper.then -> 
     phantom.logger.info "Starting integration test: #{path}"
 
+    @currentTestFile = path
     @evaluate((file) ->
       window.currentTestFileName = file
       window.startTests()
@@ -35,6 +40,8 @@ casper.start casper.appURL
 
 for integrationTest in casper.integrationTests
   phantom.logger.info "Adding #{integrationTest} to suite"
+
+  setCurrentTestStep integrationTest
 
   if integrationTest != casper.integrationTests[0]
     casper.then ->

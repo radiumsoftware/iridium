@@ -19,7 +19,11 @@ module Iridium
                        end
 
         @logger.formatter = proc { |severity, datetime, prog_name, msg|
-          "#{severity.upcase}: #{msg}"
+          if prog_name
+            "[#{prog_name}] - #{severity.upcase} - #{msg}\n"
+          else
+            "#{severity.upcase} - #{msg}\n"
+          end
         }
       end
 
@@ -27,7 +31,13 @@ module Iridium
         if message.test_result?
           @result_collector << message.test_result
         elsif message.log?
-          @logger.send message.level, message.message
+          if message.file
+            @logger.send message.level, message.file do 
+              message.message
+            end
+          else
+            @logger.send message.level, message.message
+          end
         end
       end
 
