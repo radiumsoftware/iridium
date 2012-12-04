@@ -212,6 +212,78 @@ class RunningTestsTest < MiniTest::Unit::TestCase
     assert_includes stdout, "[test/unit/logging.coffee]"
   end
 
+  def test_remote_console_supports_debug_level
+    create_file "test/integration/logging.coffee", <<-test
+      test 'Truth', ->
+        expect(0)
+        console.debug 'integration debugging'
+    test
+
+    create_file "test/unit/logging.coffee", <<-test
+      test 'Truth', ->
+        expect(0)
+        console.debug 'unit debugging'
+    test
+
+    status, stdout, stderr = invoke "test/unit/logging.coffee", "test/integration/logging.coffee", :log_level => 'debug'
+
+    assert_includes stdout, "integration debugging"
+    assert_includes stdout, "unit debugging"
+
+    status, stdout, stderr = invoke "test/unit/logging.coffee", "test/integration/logging.coffee", :log_level => 'info'
+
+    refute_includes stdout, "integration debugging"
+    refute_includes stdout, "unit debugging"
+  end
+
+  def test_remote_console_supports_info_level
+    create_file "test/integration/logging.coffee", <<-test
+      test 'Truth', ->
+        expect(0)
+        console.info 'integration debugging'
+    test
+
+    create_file "test/unit/logging.coffee", <<-test
+      test 'Truth', ->
+        expect(0)
+        console.info 'unit debugging'
+    test
+
+    status, stdout, stderr = invoke "test/unit/logging.coffee", "test/integration/logging.coffee", :log_level => 'info'
+
+    assert_includes stdout, "integration debugging"
+    assert_includes stdout, "unit debugging"
+
+    status, stdout, stderr = invoke "test/unit/logging.coffee", "test/integration/logging.coffee", :log_level => 'warn'
+
+    refute_includes stdout, "integration debugging"
+    refute_includes stdout, "unit debugging"
+  end
+
+  def test_remote_console_supports_error_level
+    create_file "test/integration/logging.coffee", <<-test
+      test 'Truth', ->
+        expect(0)
+        console.error 'integration debugging'
+    test
+
+    create_file "test/unit/logging.coffee", <<-test
+      test 'Truth', ->
+        expect(0)
+        console.error 'unit debugging'
+    test
+
+    status, stdout, stderr = invoke "test/unit/logging.coffee", "test/integration/logging.coffee", :log_level => 'error'
+
+    assert_includes stdout, "integration debugging"
+    assert_includes stdout, "unit debugging"
+
+    status, stdout, stderr = invoke "test/unit/logging.coffee", "test/integration/logging.coffee", :log_level => 'fatal'
+
+    refute_includes stdout, "integration debugging"
+    refute_includes stdout, "unit debugging"
+  end
+
   def test_runner_returns_successfully_on_dry_run
     create_file "test/integration/truth.coffee", <<-test
       test 'Truth', ->

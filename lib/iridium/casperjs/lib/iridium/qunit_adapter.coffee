@@ -9,10 +9,14 @@ QUnit.testStart (context) =>
   @currentTest.backtrace = []
   @startTime = (new Date()).getTime()
 
+  console.debug "[#{@currentTest.name}] - Started"
+
 QUnit.log (context) => 
   if context.result
     @currentTest.assertions++
     return
+
+  console.debug "[#{@currentTest.name}] - Failed"
 
   stackTrace = []
   @currentTest.backtrace = []
@@ -52,10 +56,13 @@ QUnit.log (context) =>
 
 QUnit.testDone (context) => 
   @currentTest.time = (new Date()).getTime() - @startTime
+  console.debug "[#{@currentTest.name}] - Finished"
+
   window.report @currentTest
   window.testDone = true
 
 QUnit.done (context) =>
+  console.debug "All tests finished"
   window.testsDone = true
 
 QUnit.config.autorun = false

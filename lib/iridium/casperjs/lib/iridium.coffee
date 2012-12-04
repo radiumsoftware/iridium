@@ -45,7 +45,12 @@ class IridiumCasper extends require('casper').Casper
   logRemoteMessage: (msg) ->
     try
       result = JSON.parse msg
-      phantom.report(result.data) if result.signal == 'test'
+
+      if result.signal == 'test'
+        phantom.report(result.data)
+      else if result.signal == 'log'
+        @log result.data, result.level
+
     catch exception
       @log msg, 'info'
 

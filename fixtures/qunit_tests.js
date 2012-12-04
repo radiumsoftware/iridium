@@ -16,5 +16,10 @@ test("expectation test", function() {
 
 test("console logs", function() {
   expect(0);
-  console.log("Oh hai!")
+  console.log("--- CONSOLE LOGGER ---")
+});
+
+test("console debugger logs", function() {
+  expect(0);
+  console.debug("--- CONSOLE DEBUGGER ---")
 });

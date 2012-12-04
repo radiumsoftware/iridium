@@ -14,6 +14,8 @@ module Iridium
                          Logger::WARN
                        when 'error'
                          Logger::ERROR
+                       when 'fatal'
+                         Logger::FATAL
                        else
                          Logger::WARN
                        end
