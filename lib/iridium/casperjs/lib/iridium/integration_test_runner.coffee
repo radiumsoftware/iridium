@@ -9,7 +9,7 @@ injectJsStep = (path) ->
 
 startTestStep = (path) ->
   casper.then -> 
-    phantom.logger.info "Starting integration test: #{path}"
+    console.info "Starting integration test: #{path}"
 
     @currentTestFile = path
     @evaluate((file) ->
@@ -23,12 +23,12 @@ waitForTestStep = (path) ->
       casper.evaluate ->
         window.testsDone == true
     , -> 
-      phantom.logger.info "#{path} finished successfully!"
+      console.info "#{path} finished successfully!"
 
       # do nothing, the test passed
       true
     , ->
-      phantom.logger.info "#{path} timed out! You need to debug this in-browser."
+      console.info "#{path} timed out! You need to debug this in-browser."
 
       phantom.report
         name: path
@@ -39,13 +39,13 @@ waitForTestStep = (path) ->
 casper.start casper.appURL
 
 for integrationTest in casper.integrationTests
-  phantom.logger.info "Adding #{integrationTest} to suite"
+  console.info "Adding #{integrationTest} to suite"
 
   setCurrentTestStep integrationTest
 
   if integrationTest != casper.integrationTests[0]
     casper.then ->
-      phantom.logger.info "Reloading page to wipe state changes"
+      console.info "Reloading page to wipe state changes"
       casper.reload()
 
   injectJsStep integrationTest
@@ -55,5 +55,5 @@ for integrationTest in casper.integrationTests
   waitForTestStep integrationTest
 
 casper.run ->
-  phantom.logger.info "Executing integration tests"
+  console.info "Executing integration tests"
   @test.done()

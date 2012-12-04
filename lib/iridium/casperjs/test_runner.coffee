@@ -18,29 +18,28 @@ phantom.abort = (msg) ->
 # * info
 # * warning
 # * error
-class Logger
-  debug: (msg, file) ->
-    @log 'debug', msg, file
+console.message = (level, msg, file) ->
+  @log(JSON.stringify({
+    signal: 'log',
+    level: level,
+    data: msg,
+    file: file
+  }))
 
-  info: (msg, file) ->
-    @log 'info', msg, file
+console.debug = (msg, file) ->
+  @message 'debug', msg, file
 
-  warning: (msg, file) ->
-    @log 'warning', msg, file
+console.info = (msg, file) ->
+  @message 'info', msg, file
 
-  error: (msg, file) ->
-    @log 'error', msg, file
+console.warn = (msg, file) ->
+  @message 'warn', msg, file
 
-  log: (level, msg, file) ->
-    console.log(JSON.stringify({
-      signal: 'log',
-      level: level,
-      data: msg,
-      file: file
-    }))
+console.warning = (msg, file) ->
+  @message 'warn', msg, file
 
-# Debug logging
-phantom.logger = new Logger()
+console.error = (msg, file) ->
+  @message 'error', msg, file
 
 # Pass test results back to the ruby process
 phantom.report = (testResult) ->

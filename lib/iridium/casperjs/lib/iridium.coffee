@@ -40,7 +40,7 @@ class IridiumCasper extends require('casper').Casper
     if source == "remote"
       @logRemoteMessage msg
     else
-      phantom.logger[level](msg, @currentTestFile)
+      console[level](msg, @currentTestFile)
 
   logRemoteMessage: (msg) ->
     try
