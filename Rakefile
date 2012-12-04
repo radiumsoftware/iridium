@@ -8,7 +8,11 @@ require 'rake/testtask'
 desc "Test all internal coffeescript compiles"
 task :compile do
   Dir['lib/iridium/**/*.coffee'].each do |path|
-    CoffeeScript.compile File.read(path)
+    begin
+      CoffeeScript.compile File.read(path)
+    rescue Exception => ex
+      raise "#{path} could not be compiled! #{ex}"
+    end
   end
 end
 
