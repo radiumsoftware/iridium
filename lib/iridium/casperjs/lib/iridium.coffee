@@ -8,7 +8,6 @@
 
 fs = require('fs')
 colorizer = require('colorizer')
-logger = requireExternal('iridium/logger').create()
 
 class IridiumCasper extends require('casper').Casper
   formatBacktrace: (trace) ->
@@ -29,11 +28,29 @@ class IridiumCasper extends require('casper').Casper
 
   appURL: "http://localhost:7777/"
 
+  # overide the log function to delegate to
+  # the phantom logger. This ensures that all messages
+  # coming out of casper go through the correct
+  # logging code
+  log: (msg, level, source) ->
+    # Casper automatically logs output from
+    # the remote console so we check to see if
+    # the message is from remote browser and a test result
+    # then report the test instead of forwarding the message
+    if source == "remote"
+      try
+        result = JSON.parse msg
+        phantom.report(result.message) if result.signal == 'test'
+      catch exception
+        phantom.logger[level](msg)
+    else
+      phantom.logger[level](msg)
+
   # Warning should blow up the process.
   # There is no reason why any code should trigger
   # a warning
   warn: (message) ->
-    console.abort message
+    phantom.abort message
 
   die: (message, status) ->
     @test.fail message
@@ -41,24 +58,17 @@ class IridiumCasper extends require('casper').Casper
   constructor: (options) ->
     super options
 
-    @logger = logger
-
-    # Hook remote console to this one
-    @on 'remote.message', (msg) ->
-      console.log msg
-
     # Disable colorizing
     cls = 'Dummy'
     @options.colorizerType = cls
     @colorizer = colorizer.create(cls)
 
     @on 'page.error', (error, trace) ->
-      result = {}
-      result.name = "Uncaught error"
-      result.message = error
-      result.backtrace = casper.formatBacktrace(trace)
-      result.error = true
-      logger.message result
+      phantom.report
+        name: "Uncaught error"
+        message: error
+        backtrace: casper.formatBacktrace(trace)
+        error: true
 
     # Redfine the runTest method to emit an event we can list to
     @test.runTest = (testFile) ->
@@ -157,7 +167,7 @@ class IridiumCasper extends require('casper').Casper
 
       currentTest.time = (new Date().getTime()) - startTime
 
-      @logger.message currentTest
+      phantom.report currentTest
 
     @test.on 'tests.complete', =>
       @exit()
@@ -167,7 +177,7 @@ class Iridium
     absolutePaths = []
     absolutePaths.push fs.pathJoin(@root, "iridium", "qunit.js")
 
-    for file in ['logger', 'console', 'qunit_adapter']
+    for file in ['qunit_adapter']
       absolutePaths.push fs.pathJoin(@root, "iridium", "#{file}.coffee")
 
     options ||= {}

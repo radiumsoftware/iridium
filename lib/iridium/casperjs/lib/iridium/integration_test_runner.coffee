@@ -1,11 +1,17 @@
+bootstrapStep = ->
+  casper.then ->
+    @evaluate((reporter) ->
+      window.report = reporter
+    , { report: phantom.report })
+
 injectJsStep = (path) ->
   casper.then ->
     if !casper.page.injectJs(path)
-      console.abort "Failed to load #{path}!"
+      phantom.abort "Failed to load #{path}!"
 
 startTestStep = (path) ->
   casper.then -> 
-    casper.log "Starting integration test: #{path}", "debug"
+    phantom.logger.info "Starting integration test: #{path}"
 
     @evaluate((file) ->
       window.currentTestFileName = file
@@ -15,34 +21,33 @@ startTestStep = (path) ->
 waitForTestStep = (path) ->
   casper.waitFor(
     ->
-      casper.log "Checking if #{path} is done...", "debug"
-
       casper.evaluate ->
         window.testsDone == true
     , -> 
-      casper.log "#{path} finished successfully!", "debug"
+      phanom.logger.info "#{path} finished successfully!"
 
       # do nothing, the test passed
       true
     , ->
-      result = {}
-      casper.log "#{path} timed out! You need to debug this in-browser.", "debug"
+      phantom.logger.info "#{path} timed out! You need to debug this in-browser."
 
-      result.name = apth
-      result.message = "Test timed out"
-      result.error = true
-      casper.logger.message result
+      phantom.report
+        name: path
+        message: "Test timed out"
+        error: true
   )
 
 casper.start casper.appURL
 
 for integrationTest in casper.integrationTests
-  casper.log "Adding #{integrationTest} to suite", "debug"
+  phantom.logger.info "Adding #{integrationTest} to suite"
 
   if integrationTest != casper.integrationTests[0]
     casper.then ->
-      casper.log "Reloading page to wipe state changes", "debug"
+      phantom.logger.info "Reloading page to wipe state changes"
       casper.reload()
+
+  bootstrapStep()
 
   injectJsStep integrationTest
 
@@ -51,6 +56,5 @@ for integrationTest in casper.integrationTests
   waitForTestStep integrationTest
 
 casper.run ->
-  casper.log "Executing integration tests", "debug"
-
+  phantom.logger.info "Executing integration tests"
   @test.done()
