@@ -42,7 +42,7 @@ class UnitTestRunnerTest < MiniTest::Unit::TestCase
 
     out, err = capture_io do
       Dir.chdir Iridium.application.root do
-        results = Iridium::Testing::Runner.new(Iridium.application, files, Logger.new($stdout)).run(options)
+        results = Iridium::Testing::Runner.new(Iridium.application, files).run(options)
       end
     end
 

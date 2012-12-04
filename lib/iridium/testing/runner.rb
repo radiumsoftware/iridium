@@ -1,16 +1,18 @@
 module Iridium
   module Testing
     class Runner
-      attr_reader :app, :files, :collector, :logger
+      attr_reader :app, :files, :collector
 
-      def initialize(app, files, logger, collector = [])
-        @app, @files, @logger, @collector = app, files, logger, collector
+      def initialize(app, files, collector = ResultCollector.new)
+        @app, @files, @collector = app, files, collector
       end
 
       def run(options = {})
         file_arg = files.map { |f| %Q{"#{f}"} }.join " "
 
-        return collector if options[:dry_run]
+        return collector.to_a if options[:dry_run]
+
+        collector.clear
 
         js_test_runner = File.expand_path('../../casperjs/test_runner.coffee', __FILE__)
 
@@ -27,18 +29,8 @@ module Iridium
 
         begin
           streamer = CommandStreamer.new command
-          streamer.run options do |message|
-            case message['signal']
-            when 'test'
-              collector << Result.new(message['data'])
-            when 'log'
-              case message['level']
-              when 'warning'
-                logger.warn message['data']
-              else
-                logger.send message['level'], message['data']
-              end
-            end
+          streamer.run options do |hash|
+            collector << Message.new(hash)
           end
         rescue CommandStreamer::CommandFailed => ex
           result = Result.new :error => true
@@ -48,7 +40,7 @@ module Iridium
           collector << result
         end
 
-        collector
+        collector.to_a
       end
     end
   end

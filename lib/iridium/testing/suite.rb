@@ -94,28 +94,13 @@ module Iridium
           end
         end
 
-        report = Report.new
-
         srand(options[:seed] || srand % 0xFFFF)
-
         file_names.shuffle!
 
-        logger = Logger.new $stdout
-        logger.level = case options[:log_level]
-                       when 'debug'
-                         Logger::DEBUG
-                       when 'info'
-                         Logger::INFO
-                       when 'warn'
-                         Logger::WARN
-                       when 'error'
-                         Logger::ERROR
-                       else
-                         Logger::WARN
-                       end
+        report = Report.new
+        collector = LoggingResultCollector.new report, options[:log_level]
 
-        tests = [Runner.new(Iridium.application, file_names, logger, report.collector)]
-
+        tests = [Runner.new(Iridium.application, file_names, collector)]
         suite = Suite.new Iridium.application, tests
 
         results = suite.run options

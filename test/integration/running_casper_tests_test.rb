@@ -8,7 +8,7 @@ class RunningCasperTestsTest < MiniTest::Unit::TestCase
 
     Dir.chdir Iridium.application.root do
       stdout, stderr = capture_io do
-        results = Iridium::Testing::Runner.new(Iridium.application, files, Logger.new($stdout)).run(options)
+        results = Iridium::Testing::Runner.new(Iridium.application, files).run(options)
       end
     end
 
