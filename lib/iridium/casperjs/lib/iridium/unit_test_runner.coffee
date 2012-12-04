@@ -5,7 +5,7 @@ casper.on 'resource.received', (request) ->
   # We can check for the 404 response code for http requests
   # file:// requests have no bodySize.
   if((request.headers.length == 0 && request.url.match(/file:\/\/.+\.js$/)) || ((request.status == 404 || !request.status) && request.url.match(/https?:\/\/.+\.js$/)))
-    console.info "Test failed because #{request.url} did not return properly"
+    console.debug "Test failed because #{request.url} did not return properly"
 
     phantom.report
       error: true
@@ -30,12 +30,12 @@ waitForTestStep = (path) ->
       casper.evaluate ->
         window.testsDone == true
     , -> 
-      console.info "#{path} finished successfully!"
+      console.debug "#{path} finished successfully!"
 
       # do nothing, the test passed
       true
     , ->
-      console.info "#{path} timed out! You need to debug this in-browser."
+      console.debug "#{path} timed out! You need to debug this in-browser."
 
       phantom.report
         name: path
@@ -55,12 +55,12 @@ startTestStep = (path) ->
 casper.start casper.unitTestLoader
 
 for unitTest in casper.unitTests
-  console.info "Adding: #{unitTest} to the test suite"
+  console.debug "Adding: #{unitTest} to the test suite"
 
   setCurrentTestStep unitTest
 
   casper.then ->
-    console.info "Reloading page to wipe state"
+    console.debug "Reloading page to wipe state"
     casper.reload()
 
   injectJsStep unitTest
@@ -70,6 +70,6 @@ for unitTest in casper.unitTests
   waitForTestStep unitTest
 
 casper.run ->
-  console.info "Executing unit tests"
+  console.debug "Executing unit tests"
 
   @test.done()
