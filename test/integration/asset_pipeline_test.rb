@@ -967,6 +967,80 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     compile ; assert_file "site/images/foo.png"
   end
 
+  def test_tests_are_compiled
+    config.pipeline.compile_tests = true
+
+    create_file "test/foo_test.js", "TEST"
+
+    compile ; assert_file "site/tests.js"
+
+    content = read "site/tests.js"
+    assert_includes content, "TEST"
+  end
+
+  def test_test_coffee_script_tests_are_compiled
+    config.pipeline.compile_tests = true
+
+    create_file "test/foo_test.coffee", "TEST = true"
+
+    compile ; assert_file "site/tests.js"
+
+    content = read "site/tests.js"
+    assert_includes content, "TEST"
+  end
+
+  def test_test_support_files_are_included_before_test_code
+    config.pipeline.compile_tests = true
+
+    create_file "test/foo_test.js", "TEST"
+    create_file "test/support/helper.js", "SUPPORT"
+
+    compile ; assert_file "site/tests.js"
+    content = read "site/tests.js"
+
+    assert_before content, "SUPPORT", "TEST"
+  end
+
+  def test_test_framework_code_is_loaded_before_support_code
+    config.pipeline.compile_tests = true
+
+    create_file "test/framework/framework.js", "FRAMEWORK"
+    create_file "test/foo_test.js", "TEST"
+    create_file "test/support/helper.js", "SUPPORT"
+
+    compile ; assert_file "site/tests.js"
+    content = read "site/tests.js"
+
+    assert_before content, "FRAMEWORK", "SUPPORT"
+  end
+
+  def test_test_loader_is_copied_over
+    config.pipeline.compile_tests = true
+
+    create_file "test/support/loader.html", "LOADER"
+
+    compile ; assert_file "site/tests.html"
+  end
+
+  def test_test_loader_runs_through_erb
+    config.pipeline.compile_tests = true
+
+    create_file "test/support/loader.html.erb", "LOADER"
+
+    compile ; assert_file "site/tests.html"
+  end
+
+  def test_test_framework_css_is_compiled
+    config.pipeline.compile_tests = true
+
+    create_file "test/framework/qunit.css", "CSS"
+
+    compile ; assert_file "site/tests.css"
+
+    content = read "site/tests.css"
+    assert_includes content, "CSS"
+  end
+
   def assert_before(string, before, after, msg = nil)
     assert_includes string, before
     assert_includes string, after

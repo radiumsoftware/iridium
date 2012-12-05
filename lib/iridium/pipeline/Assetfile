@@ -224,6 +224,51 @@ input app.all_paths[:assets].expanded do
   end
 end
 
+# Include tests in the pipeline if configured
+if app.config.pipeline.compile_tests
+  output app.build_path.join("preoptimization")
+  input app.test_path do
+    match "**/*.coffee" do
+      coffee_script
+    end
+
+    match "framework/*.js" do
+      concat "build/framework.js"
+    end
+
+    match "support/**/*.js" do
+      concat "build/support.js"
+    end
+
+    match "**/*_test.js" do
+      concat "build/test_cases.js"
+    end
+
+    # Create a single test.js that can be used in the browser
+    # or phantom.
+    match "build/*.js" do
+      concat ["build/framework.js", "build/support.js", "build/test_cases.js"], "tests.js"
+    end
+
+    # Put the test loader through ERB so can be built
+    # correctly
+    match "support/loader.html.erb" do
+      erb binding
+    end
+
+    # This will copy the test loader over
+    match "support/loader.html" do
+      copy "tests.html"
+    end
+
+    # Copy over any CSS files needed to make the tests look 
+    # good
+    match "framework/*.css" do
+      concat "tests.css"
+    end
+  end
+end
+
 # now build_path/site contains all the files that need to be optimzed
 # or undergo a conditional build step
 output app.build_path.join("optimized")

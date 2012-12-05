@@ -40,6 +40,8 @@ module Iridium
         set[:tmp].add "tmp"
         set[:build].add "tmp/builds"
 
+        set[:test].add "test"
+
         set
       end
     end
@@ -62,6 +64,10 @@ module Iridium
 
     def build_path
       paths[:build].expanded.first
+    end
+
+    def test_path
+      paths[:test].expanded.first
     end
   end
 end
