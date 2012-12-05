@@ -10,14 +10,14 @@
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
 
-  <link href="/application.css" rel="stylesheet">
-  <link href="/tests.css" rel="stylesheet">
+  <link href="application.css" rel="stylesheet">
+  <link href="tests.css" rel="stylesheet">
 
   <%% app.config.scripts.each do |script| %>
     <script src="<%%= script %>"></script>
   <%% end %>
 
-  <script type="text/javascript" src="/application.js"></script>
+  <script type="text/javascript" src="application.js"></script>
 </head>
 
 <body>
@@ -29,6 +29,6 @@
     minispade.require("<%= underscored %>/boot");
   </script>
 
-  <script type="text/javascript" src="/tests.js"></script>
+  <script type="text/javascript" src="tests.js"></script>
 </body>
 </html>

@@ -111,11 +111,11 @@ class ApplicationCommandTest < GeneratorTestCase
     test_loader_path = destination_root.join('todos', 'test', 'support', 'loader.html.erb')
     content = read test_loader_path
 
-    assert_includes content, %Q{<script type="text/javascript" src="/application.js"></script>}
-    assert_includes content, %Q{<script type="text/javascript" src="/tests.js"></script>}
+    assert_includes content, %Q{<script type="text/javascript" src="application.js"></script>}
+    assert_includes content, %Q{<script type="text/javascript" src="tests.js"></script>}
 
-    assert_includes content, %Q{<link href="/application.css" rel="stylesheet">}
-    assert_includes content, %Q{<link href="/tests.css" rel="stylesheet">}
+    assert_includes content, %Q{<link href="application.css" rel="stylesheet">}
+    assert_includes content, %Q{<link href="tests.css" rel="stylesheet">}
 
     assert_includes content, %Q{minispade.require("todos/boot");}
   end
