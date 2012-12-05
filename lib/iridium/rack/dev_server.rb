@@ -22,6 +22,11 @@ module Iridium
         end
       end
 
+      # Override the call to options so ARV isn't parsed
+      def options
+        {}
+      end
+
       def app
         @app ||= Rack::Builder.new do
           use Middleware::RackLintCompatibility
