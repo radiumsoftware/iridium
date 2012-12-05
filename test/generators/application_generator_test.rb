@@ -45,8 +45,14 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos', 'test', 'views'
     assert_file 'todos', 'test', 'controllers'
     assert_file 'todos', 'test', 'templates'
+
+    assert_file 'todos', 'test', 'support', 'loader.html.erb'
+
     assert_file 'todos', 'test', 'support', 'sinon.js'
     assert_file 'todos', 'test', 'support', 'helper.coffee'
+
+    assert_file 'todos', 'test', 'framework', 'qunit.js'
+    assert_file 'todos', 'test', 'framework', 'qunit.css'
 
     assert_file 'todos', 'site'
 
@@ -93,8 +99,24 @@ class ApplicationCommandTest < GeneratorTestCase
     index_path = destination_root.join('todos', 'app', 'assets', 'index.html.erb')
     content = read index_path
 
-    assert_includes content, %Q{<script src="/application.js"></script>}
+    assert_includes content, %Q{<script type="text/javascript" src="/application.js"></script>}
+
     assert_includes content, %Q{<link href="/application.css" rel="stylesheet">}
+
+    assert_includes content, %Q{minispade.require("todos/boot");}
+  end
+
+  def test_test_loader_loads_required_assets_and_code
+    invoke 'application', 'todos'
+    test_loader_path = destination_root.join('todos', 'test', 'support', 'loader.html.erb')
+    content = read test_loader_path
+
+    assert_includes content, %Q{<script type="text/javascript" src="/application.js"></script>}
+    assert_includes content, %Q{<script type="text/javascript" src="/tests.js"></script>}
+
+    assert_includes content, %Q{<link href="/application.css" rel="stylesheet">}
+    assert_includes content, %Q{<link href="/tests.css" rel="stylesheet">}
+
     assert_includes content, %Q{minispade.require("todos/boot");}
   end
 

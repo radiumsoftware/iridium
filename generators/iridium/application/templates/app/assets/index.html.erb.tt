@@ -16,17 +16,18 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
+    <%% app.config.scripts.each do |script| %>
+      <script src="<%%= script %>"></script>
+    <%% end %>
+
+    <script type="text/javascript" src="/application.js"></script>
+
     <link href="/application.css" rel="stylesheet">
   </head>
 
   <body>
     <div id="application"></div>
 
-    <%% app.config.scripts.each do |script| %>
-      <script src="<%%= script %>"></script>
-    <%% end %>
-
-    <script src="/application.js"></script>
 
     <script type="text/javascript">
       minispade.require("<%= underscored %>/boot");
