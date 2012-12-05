@@ -9,4 +9,4 @@ gem "thor", :github => "wycats/thor"
 
 gem 'm'
 gem 'debugger'
-gem 'mocha'
+gem 'mocha', :require => false
