@@ -38,7 +38,7 @@ namespace :test do
   desc "Run tests for the pipeline"
   Rake::TestTask.new(:pipeline) do |test|
     test.libs << 'test'
-    test.pattern = 'test/integration/pipeline_test.rb'
+    test.pattern = 'test/integration/asset_pipeline_test.rb'
   end
 
   desc "Run tests for rack related thigns"
