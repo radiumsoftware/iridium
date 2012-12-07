@@ -76,7 +76,7 @@ end
 
 # 2. Compile environment specific code
 input app.all_paths[:config].expanded do
-  match "**/*.coffee" do
+  match "#{Iridium.env}.coffee" do
     coffee_script
   end
 

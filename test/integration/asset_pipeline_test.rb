@@ -663,6 +663,22 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     ENV['IRIDIUM_ENV'] = 'test'
   end
 
+  def test_non_env_files_are_not_included
+    ENV['IRIDIUM_ENV'] = 'foo'
+
+    create_file "app/config/bar.coffee", "q = 'BAR'"
+    create_file "app/config/foo.js", "FOO"
+
+    compile ; assert_file "site/application.js"
+
+    content = read 'site/application.js'
+
+    assert_includes content, "FOO", "Env file not compiled"
+    refute_includes content, "BAR", "Non env file compiled!"
+  ensure
+    ENV['IRIDIUM_ENV'] = 'test'
+  end
+
   def test_build_order
     create_file "vendor/javascripts/foo.js", "VENDOR"
     create_file "app/config/initializers/bar.js", "INITIALIZER"
