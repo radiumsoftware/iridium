@@ -1,0 +1,3 @@
+describe "Booting" ->
+  it "should be booted" ->
+    expect(camelized.booted).toBe(true)

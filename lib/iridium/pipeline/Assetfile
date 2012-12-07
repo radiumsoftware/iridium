@@ -83,7 +83,7 @@ input app.all_paths[:config].expanded do
   # Put environment specific files in the pipeline
   match "#{Iridium.env}.js" do
     engines_first
-    iife
+    iife :source_map => app.config.pipeline.source_maps
     concat "env.js"
   end
 end
@@ -96,7 +96,7 @@ input app.all_paths[:initializers].expanded do
 
   match "**/*.js" do
     engines_first
-    iife
+    iife :source_map => app.config.pipeline.source_maps
     concat "init.js"
   end
 end
@@ -237,10 +237,12 @@ if app.config.pipeline.compile_tests
     end
 
     match "support/**/*.js" do
+      iife :source_map => app.config.pipeline.source_maps
       concat "build/support.js"
     end
 
-    match "**/*_test.js" do
+    match "**/*_{test,spec}.js" do
+      iife :source_map => app.config.pipeline.source_maps
       concat "build/test_cases.js"
     end
 
@@ -252,12 +254,12 @@ if app.config.pipeline.compile_tests
 
     # Put the test loader through ERB so can be built
     # correctly
-    match "support/loader.html.erb" do
+    match "framework/loader.html.erb" do
       erb binding
     end
 
     # This will copy the test loader over
-    match "support/loader.html" do
+    match "framework/loader.html" do
       copy "tests.html"
     end
 

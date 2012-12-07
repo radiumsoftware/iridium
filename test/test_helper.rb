@@ -41,6 +41,7 @@ class MiniTest::Unit::TestCase
     FileUtils.mkdir_p Iridium.application.vendor_path.join("javascripts")
     FileUtils.mkdir_p Iridium.application.vendor_path.join("stylesheets")
     FileUtils.mkdir_p Iridium.application.root.join('test', 'support')
+    FileUtils.mkdir_p Iridium.application.root.join('test', 'framework')
     FileUtils.mkdir_p Iridium.application.root.join('external')
 
     ENV['IRIDIUM_ENV'] = 'test'

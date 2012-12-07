@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Jasmine Spec Runner</title>
+
+  <link rel="stylesheet" type="text/css" href="../generators/iridium/application/templates/test_frameworks/jasmine/jasmine.css">
+  <script type="text/javascript" src="../generators/iridium/application/templates/test_frameworks/jasmine/jasmine.js".></script>
+  <script type="text/javascript" src="../generators/iridium/application/templates/test_frameworks/jasmine/jasmine-html.js"></script>
+
+  <script type="text/javascript" src="specs.js"></script>
+</head>
+<body>
+  <script type="text/javascript">
+    var jasmineEnv = jasmine.getEnv();
+    jasmineEnv.updateInterval = 500;
+
+    var htmlReporter = new jasmine.HtmlReporter();
+
+    jasmineEnv.addReporter(htmlReporter);
+
+    jasmineEnv.specFilter = function(spec) {
+      return htmlReporter.specFilter(spec);
+    };
+
+    window.onload = function() {
+      // This lets's phantom trigger the test suite
+      // after it's bootstrapping code is loaded.
+      // It also starts the tests when you open
+      // the page normall in the browser
+      if(navigator.userAgent != "phantom") {
+        jasmineEnv.execute();
+      }
+    };
+  </script>
+</body>
+</html>

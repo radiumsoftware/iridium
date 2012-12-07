@@ -28,6 +28,7 @@ require 'rake-pipeline-web-filters/sass_filter_patch'
 require 'rake-pipeline-web-filters/erb_filter'
 require 'rake-pipeline-web-filters/i18n_filter'
 require 'rake-pipeline-web-filters/manifest_filter'
+require 'rake-pipeline-web-filters/iife_patch'
 
 # Declare the top level module with some utility 
 # methods that other pieces of code need before filling

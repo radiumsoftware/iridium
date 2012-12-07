@@ -600,13 +600,15 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_initializers_are_wrapped_in_iifes
+    config.pipeline.source_maps = true
+
     create_file "app/config/initializers/foo.js", "FOO"
 
     compile ; assert_file "site/application.js"
 
     content = read "site/application.js"
 
-    assert_equal "(function() {\nFOO\n})();", content.chomp
+    assert_equal "(function() {\nFOO\n})();//@ sourceURL=foo.js", content.chomp
   end
 
   def test_index_boots_the_app
@@ -630,7 +632,6 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     assert_includes content, %q{<script src="http://jquery.com/jquery.js"></script>}
   end
-
 
   def test_pipeline_includes_env_specific_js_code
     ENV['IRIDIUM_ENV'] = 'foo'
@@ -969,6 +970,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
   def test_tests_are_compiled
     config.pipeline.compile_tests = true
+    config.pipeline.source_maps = true
 
     create_file "test/foo_test.js", "TEST"
 
@@ -976,6 +978,20 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/tests.js"
     assert_includes content, "TEST"
+    assert_includes content, "//@ sourceURL=foo_test.js"
+  end
+
+  def test_specs_are_compiled
+    config.pipeline.compile_tests = true
+    config.pipeline.source_maps = true
+
+    create_file "test/foo_spec.js", "TEST"
+
+    compile ; assert_file "site/tests.js"
+
+    content = read "site/tests.js"
+    assert_includes content, "TEST"
+    assert_includes content, "//@ sourceURL=foo_spec.js"
   end
 
   def test_test_coffee_script_tests_are_compiled
@@ -989,8 +1005,20 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "TEST"
   end
 
+  def test_test_coffee_script_specs_are_compiled
+    config.pipeline.compile_tests = true
+
+    create_file "test/foo_spec.coffee", "TEST = true"
+
+    compile ; assert_file "site/tests.js"
+
+    content = read "site/tests.js"
+    assert_includes content, "TEST"
+  end
+
   def test_test_support_files_are_included_before_test_code
     config.pipeline.compile_tests = true
+    config.pipeline.source_maps = true
 
     create_file "test/foo_test.js", "TEST"
     create_file "test/support/helper.js", "SUPPORT"
@@ -999,6 +1027,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     content = read "site/tests.js"
 
     assert_before content, "SUPPORT", "TEST"
+    assert_includes content, "//@ sourceURL=support/helper.js"
   end
 
   def test_test_framework_code_is_loaded_before_support_code
@@ -1017,7 +1046,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   def test_test_loader_is_copied_over
     config.pipeline.compile_tests = true
 
-    create_file "test/support/loader.html", "LOADER"
+    create_file "test/framework/loader.html", "LOADER"
 
     compile ; assert_file "site/tests.html"
   end
@@ -1025,7 +1054,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   def test_test_loader_runs_through_erb
     config.pipeline.compile_tests = true
 
-    create_file "test/support/loader.html.erb", "LOADER"
+    create_file "test/framework/loader.html.erb", "LOADER"
 
     compile ; assert_file "site/tests.html"
   end

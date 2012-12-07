@@ -46,13 +46,8 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos', 'test', 'controllers'
     assert_file 'todos', 'test', 'templates'
 
-    assert_file 'todos', 'test', 'support', 'loader.html.erb'
-
     assert_file 'todos', 'test', 'support', 'sinon.js'
     assert_file 'todos', 'test', 'support', 'helper.coffee'
-
-    assert_file 'todos', 'test', 'framework', 'qunit.js'
-    assert_file 'todos', 'test', 'framework', 'qunit.css'
 
     assert_file 'todos', 'site'
 
@@ -77,6 +72,30 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_file 'todos', 'vendor', 'javascripts', 'handlebars.js'
     assert_file 'todos', 'vendor', 'javascripts', 'jquery.js'
     assert_file 'todos', 'vendor', 'javascripts', 'i18n.js'
+  end
+
+  def test_qunit_option
+    invoke 'application', 'todos', :test_framework => 'qunit'
+
+    assert_file 'todos', 'test', 'framework', 'loader.html.erb'
+    assert_file 'todos', 'test', 'framework', 'qunit.js'
+    assert_file 'todos', 'test', 'framework', 'qunit.css'
+
+    assert_file 'todos', 'test', 'integration', 'navigation_test.coffee'
+    assert_file 'todos', 'test', 'unit', 'truth_test.coffee'
+  end
+
+  def test_jasmine_option
+    invoke 'application', 'todos', :test_framework => 'jasmine'
+
+    assert_file 'todos', 'test', 'framework', 'loader.html.erb'
+    assert_file 'todos', 'test', 'framework', 'jasmine.js'
+    assert_file 'todos', 'test', 'framework', 'jasmine.css'
+
+    assert_file 'todos', 'test', 'support', 'jasmine-html.js'
+
+    assert_file 'todos', 'test', 'integration', 'navigation_spec.coffee'
+    assert_file 'todos', 'test', 'unit', 'truth_spec.coffee'
   end
 
   def test_application_enviroment_files
@@ -106,9 +125,25 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_includes content, %Q{minispade.require("todos/boot");}
   end
 
-  def test_test_loader_loads_required_assets_and_code
+  def test_qunit_test_loader_loads_required_assets_and_code
     invoke 'application', 'todos'
-    test_loader_path = destination_root.join('todos', 'test', 'support', 'loader.html.erb')
+
+    test_loader_path = destination_root.join('todos', 'test', 'framework', 'loader.html.erb')
+    content = read test_loader_path
+
+    assert_includes content, %Q{<script type="text/javascript" src="application.js"></script>}
+    assert_includes content, %Q{<script type="text/javascript" src="tests.js"></script>}
+
+    assert_includes content, %Q{<link href="application.css" rel="stylesheet">}
+    assert_includes content, %Q{<link href="tests.css" rel="stylesheet">}
+
+    assert_includes content, %Q{minispade.require("todos/boot");}
+  end
+
+  def test_jasmine_test_loader_loads_required_assets_and_code
+    invoke 'application', 'todos', :test_framework => 'jasmine'
+
+    test_loader_path = destination_root.join('todos', 'test', 'framework', 'loader.html.erb')
     content = read test_loader_path
 
     assert_includes content, %Q{<script type="text/javascript" src="application.js"></script>}

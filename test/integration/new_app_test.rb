@@ -23,33 +23,61 @@ class NewAppTest < MiniTest::Unit::TestCase
     assert File.directory?(sandbox_path.join(name)), "App not generated!"
   end
 
-  def test_new_apps_are_tested_correctly
-    generate_app "todos"
+  def test_new_qunit_apps_are_tested_correctly
+    generate_app "todos_qunit"
 
     Iridium.application = nil
 
-    require sandbox_path.join("todos").join("application")
+    require sandbox_path.join("todos_qunit").join("config", "environment")
 
     assert Iridium.application
 
-    Dir.chdir sandbox_path.join('todos') do
-      # have to explicitly declare test files because default ARGV
-      test_files = Dir['test/**/*_test.{coffee,js}']
-
+    Dir.chdir sandbox_path.join('todos_qunit') do
       result = nil
 
-      stdout, stderr = capture_io do
-        result = Iridium::Testing::Suite.execute test_files
-      end
+      Iridium.application.config.pipeline.compile_tests = true
+      Iridium.application.compile
 
-      refute_equal 1, result, "RELEASE BLOCKER: Tests failed: #{stdout}"
-      refute_equal 2, result, "RELEASE BLOCKER: Test suite failed to start: #{stderr}"
-      assert_equal 0, result
+      parts = []
 
-      assert_empty stderr
-      assert_includes stdout, "2 Test(s)"
-      assert_includes stdout, "0 Error(s)"
-      assert_includes stdout, "0 Failure(s)"
+      parts << 'phantomjs'
+      parts << %Q{"#{Iridium.phantom_js_test_runner}"}
+      parts << %Q{"#{Iridium.application.site_path}/tests.html"}
+
+      command = parts.join " "
+
+      output = `#{command}`
+
+      assert $?.success?, "Release blocker! Tests failed!"
+    end
+  end
+
+  def test_new_jasmine_apps_are_tested_correctly
+    generate_app "todos_jasmine"
+
+    Iridium.application = nil
+
+    require sandbox_path.join("todos_jasmine").join("config", "environment")
+
+    assert Iridium.application
+
+    Dir.chdir sandbox_path.join('todos_jasmine') do
+      result = nil
+
+      Iridium.application.config.pipeline.compile_tests = true
+      Iridium.application.compile
+
+      parts = []
+
+      parts << 'phantomjs'
+      parts << %Q{"#{Iridium.phantom_js_test_runner}"}
+      parts << %Q{"#{Iridium.application.site_path}/tests.html"}
+
+      command = parts.join " "
+
+      output = `#{command}`
+
+      assert $?.success?, "Release blocker! Tests failed!"
     end
   end
 

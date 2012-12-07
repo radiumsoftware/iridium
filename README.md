@@ -112,70 +112,22 @@ end
 ## Running Tests
 
 Iridium makes testing your JS easy. It does all the manual work for you.
-It also unites your integration and unit tests into a single test suite.
+It compiles all the tests into `tests.js` and `tests.html`. You open
+`tests.html` in your browser or use it with phantomjs. The test
+command will compile your tests and check them with phantomjs.
 
 ```
 $ iridium test
-Run options: --seed 9851
 
 # Running Tests:
 
 .................................................................
 
-2998 Test(s), 2998 Assertion(s), 2998 Passed, 0 Error(s), 0 Failure(s)
+2998 Test(s), 2998 Passed, 0 Error(s)
 ```
 
-Integration tests use CasperJS and unit tests use qUnit. Stub tests are
-generated with your application. These tests should pass out of the box
-given you have the proper CapserJS version installed. All your tests are
-run through the `iridium test` command. Here are some examples:
-
-```
-$ iridium test test/integration/foo.js
-$ iridium test test/unit/bar.js
-$ iridium test test/integration/* test/models/*
-$ iridium test test/**/*_test.coffee
-$ iridium test test/**/*_test.{coffee,js} # this is the default!
-```
-
-## Testing
-
-Unit tests are written using QUnit by default. You may use all the
-regular qunit trimmings. All files not in `test/integration` are assumed
-to be unit tests. If you need to navigate to your app and _do_ something
-then use an integration test!
-
-### Writing Integration Tests
-
-Integration tests execute in a running app. Your entire stack is loaded and
-served via ruby. Your app is booted then the integration test is
-executed. You have direct access to your app code during integration tests. 
-It's your responsiblity to setup and teardown each test case.
-
-```coffeescript
-test "my app says hello", ->
-  ok $("#hello-world"), "#hello-world is missing!"
-```
-
-## Debugging Tests
-
-The remote console is not printed by default. You can enable it by
-passing `--log-level=info` to `iridium test`. Console messages will be printed to
-standard out during the tests. Also `console.debug` statements will
-be printed if `--log-level=debug` is passed.
-
-```coffeescript
-# test/unit/debug_test.coffee
-test "can debug", ->
-  console.log "I can see this!"
-  console.debug "More verbose debugging"
-```
-
-```
-$ iridium test test/unit/debug_test.coffee --log-level=debug
-I can see this!
-More verbose debugging
-```
+You can use `iridium test --debug` if you want to see `console.log`
+messages in the report.
 
 ## JSLint
 

@@ -48,29 +48,23 @@ namespace :test do
   end
 end
 
-namespace :casperjs do
-  iridium_root = File.expand_path '../lib/iridium/casperjs/lib', __FILE__
-  test_root = File.expand_path '../fixtures/', __FILE__
-  runner = File.expand_path '../lib/iridium/casperjs/test_runner.coffee', __FILE__
-  loader = File.expand_path '../fixtures/blank.html', __FILE__
+namespace :phantom do
+  runner = File.expand_path '../lib/iridium/testing/phantomjs/run_tests.coffee', __FILE__
 
   desc "Runs the unit test runner aganist a local qunit test file"
   task :qunit => :compile do
-    tests = File.expand_path '../fixtures/qunit_tests.js', __FILE__
+    tests = File.expand_path '../fixtures/qunit_tests.html', __FILE__
 
-    command = %Q{casperjs "#{runner}" "#{tests}" --index=#{loader} --lib-path=#{iridium_root} --test-path=#{test_root}}
+    command = %Q{phantomjs #{runner} #{tests} 1000 --debug}
     puts "Running: #{command}"
     exec command
   end
 
-  desc "Runs the integration test runner aganist a local test file"
-  task :integration => :compile do
-    tests = [
-      File.expand_path('../fixtures/integration/truth_test.coffee', __FILE__),
-      File.expand_path('../fixtures/integration/failing_test.coffee', __FILE__)
-    ].join(" ")
+  desc "Runs the unit test runner aganist a local spec file"
+  task :jasmine => :compile do
+    tests = File.expand_path '../fixtures/specs.html', __FILE__
 
-    command = %Q{casperjs "#{runner}" #{tests} --index=#{loader} --lib-path=#{iridium_root} --test-path=#{test_root}}
+    command = %Q{phantomjs #{runner} #{tests} 1000 --debug}
     puts "Running: #{command}"
     exec command
   end

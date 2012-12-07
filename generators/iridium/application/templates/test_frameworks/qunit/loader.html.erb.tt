@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Tests</title>
+
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="application.css" rel="stylesheet">
+  <link href="tests.css" rel="stylesheet">
+
+  <%% app.config.scripts.each do |script| %>
+    <script src="<%%= script %>"></script>
+  <%% end %>
+
+  <script type="text/javascript" src="application.js"></script>
+</head>
+
+<body>
+  <div id="application"></div>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <script type="text/javascript">
+    minispade.require("<%= underscored %>/boot");
+  </script>
+
+  <script type="text/javascript" src="tests.js"></script>
+</body>
+</html>
+

@@ -22,13 +22,35 @@
 
 <body>
   <div id="application"></div>
-  <div id="qunit"></div>
-  <div id="qunit-fixture"></div>
 
   <script type="text/javascript">
     minispade.require("<%= underscored %>/boot");
   </script>
 
   <script type="text/javascript" src="tests.js"></script>
+
+  <script type="text/javascript">
+    var jasmineEnv = jasmine.getEnv();
+    jasmineEnv.updateInterval = 200;
+
+    var htmlReporter = new jasmine.HtmlReporter();
+
+    jasmineEnv.addReporter(htmlReporter);
+
+    jasmineEnv.specFilter = function(spec) {
+      return htmlReporter.specFilter(spec);
+    };
+
+    window.onload = function() {
+      // This lets's phantom trigger the test suite
+      // after it's bootstrapping code is loaded.
+      // It also starts the tests when you open
+      // the page normall in the browser
+      if(navigator.userAgent != "phantom") {
+        jasmineEnv.execute();
+      }
+    };
+  </script>
 </body>
 </html>
+

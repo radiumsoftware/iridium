@@ -3,32 +3,33 @@ module Iridium
     class TestCommand < Hydrogen::Command
       description "Executes tests"
 
-      desc "test PATHS", "run tests match by PATHS"
-      method_option :dry_run, :type => :boolean, :default => false
-      method_option :seed, :type => :numeric
-      method_option :log_level, :type => :string, :default => 'warn', 
-        :banner => 'set to "info" to see console.log statements',
-        :desc => <<-desc
-          This flag sets the log level. It applies to the internal test runner and
-          messages coming out of your test files themselves. 
+      desc "test", "Execute compile tests in phantomjs"
 
-          It has a few values:
+      method_option :debug, :type => :boolean, :default => false,
+        :desc => "Pring console.log messages"
+      method_option :timeout, :type => :numeric, :default => 1000,
+        :desc => "Time out length in ms"
 
-          * debug - Show EVERYTHING. This is like using -vv in many libraries.
-          * info  - Show basic logging from the test runner and tests. This will
-                    show message printed via "console.log" in your tests.
-          * warn  - Print internal failures
-      desc
+      def test
+        ENV['IRIDIUM_ENV'] = 'test'
 
-      def test(*paths)
         Iridium.load!
+        Iridium.application.compile
 
-        if paths.empty?
-          paths = Dir['test/**/*_test.{coffee,js}']
+        parts = []
+
+        parts << 'phantomjs'
+        parts << %Q{"#{Iridium.phantom_js_test_runner}"}
+        parts << %Q{"#{Iridium.application.site_path}/tests.html"}
+        parts << options[:timeout]
+
+        if options[:debug]
+          parts << "--debug"
         end
 
-        result = Suite.execute paths, options
-        exit result
+        command = parts.join " "
+
+        exec command
       end
 
       default_task :test
