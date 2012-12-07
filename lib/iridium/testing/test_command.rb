@@ -7,7 +7,7 @@ module Iridium
 
       method_option :debug, :type => :boolean, :default => false,
         :desc => "Pring console.log messages"
-      method_option :timeout, :type => :numeric, :default => 1000,
+      method_option :timeout, :type => :numeric, :default => 60000,
         :desc => "Time out length in ms"
 
       def test
