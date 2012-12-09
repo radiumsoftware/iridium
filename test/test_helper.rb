@@ -36,6 +36,7 @@ class MiniTest::Unit::TestCase
     Iridium.application = TestApp.instance
 
     FileUtils.mkdir_p Iridium.application.app_path
+    FileUtils.mkdir_p Iridium.application.lib_path
     FileUtils.mkdir_p Iridium.application.site_path
     FileUtils.mkdir_p Iridium.application.tmp_path
     FileUtils.mkdir_p Iridium.application.vendor_path.join("javascripts")
@@ -56,6 +57,7 @@ class MiniTest::Unit::TestCase
       Iridium.application.config.optimization_pipelines.clear
 
       FileUtils.rm_rf Iridium.application.app_path
+      FileUtils.rm_rf Iridium.application.lib_path
       FileUtils.rm_rf Iridium.application.root.join("config")
       FileUtils.rm_rf Iridium.application.site_path
       FileUtils.rm_rf Iridium.application.tmp_path

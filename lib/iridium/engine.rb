@@ -13,6 +13,7 @@ module Iridium
       @paths ||= begin
         set = Hydrogen::PathSet.new root
         set[:app].add "app"
+        set[:lib].add "lib"
 
         set[:config].add "app/config"
         set[:initializers].add "app/config/initializers"
@@ -48,6 +49,10 @@ module Iridium
 
     def app_path
       paths[:app].expanded.first
+    end
+
+    def lib_path
+      paths[:lib].expanded.first
     end
 
     def site_path

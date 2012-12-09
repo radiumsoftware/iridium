@@ -27,6 +27,7 @@ module Iridium
         self.destination_root = File.expand_path app_path, destination_root
 
         directory "app"
+        directory "lib"
         directory "site"
         directory "test"
         directory "vendor"

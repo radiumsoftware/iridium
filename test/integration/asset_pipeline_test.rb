@@ -118,6 +118,28 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, %Q{square = function}
   end
 
+  def test_compiles_lib_js_files_into_minispade_modules
+    create_file "lib/foo/bar.js", "LIB"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "LIB"
+    assert_minispade content, "foo/bar"
+  end
+
+  def test_compiles_lib_cs_files_into_minispade_modules
+    create_file "lib/foo/bar.coffee", "a = 'LIB'"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "LIB"
+    assert_minispade content, "foo/bar"
+  end
+
   def test_combines_css_into_one_file
     create_file "app/stylesheets/main.css", ".main"
     create_file "app/stylesheets/secondary.css", ".secondary;"
@@ -679,29 +701,23 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     ENV['IRIDIUM_ENV'] = 'test'
   end
 
-  def test_build_order
+  def test_js_pipeline_build_order
     create_file "vendor/javascripts/foo.js", "VENDOR"
-    create_file "app/config/initializers/bar.js", "INITIALIZER"
+    create_file "lib/foo.js", "LIB"
+    create_file "app/config/initializers/bar.js", "INIT"
     create_file "app/config/test.js", "ENV"
     create_file "app/javascripts/app.js", "APP"
+    create_file "app/templates/foo.hbs", "TEMPLATE"
 
     compile ; assert_file "site/application.js"
 
     content = read "site/application.js"
 
-    assert_includes content, "VENDOR", "Vendored code not loaded!"
-    assert_includes content, "INITIALIZER", "Init code not loaded!"
-    assert_includes content, "ENV", "Env code not loaded!"
-    assert_includes content, "APP", "App code not loaded!"
-
-    assert_before content, "VENDOR", "ENV",
-      "Vendored code must be loaded before environment initialization!"
-
-    assert_before content, "ENV", "INITIALIZER",
-      "Environment must be prepared for initialization!"
-
-    assert_before content, "INITIALIZER", "APP",
-      "App code must be loaded after initialization"
+    assert_before content, "VENDOR", "LIB"
+    assert_before content, "LIB", "ENV"
+    assert_before content, "ENV", "INIT"
+    assert_before content, "INIT", "APP"
+    assert_before content, "APP", "TEMPLATE"
   end
 
   def test_sprites_are_compiled

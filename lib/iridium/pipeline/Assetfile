@@ -110,7 +110,24 @@ input app.all_paths[:locales].expanded do
   end
 end
 
-# 5. Compile application code
+# 5. Compile library code
+input app.lib_path do
+  match "**/*.coffee" do
+    coffee_script
+  end
+
+  match "**/*.js" do
+    minispade :rewrite_requires => true, 
+      :string => (app.config.minispade.module_format == :string),
+      :module_id_generator => proc { |input|
+        input.path.gsub /\.js$/, ''
+      }
+
+    concat "lib.js"
+  end
+end
+
+# 6. Compile application code
 Iridium::Engine.subclasses.each do |engine|
   input engine.paths[:javascripts].expanded do
     match "**/*.coffee" do
@@ -135,12 +152,12 @@ Iridium::Engine.subclasses.each do |engine|
           "#{engine.name.demodulize.underscore}/#{input.path.gsub(/\.js$/, '')}"
         }
 
-      concat "lib.js"
+      concat "app.js"
     end
   end
 end
 
-# 6. Compile handlebars templates
+# 7. Compile handlebars templates
 Iridium::Engine.subclasses.each do |engine|
   input engine.paths[:templates].expanded do
     match "**/*.{handlebars,hbs}" do
@@ -155,14 +172,14 @@ Iridium::Engine.subclasses.each do |engine|
   end
 end
 
-# 7. Concatentate all the javascripts from the previous steps
+# 8. Concatentate all the javascripts from the previous steps
 #    in the proper order. build_path/javascript now contains
 #    the unoptimized application.js
 #
 output app.build_path.join("preoptimization")
 input app.build_path.join("javascript") do
   match "*.js" do
-    concat ["vendor.js", "env.js", "init.js", "i18n.js", "lib.js", "templates.js"] , "application.js"
+    concat ["vendor.js", "lib.js", "env.js", "init.js", "i18n.js", "app.js", "templates.js"] , "application.js"
   end
 end
 

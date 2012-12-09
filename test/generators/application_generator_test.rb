@@ -26,6 +26,8 @@ class ApplicationCommandTest < GeneratorTestCase
 
     assert_file 'todos', 'app', 'templates'
 
+    assert_file 'todos', 'lib'
+
     assert_file 'todos', 'vendor', 'javascripts'
     assert_file 'todos', 'vendor', 'stylesheets'
 
