@@ -633,6 +633,16 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_equal "(function() {\nFOO\n})();//@ sourceURL=foo.js", content.chomp
   end
 
+  def test_initializers_have_rewritten_requires
+    create_file "app/config/initializers/foo.js", "require('app/foo/bar');"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "minispade.require('app/foo/bar'"
+  end
+
   def test_index_boots_the_app
     create_index
 
@@ -667,6 +677,20 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     assert_includes content, "foo"
     refute_includes content, "test"
+  ensure
+    ENV['IRIDIUM_ENV'] = 'test'
+  end
+
+  def test_env_files_have_rewritten_requires
+    ENV['IRIDIUM_ENV'] = 'foo'
+
+    create_file "app/config/foo.js", "require('foo/bar');"
+
+    compile ; assert_file "site/application.js"
+
+    content = read 'site/application.js'
+
+    assert_includes content, "minispade.require('foo/bar", "require should rewrite to minispade.require"
   ensure
     ENV['IRIDIUM_ENV'] = 'test'
   end
