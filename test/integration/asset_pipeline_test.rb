@@ -1126,6 +1126,14 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     compile ; assert_file "site/tests.html"
   end
 
+  def test_other_html_files_are_copied_over
+    config.pipeline.compile_tests = true
+
+    create_file "test/framework/app_frame.html", "app_frame"
+
+    compile ; assert_file "site/app_frame.html"
+  end
+
   def test_test_framework_css_is_compiled
     config.pipeline.compile_tests = true
 

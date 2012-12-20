@@ -277,13 +277,17 @@ if app.config.pipeline.compile_tests
 
     # Put the test loader through ERB so can be built
     # correctly
-    match "framework/loader.html.erb" do
+    match "framework/*.erb" do
       erb binding
     end
 
     # This will copy the test loader over
     match "framework/loader.html" do
       copy "tests.html"
+    end
+
+    match "framework/*.html" do
+      copy { |path| path.gsub "framework/", "" }
     end
 
     # Copy over any CSS files needed to make the tests look 
