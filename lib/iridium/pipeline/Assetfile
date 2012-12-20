@@ -76,16 +76,20 @@ end
 
 # 2. Compile environment specific code
 input app.all_paths[:config].expanded do
+  match "application.coffee" do
+    coffee_script
+  end
+
   match "#{Iridium.env}.coffee" do
     coffee_script
   end
 
   # Put environment specific files in the pipeline
-  match "#{Iridium.env}.js" do
+  match "{application,#{Iridium.env}}.js" do
     engines_first
     rewrite_requires
     iife :source_map => app.config.pipeline.source_maps
-    concat "env.js"
+    concat ['application.js'], 'env.js'
   end
 end
 

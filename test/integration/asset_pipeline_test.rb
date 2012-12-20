@@ -665,6 +665,15 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, %q{<script src="http://jquery.com/jquery.js"></script>}
   end
 
+  def test_application_environment_is_compiled
+    create_file "app/config/application.js", "ENV"
+
+    compile ; assert_file "site/application.js"
+
+    content = read 'site/application.js'
+    assert_includes content, "ENV"
+  end
+
   def test_pipeline_includes_env_specific_js_code
     ENV['IRIDIUM_ENV'] = 'foo'
 
@@ -728,8 +737,9 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   def test_js_pipeline_build_order
     create_file "vendor/javascripts/foo.js", "VENDOR"
     create_file "lib/foo.js", "LIB"
+    create_file "app/config/application.js", "GLOBAL_ENV"
     create_file "app/config/initializers/bar.js", "INIT"
-    create_file "app/config/test.js", "ENV"
+    create_file "app/config/test.js", "CURRENT_ENV"
     create_file "app/javascripts/app.js", "APP"
     create_file "app/templates/foo.hbs", "TEMPLATE"
 
@@ -738,8 +748,9 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     content = read "site/application.js"
 
     assert_before content, "VENDOR", "LIB"
-    assert_before content, "LIB", "ENV"
-    assert_before content, "ENV", "INIT"
+    assert_before content, "LIB", "GLOBAL_ENV"
+    assert_before content, "GLOBAL_ENV", "CURRENT_ENV"
+    assert_before content, "CURRENT_ENV", "INIT"
     assert_before content, "INIT", "APP"
     assert_before content, "APP", "TEMPLATE"
   end

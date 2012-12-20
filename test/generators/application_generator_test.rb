@@ -33,6 +33,7 @@ class ApplicationCommandTest < GeneratorTestCase
 
     assert_file 'todos', 'app', 'locales', 'en.yml'
 
+    assert_file 'todos', 'app', 'config', 'application.coffee'
     assert_file 'todos', 'app', 'config', 'development.coffee'
     assert_file 'todos', 'app', 'config', 'production.coffee'
     assert_file 'todos', 'app', 'config', 'test.coffee'
