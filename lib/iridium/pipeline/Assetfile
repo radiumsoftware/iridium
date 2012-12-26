@@ -170,7 +170,9 @@ Iridium::Engine.subclasses.each do |engine|
       handlebars :target => (app.config.handlebars.target || "Handlebars.TEMPLATES"),
         :wrapper_proc => (app.config.handlebars.compiler || proc { |source| "Handlebars.compile(#{source});" }),
         :key_name_proc => proc { |input|
-          "#{engine.name.demodulize.underscore}/#{input.path.sub(File.extname(input.path), '').sub(/_view$/, '')}"
+          namespace = app.config.handlebars.namespace
+          name = input.path.sub(File.extname(input.path), '').sub(/_view$/, '')
+          [namespace, name].compact.join('/')
       }
 
       concat "templates.js"

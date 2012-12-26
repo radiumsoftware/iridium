@@ -211,7 +211,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_includes content, "Handlebars.TEMPLATES['test_app/home']="
+    assert_includes content, "Handlebars.TEMPLATES['home']="
     assert_includes content, "{{name}}"
     assert_includes content, "Handlebars.compile"
   end
@@ -223,7 +223,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_includes content, "Handlebars.TEMPLATES['test_app/dashboard/feed/header']="
+    assert_includes content, "Handlebars.TEMPLATES['dashboard/feed/header']="
   end
 
   def test_removes_view_from_handlebars_template_name
@@ -233,7 +233,19 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_includes content, "Handlebars.TEMPLATES['test_app/dashboard/feed/header']="
+    assert_includes content, "Handlebars.TEMPLATES['dashboard/feed/header']="
+  end
+
+  def test_handlebars_namespace_is_configurbale
+    config.handlebars.namespace = "foo"
+
+    create_file "app/templates/home.handlebars", "{{name}}"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "Handlebars.TEMPLATES['foo/home']="
   end
 
   def test_handlebars_destination_is_configurbale
@@ -245,7 +257,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_includes content, "FOO['test_app/home']="
+    assert_includes content, "FOO['home']="
   end
 
   def test_handlebars_wrapper_is_configurable
@@ -273,7 +285,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_match content, %r{Handlebars\.TEMPLATES\['test_app/home'\]=Handlebars\.template\(.+\);}m
+    assert_match content, %r{Handlebars\.TEMPLATES\['home'\]=Handlebars\.template\(.+\);}m
   end
 
   def test_inline_coffeescript_block_templates_with_line_breaks_are_compiled
@@ -963,7 +975,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     compile ; assert_file "site/application.js"
     content = read "site/application.js"
 
-    assert_includes content, %Q{Handlebars.TEMPLATES['test_engine/foo']=}
+    assert_includes content, %Q{Handlebars.TEMPLATES['foo']=}
   end
 
   def test_engine_vendor_css_comes_before_app_vendor_css
