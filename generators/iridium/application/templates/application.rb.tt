@@ -28,6 +28,10 @@ class <%= camelized %> < Iridium::Application
   #
   # config.handlebars.compiler = proc { |source| "CustomHandlebars.compile(#{source});" }
 
+  # Specify a namespace for handlebars templates
+  #
+  # config.handlebars.namespace = "<%= underscored %>"
+
   # Enable a proxy to an API. You can use this to get around CORS
   # or use it for authentication hidding.
   #
