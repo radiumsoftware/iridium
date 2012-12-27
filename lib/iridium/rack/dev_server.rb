@@ -24,7 +24,7 @@ module Iridium
 
       # Override the call to options so ARV isn't parsed
       def options
-        {}
+        @options || {}
       end
 
       def app
