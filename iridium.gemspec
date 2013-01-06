@@ -22,7 +22,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency "sass"
   gem.add_dependency "compass"
   gem.add_dependency "less"
-  gem.add_dependency "therubyracer"
   gem.add_dependency "execjs"
   gem.add_dependency "coffee-script"
   gem.add_dependency "yui-compressor"
