@@ -57,7 +57,7 @@ together. All Iridium apps get all this right out of the box:
 The first step is to use the built in generator to create the structure:
 
 ```
-$ iridium app todos
+$ iridium generate app todos
 ```
 
 Now your application is ready. You can use the built in development server
