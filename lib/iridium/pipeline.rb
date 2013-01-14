@@ -43,10 +43,13 @@ module Iridium
         FileUtils.rm_rf build_path
       end
 
+      def before_compile!
+        run_callbacks :before_compile, self
+      end
+
       def compile
         clean!
-
-        run_callbacks :before_compile, self
+        before_compile!
 
         Dir.chdir root do
           pipeline.invoke
