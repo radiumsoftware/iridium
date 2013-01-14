@@ -20,6 +20,11 @@ module Iridium
         def initialize(app, project)
           @app, @project = app, project
         end
+
+        def call(env)
+          Iridium.application.before_compile!
+          super
+        end
       end
 
       # Override the call to options so ARV isn't parsed
