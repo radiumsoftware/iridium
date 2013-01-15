@@ -20,6 +20,7 @@ require 'barber'
 
 require 'rack/rewrite'
 require 'rake-pipeline'
+require 'rake-pipeline/filters/prepend_filter'
 require 'rake-pipeline/middleware'
 require 'rake-pipeline/iridium_helper'
 

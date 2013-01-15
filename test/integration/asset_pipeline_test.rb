@@ -642,7 +642,8 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_equal "(function() {\nFOO\n})();//@ sourceURL=foo.js", content.chomp
+    assert_match /\(function\(\) {.+FOO.+}\)\(\);/m, content.chomp
+    assert_includes content.chomp, ";//@ sourceURL=foo.js"
   end
 
   def test_initializers_have_rewritten_requires
@@ -725,7 +726,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read 'site/application.js'
 
-    assert_equal "(function() {\nfoo\n})();", content.chomp
+    assert_match /\(function\(\) {.+foo.+}\)\(\);/m, content.chomp
   ensure
     ENV['IRIDIUM_ENV'] = 'test'
   end
@@ -1155,6 +1156,15 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/tests.css"
     assert_includes content, "CSS"
+  end
+
+  def test_application_env_is_included
+    create_file "app/javascripts/app.js", "APP"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+    assert_includes content, %Q{Iridium.env = '#{Iridium.env}';}
   end
 
   def assert_before(string, before, after, msg = nil)

@@ -188,6 +188,7 @@ output app.build_path.join("preoptimization")
 input app.build_path.join("javascript") do
   match "*.js" do
     concat ["vendor.js", "lib.js", "env.js", "init.js", "i18n.js", "app.js", "templates.js"] , "application.js"
+    filter Iridium::Pipeline::PrependEnvironmentFilter
   end
 end
 

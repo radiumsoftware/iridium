@@ -3,6 +3,7 @@ require 'iridium/pipeline/handlebars_precompiler'
 require 'iridium/pipeline/handlebars_precompilers'
 require 'iridium/pipeline/compile_command'
 require 'iridium/pipeline/inline_precompiler_filter'
+require 'iridium/pipeline/prepend_environment_filter'
 
 module Iridium
   module Pipeline
