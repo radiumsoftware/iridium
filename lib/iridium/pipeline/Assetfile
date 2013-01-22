@@ -253,7 +253,7 @@ end
 # Include tests in the pipeline if configured
 if app.config.pipeline.compile_tests
   output app.build_path.join("preoptimization")
-  input app.test_path do
+  input app.all_paths[:test].expanded do
     match "**/*.coffee" do
       coffee_script
     end
