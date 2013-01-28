@@ -93,4 +93,3 @@ require 'iridium/jslint'
 require 'iridium/application'
 
 require 'iridium/generators'
-require 'iridium/cli'

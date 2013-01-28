@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'iridium/cli'
 
 # NOTE: Make sure each generated app is unique so it can be required
 # and the inherited callback will hit. This makes things work as expected
