@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
 
 require 'iridium'
+
+local_iridium_app = "#{Dir.pwd}/application.rb"
+require local_iridium_app if File.exists? local_iridium_app
+
 require 'iridium/cli'
 
 Iridium::CLI.start
