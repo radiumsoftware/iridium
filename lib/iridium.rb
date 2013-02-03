@@ -10,7 +10,6 @@ require 'active_support/ordered_options'
 require 'logger'
 
 require 'thor'
-require 'thin'
 require 'json'
 require 'yaml'
 require 'erb'
