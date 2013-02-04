@@ -33,7 +33,7 @@ class MiniTest::Unit::TestCase
   def setup
     FileUtils.mkdir_p sandbox_path
 
-    Iridium.application = TestApp.instance
+    Iridium.application = TestApp.new
 
     FileUtils.mkdir_p Iridium.application.app_path
     FileUtils.mkdir_p Iridium.application.lib_path
