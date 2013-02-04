@@ -13,6 +13,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   def setup
     super
     FileUtils.mkdir_p Iridium.application.root.join("external")
+    Iridium.application.boot!
   end
 
   def teardown
