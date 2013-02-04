@@ -1158,6 +1158,18 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, %Q{Iridium.env = '#{Iridium.env}';}
   end
 
+  def test_stylesheets_can_import_from_other_files
+    create_file "app/stylesheets/foo/_a.scss", '#a {color: black;}'
+    create_file "app/stylesheets/foo/_b.scss", "@import 'foo/a';"
+    create_file "app/stylesheets/app.scss", "@import 'foo/b';"
+
+    compile ; assert_file "site/application.css"
+
+    content = read "site/application.css"
+
+    assert_includes content, "#a"
+  end
+
   def assert_before(string, before, after, msg = nil)
     assert_includes string, before
     assert_includes string, after

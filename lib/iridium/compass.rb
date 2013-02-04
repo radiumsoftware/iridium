@@ -10,13 +10,20 @@ module Iridium
 
     config.compass.line_comments = false
 
-    before_compile do |app|
+    initializer do |app|
       Compass.reset_configuration!
 
       app.config.compass.project_path = app.root
       app.config.compass.sprite_load_path = app.all_paths[:sprites].expanded
       app.config.compass.generated_images_path = app.site_path.join('images').to_s
-      app.config.compass.additional_import_paths = [app.vendor_path.join("stylesheets")]
+
+      app.paths[:stylesheets].expanded.each do |path|
+        app.config.compass.add_import_path path
+      end
+
+      app.paths[:vendored_stylesheets].expanded.each do |path|
+        app.config.compass.add_import_path path
+      end
 
       Compass.add_configuration app.config.compass
     end
