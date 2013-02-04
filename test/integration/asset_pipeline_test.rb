@@ -127,7 +127,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     content = read "site/application.js"
 
     assert_includes content, "LIB"
-    assert_minispade content, "foo/bar"
+    assert_minispade content, "lib/foo/bar"
   end
 
   def test_combines_css_into_one_file

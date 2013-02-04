@@ -126,7 +126,7 @@ input app.lib_path do
     minispade :rewrite_requires => true, 
       :string => (app.config.minispade.module_format == :string),
       :module_id_generator => proc { |input|
-        input.path.gsub /\.js$/, ''
+        "lib/#{input.path.gsub /\.js$/, ''}"
       }
 
     concat "lib.js"
