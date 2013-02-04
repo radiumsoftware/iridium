@@ -30,7 +30,7 @@
 
 
     <script type="text/javascript">
-      minispade.require("<%= underscored %>/boot");
+      minispade.require("boot");
     </script>
   </body>
 </html>

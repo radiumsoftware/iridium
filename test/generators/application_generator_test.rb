@@ -125,7 +125,7 @@ class ApplicationCommandTest < GeneratorTestCase
 
     assert_includes content, %Q{<link href="/application.css" rel="stylesheet">}
 
-    assert_includes content, %Q{minispade.require("todos/boot");}
+    assert_includes content, %Q{minispade.require("boot");}
   end
 
   def test_qunit_test_loader_loads_required_assets_and_code
@@ -140,7 +140,7 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_includes content, %Q{<link href="application.css" rel="stylesheet">}
     assert_includes content, %Q{<link href="tests.css" rel="stylesheet">}
 
-    assert_includes content, %Q{minispade.require("todos/boot");}
+    assert_includes content, %Q{minispade.require("boot");}
   end
 
   def test_jasmine_test_loader_loads_required_assets_and_code
@@ -155,7 +155,7 @@ class ApplicationCommandTest < GeneratorTestCase
     assert_includes content, %Q{<link href="application.css" rel="stylesheet">}
     assert_includes content, %Q{<link href="tests.css" rel="stylesheet">}
 
-    assert_includes content, %Q{minispade.require("todos/boot");}
+    assert_includes content, %Q{minispade.require("boot");}
   end
 
   def test_production_env_is_configured_correctly

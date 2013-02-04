@@ -64,16 +64,6 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "Secondary = {};"
   end
 
-  def tests_compiles_app_js_into_namespaced_minispade_modules
-    create_file "app/javascripts/main.js", "Main = {};"
-
-    compile ; assert_file "site/application.js"
-
-    content = read "site/application.js"
-
-    assert_minispade content, "test_app/main"
-  end
-
   def tests_compiles_app_js_into_string_minispade_modules
     config.minispade.module_format = :string
 
@@ -83,7 +73,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_includes content, %Q{sourceURL=test_app/main}
+    assert_includes content, %Q{sourceURL=main}
   end
 
   def tests_compiles_app_js_into_modules
@@ -126,7 +116,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     content = read "site/application.js"
 
     assert_includes content, "LIB"
-    assert_minispade content, "foo/bar"
+    assert_minispade content, "lib/foo/bar"
   end
 
   def test_compiles_lib_cs_files_into_minispade_modules
@@ -663,7 +653,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/index.html"
 
-    assert_includes content, %q{minispade.require("test_app/boot");}
+    assert_includes content, %q{minispade.require("boot");}
   end
 
   def test_index_contains_scripts

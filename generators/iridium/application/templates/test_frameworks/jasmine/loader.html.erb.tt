@@ -24,7 +24,7 @@
   <div id="application"></div>
 
   <script type="text/javascript">
-    minispade.require("<%= underscored %>/boot");
+    minispade.require("boot");
   </script>
 
   <script type="text/javascript" src="tests.js"></script>

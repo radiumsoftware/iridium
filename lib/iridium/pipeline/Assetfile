@@ -155,7 +155,11 @@ Iridium::Engine.subclasses.each do |engine|
       minispade :rewrite_requires => true, 
         :string => (app.config.minispade.module_format == :string),
         :module_id_generator => proc { |input|
-          "#{engine.name.demodulize.underscore}/#{input.path.gsub(/\.js$/, '')}"
+          if engine < Iridium::Application
+            "#{input.path.gsub(/\.js$/, '')}"
+          else
+            "#{engine.name.demodulize.underscore}/#{input.path.gsub(/\.js$/, '')}"
+          end
         }
 
       concat "app.js"

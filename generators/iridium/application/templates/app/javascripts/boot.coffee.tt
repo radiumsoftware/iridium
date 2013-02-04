@@ -6,10 +6,10 @@
 # 
 # Here's an example:
 #
-#   require('<%= underscored %>/app')
+#   require('app')
 #   <%= camelized %>.boot()
 #
 # Your boot code begins here...
 
-require('<%= underscored %>/app')
+require('app')
 <%= camelized %>.booted = true
