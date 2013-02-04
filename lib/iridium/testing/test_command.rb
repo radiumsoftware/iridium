@@ -14,6 +14,7 @@ module Iridium
         ENV['IRIDIUM_ENV'] = 'test'
 
         Iridium.load!
+        Iridium.application.boot!
         Iridium.application.compile
 
         parts = []

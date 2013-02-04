@@ -10,6 +10,7 @@ module Iridium
         ENV['IRIDIUM_ENV'] = options[:environment]
 
         Iridium.load!
+        Iridium.application.boot!
         Iridium.application.clean!
         Iridium::Rack::DevServer.new(Port: options[:port]).start
       end
