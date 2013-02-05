@@ -24,64 +24,6 @@ class NewAppTest < MiniTest::Unit::TestCase
     assert File.directory?(sandbox_path.join(name)), "App not generated!"
   end
 
-  def test_new_qunit_apps_are_tested_correctly
-    generate_app "todos_qunit"
-
-    Iridium.application = nil
-
-    require sandbox_path.join("todos_qunit").join("config", "environment")
-
-    assert Iridium.application
-
-    Dir.chdir sandbox_path.join('todos_qunit') do
-      result = nil
-
-      Iridium.application.config.pipeline.compile_tests = true
-      Iridium.application.compile
-
-      parts = []
-
-      parts << 'phantomjs'
-      parts << %Q{"#{Iridium.phantom_js_test_runner}"}
-      parts << %Q{"#{Iridium.application.site_path}/tests.html"}
-
-      command = parts.join " "
-
-      output = `#{command}`
-
-      assert $?.success?, "Release blocker! Tests failed!"
-    end
-  end
-
-  def test_new_jasmine_apps_are_tested_correctly
-    generate_app "todos_jasmine"
-
-    Iridium.application = nil
-
-    require sandbox_path.join("todos_jasmine").join("config", "environment")
-
-    assert Iridium.application
-
-    Dir.chdir sandbox_path.join('todos_jasmine') do
-      result = nil
-
-      Iridium.application.config.pipeline.compile_tests = true
-      Iridium.application.compile
-
-      parts = []
-
-      parts << 'phantomjs'
-      parts << %Q{"#{Iridium.phantom_js_test_runner}"}
-      parts << %Q{"#{Iridium.application.site_path}/tests.html"}
-
-      command = parts.join " "
-
-      output = `#{command}`
-
-      assert $?.success?, "Release blocker! Tests failed!"
-    end
-  end
-
   def test_app_works_works_in_development
     generate_app "dev_test"
 
