@@ -1,4 +1,3 @@
-before_script: echo "PhantomJS Version: $(phantomjs --version)"
 script: bundle exec rake
 rvm:
   - 1.9.2
