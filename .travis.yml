@@ -1,4 +1,4 @@
-before: phantomjs --version
+before_script: phantomjs --version
 script: bundle exec rake
 rvm:
   - 1.9.2
