@@ -2,7 +2,6 @@ require 'simplecov'
 SimpleCov.start
 
 require 'minitest/unit'
-require 'minitest/pride'
 require 'minitest/autorun'
 
 require 'mocha/setup'
