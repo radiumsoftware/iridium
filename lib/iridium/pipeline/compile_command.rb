@@ -8,6 +8,7 @@ module Iridium
       def compile
         ENV['IRIDIUM_ENV'] = options[:environment]
         Iridium.load!
+        Iridium.application.boot! unless Iridium.application.booted?
         Iridium.application.compile
       end
 
