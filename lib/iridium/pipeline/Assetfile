@@ -123,6 +123,8 @@ input app.lib_path do
   end
 
   match "**/*.js" do
+    app.config.js_pipelines.invoke self, app
+
     minispade :rewrite_requires => true, 
       :string => (app.config.minispade.module_format == :string),
       :module_id_generator => proc { |input|

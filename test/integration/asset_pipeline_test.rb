@@ -1170,6 +1170,22 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "#a"
   end
 
+  def test_pipeline_customizations_run_against_lib_code
+    TestApp.configure do
+      js do |pipeline|
+        pipeline.filter AppendingFilter
+      end
+    end
+
+    create_file "lib/test.js", "foo"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "Appending Filter", "Filter not run"
+  end
+
   def assert_before(string, before, after, msg = nil)
     assert_includes string, before
     assert_includes string, after
