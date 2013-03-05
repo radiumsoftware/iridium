@@ -739,24 +739,26 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_js_pipeline_build_order
+    create_file "app/config/environment.js", "GLOBAL_ENV"
     create_file "vendor/javascripts/foo.js", "VENDOR"
     create_file "lib/foo.js", "LIB"
-    create_file "app/config/application.js", "GLOBAL_ENV"
+    create_file "app/config/application.js", "APP_ENV"
     create_file "app/config/initializers/bar.js", "INIT"
     create_file "app/config/test.js", "CURRENT_ENV"
-    create_file "app/javascripts/app.js", "APP"
-    create_file "app/templates/foo.hbs", "TEMPLATE"
+    create_file "app/javascripts/app.js", "APP_CODE"
+    create_file "app/templates/foo.hbs", "TEMPLATES"
 
     compile ; assert_file "site/application.js"
 
     content = read "site/application.js"
 
+    assert_before content, "GLOBAL_ENV", "VENDOR"
     assert_before content, "VENDOR", "LIB"
-    assert_before content, "LIB", "GLOBAL_ENV"
-    assert_before content, "GLOBAL_ENV", "CURRENT_ENV"
+    assert_before content, "LIB", "APP_ENV"
+    assert_before content, "APP_ENV", "CURRENT_ENV"
     assert_before content, "CURRENT_ENV", "INIT"
-    assert_before content, "INIT", "APP"
-    assert_before content, "APP", "TEMPLATE"
+    assert_before content, "INIT", "APP_CODE"
+    assert_before content, "APP_CODE", "TEMPLATES"
   end
 
   def test_sprites_are_compiled

@@ -84,6 +84,15 @@ input app.all_paths[:config].expanded do
     coffee_script
   end
 
+  match "environment.coffee" do
+    coffee_script
+  end
+
+  match "environment.js" do
+    iife :source_map => app.config.pipeline.source_maps
+    copy 'bootstrap.js'
+  end
+
   # Put environment specific files in the pipeline
   match "{application,#{Iridium.env}}.js" do
     engines_first
@@ -193,7 +202,7 @@ end
 output app.build_path.join("preoptimization")
 input app.build_path.join("javascript") do
   match "*.js" do
-    concat ["vendor.js", "lib.js", "env.js", "init.js", "i18n.js", "app.js", "templates.js"] , "application.js"
+    concat ["bootstrap.js", "vendor.js", "lib.js", "env.js", "init.js", "i18n.js", "app.js", "templates.js"] , "application.js"
     filter Iridium::Pipeline::PrependEnvironmentFilter
   end
 end
