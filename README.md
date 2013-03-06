@@ -9,7 +9,7 @@ Here's how you can boostrap.
 First create a `Gemfile`
 
 ```
-source :rubygems
+source 'https://rubygems.org'
 
 gem 'iridium', :github => 'radiumsoftware/iridium'
 gem 'hydrogen', :github => 'radiumsoftware/hydrogen'
