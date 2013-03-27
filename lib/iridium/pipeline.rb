@@ -68,6 +68,7 @@ module Iridium
 
     config.js_pipelines = Hydrogen::CallbackSet.new
     config.css_pipelines = Hydrogen::CallbackSet.new
+    config.hbs_pipelines = Hydrogen::CallbackSet.new
     config.optimization_pipelines = Hydrogen::CallbackSet.new
 
     config.handlebars = ActiveSupport::OrderedOptions.new
@@ -93,6 +94,11 @@ module Iridium
         config.css_pipelines.add *args, &block
       end
       alias css stylesheet
+
+      def handlebars(*args, &block)
+        config.hbs_pipelines.add *args, &block
+      end
+      alias hbs handlebars
 
       def optimize(*args, &block)
         config.optimization_pipelines.add *args, &block
