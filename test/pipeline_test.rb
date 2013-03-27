@@ -27,6 +27,17 @@ class PipelineTest < MiniTest::Unit::TestCase
     assert_equal 1, component.config.css_pipelines.size
   end
 
+  def test_components_can_add_hbs_processing_hooks
+    component = Class.new Iridium::Component do
+      hbs do |pipeline|
+        # this code is not evaluated in this test
+      end
+    end
+
+    assert_kind_of Hydrogen::CallbackSet, component.config.hbs_pipelines
+    assert_equal 1, component.config.hbs_pipelines.size
+  end
+
   def test_components_can_add_optmization_processing_hooks
     component = Class.new Iridium::Component do
       optimize do |pipeline|
