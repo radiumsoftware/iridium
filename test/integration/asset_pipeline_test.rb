@@ -20,6 +20,9 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     config.minispade.clear
     config.handlebars.clear
     config.pipeline.clear
+    config.js_pipelines.clear
+    config.css_pipelines.clear
+    config.hbs_pipelines.clear
     FileUtils.rm_rf Iridium.application.root.join("external")
     super
   end
@@ -843,6 +846,22 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     compile ; assert_file "site/application.css"
 
     content = read "site/application.css"
+
+    assert_includes content, "Appending Filter"
+  end
+
+  def test_components_can_add_to_the_hbs_pipeline
+    config.hbs_pipelines.add do |pipeline|
+      pipeline.match "**/*.hbs" do
+        filter AppendingFilter
+      end
+    end
+
+    create_file "app/templates/application.hbs", "foo"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
 
     assert_includes content, "Appending Filter"
   end

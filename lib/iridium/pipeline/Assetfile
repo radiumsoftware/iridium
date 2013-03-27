@@ -182,6 +182,9 @@ end
 Iridium::Engine.subclasses.each do |engine|
   input engine.paths[:templates].expanded do
     match "**/*.{handlebars,hbs}" do
+      # Execute build hooks added by external components
+      app.config.hbs_pipelines.invoke self, app
+
       handlebars :target => (app.config.handlebars.target || "Handlebars.TEMPLATES"),
         :wrapper_proc => (app.config.handlebars.compiler || proc { |source| "Handlebars.compile(#{source});" }),
         :key_name_proc => proc { |input|
