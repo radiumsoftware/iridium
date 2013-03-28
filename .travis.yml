@@ -2,4 +2,10 @@ before_script: phantomjs --version
 script: bundle exec rake
 rvm:
   - 1.9.2
-  - 1.9.3
+  - "1.9.3-p125"
+  - "1.9.3-p194"
+  - "1.9.3-p286"
+  - "1.9.3-p327"
+  - "1.9.5-p364"
+  - "1.9.5-p374"
+  - "1.9.3-p385"
