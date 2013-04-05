@@ -89,7 +89,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_match content, /function\(\)\s*{FOO\s*}/m
+    assert_match /function\(\)\s*{FOO\s*}/m, content
   end
 
   def test_rewrites_requrires_to_use_minispade
@@ -279,7 +279,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_match content, %r{Handlebars\.TEMPLATES\['home'\]=Handlebars\.template\(.+\);}m
+    assert_match %r{Handlebars\.TEMPLATES\['home'\]=Handlebars\.template\(.+\);}m, content
   end
 
   def test_inline_coffeescript_block_templates_with_line_breaks_are_compiled
@@ -308,7 +308,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_match content, %r{template:\sHandlebars\.template\(.+\);}m
+    assert_match  %r{template:\sHandlebars\.template\(.+\);}m, content
   end
 
   def test_inline_coffeescript_block_templates_with_line_breaks_are_compiled
@@ -335,7 +335,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_match content, %r{template:\sHandlebars\.template\(.+\);}m
+    assert_match %r{template:\sHandlebars\.template\(.+\);}m, content
   end
 
   def test_inline_javascript_templates_are_compiled
@@ -355,7 +355,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.js"
 
-    assert_match content, %r{template:\sHandlebars\.template\(.+\);}m
+    assert_match %r{template:\sHandlebars\.template\(.+\);}m, content
   end
 
   def test_concats_vendor_css_before_app_css
@@ -544,8 +544,8 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/cache.manifest"
 
-    assert_match content, /^application\.js$/
-    assert_match content, /^images\/logo\.png$/
+    assert_match /^application\.js$/, content
+    assert_match /^images\/logo\.png$/, content
   end
 
   def test_index_file_loads_the_manifest
@@ -783,7 +783,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.css"
 
-    assert_match content, %r{/images/icons-\w+.png}, "Compiled CSS does not point to the correct image"
+    assert_match %r{/images/icons-\w+.png}, content, "Compiled CSS does not point to the correct image"
 
     assert_file "site/images/icons-s0d4ab78e54.png"
 
@@ -1047,7 +1047,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
 
     content = read "site/application.css"
 
-    assert_match content, %r{/images/icons-\w+.png}, "Compiled CSS does not point to the correct image"
+    assert_match %r{/images/icons-\w+.png}, content, "Compiled CSS does not point to the correct image"
 
     assert_file "site/images/icons-s0d4ab78e54.png"
 

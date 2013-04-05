@@ -14,6 +14,6 @@ class HandlebarsPrecompilerTest < MiniTest::Unit::TestCase
     result = compiler.compile template
 
     refute_empty result
-    assert_match result, %r{function\s\(.+\)}m
+    assert_match %r{function\s\(.+\)}m, result
   end
 end
