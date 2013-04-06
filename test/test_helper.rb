@@ -110,4 +110,8 @@ class MiniTest::Unit::TestCase
   def sandbox_path
     Pathname.new(File.expand_path('../sandbox', __FILE__))
   end
+
+  def handlebars_path
+    Handlebars::Source.bundled_path
+  end
 end

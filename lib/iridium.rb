@@ -16,6 +16,7 @@ require 'erb'
 require 'execjs'
 require 'compass'
 require 'barber'
+require 'handlebars/source'
 
 require 'rack/rewrite'
 require 'rake-pipeline'
@@ -46,6 +47,12 @@ module Iridium
     end
   end
 
+  class CannotLoadApp < Error 
+    def to_s
+      "Could not find environment.rb. Are you in your app's root?"
+    end
+  end
+
   class << self
     def application
       @application
@@ -69,8 +76,7 @@ module Iridium
       env_file = "#{Dir.pwd}/config/environment.rb"
 
       if !File.exists? env_file
-        $stderr.puts "Could not find environment.rb. Are you in your app's root?"
-        abort
+        raise CannotLoadApp
       else
         require env_file
       end

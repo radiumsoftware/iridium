@@ -18,7 +18,7 @@ module Iridium
       argument :app_path, :type => :string
 
       def self.vendored_scripts
-        %w(minispade jquery handlebars i18n)
+        %w(minispade jquery i18n)
       end
 
       def application
@@ -53,6 +53,14 @@ module Iridium
 
         self.class.vendored_scripts.each do |script|
           copy_file "#{script}.js", "vendor/javascripts/#{script}.js"
+        end
+
+        create_file "vendor/javascripts/handlebars.js" do
+          File.read ::Handlebars::Source.bundled_path
+        end
+
+        create_file "vendor/javascripts/handlebars.runtime.js" do
+          File.read ::Handlebars::Source.runtime_bundled_path
         end
 
         template "application.rb.tt"

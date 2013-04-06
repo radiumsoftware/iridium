@@ -269,7 +269,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
   end
 
   def test_handlebars_files_work_with_precompilation
-    create_file "vendor/javascripts/handlebars.js", File.read(Iridium.vendor_path.join("handlebars.js"))
+    create_file "vendor/javascripts/handlebars.js", File.read(handlebars_path)
 
     config.handlebars.compiler = Iridium::Pipeline::HandlebarsFilePrecompiler
 
@@ -289,7 +289,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
       end
     end
 
-    create_file "vendor/javascripts/handlebars.js", File.read(Iridium.vendor_path.join("handlebars.js"))
+    create_file "vendor/javascripts/handlebars.js", File.read(handlebars_path)
 
     create_file "app/javascripts/view.coffee", <<-coffee
       template: Handlebars.compile '''
@@ -318,7 +318,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
       end
     end
 
-    create_file "vendor/javascripts/handlebars.js", File.read(Iridium.vendor_path.join("handlebars.js"))
+    create_file "vendor/javascripts/handlebars.js", File.read(handlebars_path)
 
     create_file "app/javascripts/view.coffee", <<-coffee
       template: Handlebars.compile '''
@@ -345,7 +345,7 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
       end
     end
 
-    create_file "vendor/javascripts/handlebars.js", File.read(Iridium.vendor_path.join("handlebars.js"))
+    create_file "vendor/javascripts/handlebars.js", File.read(handlebars_path)
 
     create_file "app/javascripts/view.js", <<-coffee
       template: Handlebars.compile("{{foo}}")

@@ -74,6 +74,7 @@ class ApplicationCommandTest < GeneratorTestCase
 
     assert_file 'todos', 'vendor', 'javascripts', 'minispade.js'
     assert_file 'todos', 'vendor', 'javascripts', 'handlebars.js'
+    assert_file 'todos', 'vendor', 'javascripts', 'handlebars.runtime.js'
     assert_file 'todos', 'vendor', 'javascripts', 'jquery.js'
     assert_file 'todos', 'vendor', 'javascripts', 'i18n.js'
   end
