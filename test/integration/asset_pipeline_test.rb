@@ -1207,6 +1207,31 @@ class AssetPipelineTest < MiniTest::Unit::TestCase
     assert_includes content, "Appending Filter", "Filter not run"
   end
 
+  def test_finalizer_filter
+    finalizing_filter = Class.new Rake::Pipeline::Filter do
+      def generate_output(inputs, output)
+        inputs.each do |input|
+          output.write "Finalized!"
+          output.write input.read
+        end
+      end
+    end
+
+    TestApp.configure do 
+      finalize do |pipeline|
+        pipeline.filter finalizing_filter
+      end
+    end
+
+    create_file "app/javascripts/foo.js", "foo"
+
+    compile ; assert_file "site/application.js"
+
+    content = read "site/application.js"
+
+    assert_includes content, "Finalized!", "Filter not run"
+  end
+
   def assert_before(string, before, after, msg = nil)
     assert_includes string, before
     assert_includes string, after

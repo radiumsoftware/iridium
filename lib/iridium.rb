@@ -96,5 +96,4 @@ require 'iridium/rack'
 require 'iridium/testing'
 require 'iridium/jslint'
 require 'iridium/application'
-
 require 'iridium/generators'

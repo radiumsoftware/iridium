@@ -4,6 +4,7 @@ require 'iridium/pipeline/handlebars_precompilers'
 require 'iridium/pipeline/compile_command'
 require 'iridium/pipeline/inline_precompiler_filter'
 require 'iridium/pipeline/prepend_environment_filter'
+require 'iridium/pipeline/finalizing_filter'
 
 module Iridium
   module Pipeline
@@ -70,6 +71,7 @@ module Iridium
     config.css_pipelines = Hydrogen::CallbackSet.new
     config.hbs_pipelines = Hydrogen::CallbackSet.new
     config.optimization_pipelines = Hydrogen::CallbackSet.new
+    config.finalizers = Hydrogen::CallbackSet.new
 
     config.handlebars = ActiveSupport::OrderedOptions.new
     config.minispade = ActiveSupport::OrderedOptions.new
@@ -104,6 +106,10 @@ module Iridium
         config.optimization_pipelines.add *args, &block
       end
       alias optimizations optimize
+
+      def finalize(*args, &block)
+        config.finalizers.add *args, &block
+      end
     end
 
     js do |pipeline, app|

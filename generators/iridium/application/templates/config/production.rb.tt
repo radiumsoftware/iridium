@@ -20,4 +20,11 @@
 
   # Module format for minispade: :string or :function
   config.minispade.module_format = :function
+
+  # Add the git commit info to the final assets
+  finalize do |pipeline, app|
+    pipeline.match "application.{js,css}" do
+      filter Iridium::Pipeline::FinalizingFilter, app.root
+    end
+  end
 end

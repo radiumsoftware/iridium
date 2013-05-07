@@ -54,6 +54,7 @@ class MiniTest::Unit::TestCase
       Iridium.application.config.js_pipelines.clear
       Iridium.application.config.css_pipelines.clear
       Iridium.application.config.optimization_pipelines.clear
+      Iridium.application.config.finalizers.clear
 
       FileUtils.rm_rf Iridium.application.app_path
       FileUtils.rm_rf Iridium.application.lib_path

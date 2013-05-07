@@ -337,6 +337,9 @@ input app.build_path.join("preoptimization") do
     end
   end
 
+  # Execute build hooks added by external components
+  app.config.finalizers.invoke self, app
+
   if app.config.pipeline.manifest
     match "**/*" do
       cache_manifest { |asset| asset }

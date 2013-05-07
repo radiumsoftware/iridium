@@ -1,7 +1,7 @@
 module Iridium
   class Generator < Hydrogen::Generator
     add_runtime_options!
-    
+
     def self.base_root
       File.expand_path("../../../generators", __FILE__)
     end
