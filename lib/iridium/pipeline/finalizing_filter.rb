@@ -15,9 +15,10 @@ module Iridium
   // SHA: #{head.id}
   // Commit Date: #{head.committed_date}
   // Author: #{head.author}
+
 header
         rescue Grit::InvalidGitRepositoryError
-          "// Build Time: #{Time.now}"
+          "// Build Time: #{Time.now}\n"
         end
       end
 
