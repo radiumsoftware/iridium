@@ -16,14 +16,14 @@ Now bootstrap:
 
 ```
 $ bundle
-$ bundle exec iridium
+$ bundle exec iridium g:application
 ```
 
 Don't forget you **must use bundle exec!**
 
 # Iridium: A Toolchain for JS Application Development
 
-Iridium is a tool to help you with modern Javascript development. It's
+Iridium is a tool to help you with modern Javascript development. I's
 here to make you a faster developer and solve common problems. It
 focuses primarily on:
 
@@ -33,18 +33,20 @@ focuses primarily on:
 
 ## Sensible Defaults
 
-Iridium makes some choices for you by default. These choices work well
+Iridium makes choices for you by default. These choices work well
 together. All Iridium apps get all this right out of the box:
 
+* Coffeescript
+* Sass
+* Spriting
 * jQuery for DOM manipulation
 * Handlebars for templating
 * Minispade for simple modules and `require`
-* Qunit for unit tests
-* CasperJS for integration tests
-* Sinon.js injected into test environment
+* Qunit or Jasmine for unit tests
 * GZip assets in production
 * Fully cache all assets in production
 * Generate an HTML5 cache manifest for production
+* i18n
 
 ## Getting Started
 
@@ -55,7 +57,7 @@ $ iridium generate app todos
 ```
 
 Now your application is ready. You can use the built in development server
-to edit your JS/CSS files and reload the browser. 
+to edit your JS/CSS files and reload the browser.
 
 ```
 $ cd todos
@@ -68,7 +70,40 @@ $ iridium server
 Navigate to `http://localhost:9292` in your browser and you'll see a
 blank canvas.
 
-## Vendored Javascripts
+## Writing Javascript
+
+Iridium compiles all `.coffee` files to `.js`. All files inside
+`lib/` and `app/`. All files inside `app` are wrapped in minispade
+modules. The module name comes from the file name. `require` calls are
+rewritten to use `minispade.require`. Files inside `app/config` and
+`app/config/initializers` are also compiled, but not wrapped in
+modules. Files inside vendor code are not wrapped in modules. All of
+the javascript + templates is concatenated into a single
+`application.js`. The compiled `application.js` has this order:
+
+1. `app/config/environment.coffee`
+2. Vendored javascript in the specified order
+3. The file in `app/config` matching the current environment. Example:
+   `app/config/development.coffee` in development or
+   `app/config/test.coffee` in tests.
+4. All files in `app/config/initializers` wrapped in IFFE's
+5. All the files from `lib/` wrapped in minispade modules
+6. All the code in `app/javascripts` wrapped in minispade modules
+7. I18n code
+8. All handlebears templates compiled into Javascript.
+
+You can inspect the final `application.js` to verify everything is
+working as you expected.
+
+Here are some examples:
+
+| Path | Module Name | require |
+| ---- | ----------- | ------- |
+| `app/javascripts/foo.js` | `foo` | `require('foo')` |
+| `app/javascripts/controllers/foo_contoller` | `controllers/foo_controller` | `require('controllers/foo_controller')` |
+| `lib/framework.js` | `framework` | `require('framework')` |
+
+### Vendored Javascripts
 
 Files in `vendor/javascripts` are included before your application code.
 All files in this directory are loaded before your app code in
@@ -90,7 +125,7 @@ Todos.configure do
 end
 ```
 
-## Loading External Scripts
+### Loading External Scripts
 
 You may want to pull in external scripts via CDN instead of bundling
 them inside your application. Configured scripts are written in as
@@ -103,12 +138,38 @@ Todos.configure do
 end
 ```
 
+## Using SASS
+
+Everything works as you expect. All `.scss` or `.sass` files are
+compiled correctly. You can use `@import` as you'd expect.
+`app/stylesheets` is added to the sass load path.
+
+## Using Sprites
+
+Create a directory for each set of sprite you need. Then `@import` it
+as usual with compass. Here's an example. Create a directory named
+`app/sprites/icons`. Dump all the individual icon png's in that
+directory. Inside your stylesheet you can write:
+`import('icons/*.png')` to generate the icons sprite.
+
+## Writing Templates
+
+Handlebars templates are named using the same semantics as application
+javascript. All files `*.hanlebars` and `*.hbs` in `app/templates` are processed.
+The templates are also precompiled depending on the environment.
+
+| Path | Tmplate Name |
+| ---- | ----------- |
+| `app/templates/dashboard.hbs` | `dashboard` |
+| `app/templates/dashboard/settings.hbs` | `dashboard/settings` |
+
 ## Running Tests
 
 Iridium makes testing your JS easy. It does all the manual work for you.
 It compiles all the tests into `tests.js` and `tests.html`. You open
 `tests.html` in your browser or use it with phantomjs. The test
-command will compile your tests and check them with phantomjs.
+command will compile your tests and check them with phantomjs. Qunit
+and Jasmine are supported out of the box.
 
 ```
 $ iridium test
@@ -166,7 +227,6 @@ Iridium is written with Javascript developers in mind. They may not have
 experience in ruby. I've tried as much as I can to shield some
 complexity from newbies. Each part of Iridium is hidden by default, but
 can be generated and customized.
-
 
 ### Configuration, Middleware, and Proxying
 
