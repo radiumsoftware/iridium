@@ -23,7 +23,7 @@ Don't forget you **must use bundle exec!**
 
 # Iridium: A Toolchain for JS Application Development
 
-Iridium is a tool to help you with modern Javascript development. I's
+Iridium is a tool to help you with modern Javascript development. It's
 here to make you a faster developer and solve common problems. It
 focuses primarily on:
 
@@ -50,7 +50,7 @@ together. All Iridium apps get all this right out of the box:
 
 ## Getting Started
 
-The first step is to use the built in generator to create the structure:
+The first step is to use the built-in generator to create the structure:
 
 ```
 $ iridium generate app todos
@@ -86,7 +86,7 @@ the javascript + templates is concatenated into a single
 3. The file in `app/config` matching the current environment. Example:
    `app/config/development.coffee` in development or
    `app/config/test.coffee` in tests.
-4. All files in `app/config/initializers` wrapped in IFFE's
+4. All files in `app/config/initializers` wrapped in IFFEs
 5. All the files from `lib/` wrapped in minispade modules
 6. All the code in `app/javascripts` wrapped in minispade modules
 7. I18n code
@@ -118,7 +118,7 @@ files will be included after those.
 # application.rb
 Todos.configure do
   # load minispade, jquery, jquery_ui, then all other vendored files
-  # Note, the symbol referes to the file name without extension. 
+  # Note, the symbol refers to the file name without extension. 
   # example: :minispade => vendor/javascripts/minispade.js
 
   config.dependencies.load :minispade, :jquery, :jquery_ui
@@ -146,7 +146,7 @@ compiled correctly. You can use `@import` as you'd expect.
 
 ## Using Sprites
 
-Create a directory for each set of sprite you need. Then `@import` it
+Create a directory for each set of sprites you need. Then `@import` it
 as usual with compass. Here's an example. Create a directory named
 `app/sprites/icons`. Dump all the individual icon png's in that
 directory. Inside your stylesheet you can write:
@@ -158,7 +158,7 @@ Handlebars templates are named using the same semantics as application
 javascript. All files `*.hanlebars` and `*.hbs` in `app/templates` are processed.
 The templates are also precompiled depending on the environment.
 
-| Path | Tmplate Name |
+| Path | Template Name |
 | ---- | ----------- |
 | `app/templates/dashboard.hbs` | `dashboard` |
 | `app/templates/dashboard/settings.hbs` | `dashboard/settings` |
@@ -199,7 +199,7 @@ $ iridium lint app/javascripts/**/*.js # this is the default!
 
 Iridium supports localization via `i18n.js`. The i18n implementation is
 taken from [here](https://github.com/fnando/i18n-js). All files in
-`app/locales/*.yml` are merged into I18n translations. Here's an
+`app/locales/*.yml` are merged into i18n translations. Here's an
 example:
 
 ```yml
