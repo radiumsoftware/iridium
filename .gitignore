@@ -15,3 +15,6 @@ test/tmp
 tmp
 test/sandbox
 .sass-cache
+.idea/
+.rvmrc
+.DS_Store
