@@ -29,7 +29,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "activesupport"
   gem.add_dependency "thor"
   gem.add_dependency "barber", "~> 0.4.2"
-  gem.add_dependency "handlebars-source", "1.0.0rc3"
+  gem.add_dependency "handlebars-source", "1.0.12"
   gem.add_dependency "grit"
 
   gem.add_development_dependency "simplecov"
