@@ -8,5 +8,4 @@ gem "hydrogen", :github => "radiumsoftware/hydrogen"
 gem "thor", :github => "wycats/thor"
 
 gem 'm'
-gem 'debugger'
 gem 'mocha', :require => false
