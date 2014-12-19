@@ -1,5 +1,5 @@
 <%= camelized %>.configure do
-  # Minify JS and CSS
+  # Minify JS and CSS, :js or :css can also be set to just minify JS or CSS
   config.pipeline.minify = true
 
   # Generate GZip version of files along with regular version
